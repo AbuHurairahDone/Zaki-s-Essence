@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
+import {BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+
 import { CartContext, CartProvider } from './contexts/CartContext.jsx'
 import { ProductContext, ProductProvider } from './contexts/Product.jsx'
 
@@ -7,7 +9,7 @@ import { faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { ToastContainer } from "react-toastify";
 
 
-import {Navbar, MobileMenu} from './components/Navbar.jsx'
+import { Navbar, MobileMenu } from './components/Navbar.jsx'
 import HeroSection from './components/HeroSection.jsx'
 import ShopSection from './components/ShopSection.jsx'
 import CartPanel from './components/CartPanel.jsx'
@@ -62,14 +64,40 @@ function AppCode() {
       />
       
       <main>
-        <HeroSection />
-        <ShopSection products={products} addToCart={addToCart} />
-        <CollectionsSection />
-        <AboutSection />
-        <NewsLetterSection />
-        <ContactSection />
+        <Routes>
+            <Route
+                path="/"
+                element={
+                  <>
+                    <HeroSection />
+                    <ShopSection products={products} addToCart={addToCart} />
+                    <CollectionsSection />
+                    <NewsLetterSection />
+                  </>
+                }
+            />
+            <Route 
+                path="/shop"
+                element={<div className="container mx-auto px-4 py-16"><ShopSection products={products} addToCart={addToCart} /> </div>}
+            />
+            <Route 
+                path="/collections" 
+                element={<div className="container mx-auto px-4 py-16"><CollectionsSection /> </div> } 
+            />
+            <Route 
+                path="/about" 
+                element={<div className="container my-4 mx-auto px-4 py-16"><AboutSection /></div>} 
+            />
+            <Route 
+                path="/contact" 
+                element={<div className="container mx-auto px-4 py-16"><ContactSection /></div>} 
+            />
+            {/* Add more routes as needed */}
+        </Routes>
       </main>
       
+
+
       <Footer />
       {showScrollButton && (
         <button 
@@ -87,11 +115,13 @@ function AppCode() {
 
 function App() {
   return (
-    <CartProvider>
-        <ProductProvider>
-            <AppCode />
-        </ProductProvider>
-    </CartProvider>
+    <Router>
+        <CartProvider>
+            <ProductProvider>
+                <AppCode />
+            </ProductProvider>
+        </CartProvider>
+    </Router>
   )
 }
 

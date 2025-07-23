@@ -1,4 +1,5 @@
 import React,{ useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import {  } from '@fortawesome/free-solid-svg-icons';
 import { faCartShopping, faBars } from '@fortawesome/free-solid-svg-icons';
@@ -32,11 +33,16 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                 </div>
                 
                 <div className="hidden md:flex space-x-6">
-                    <a href="#" className="text-gray-800 hover:text-yellow-700 transition">Home</a>
+                    <Link to="/" className="text-gray-800 hover:text-yellow-700 transition">Home</Link>
+                    <Link to="/shop" className="text-gray-800 hover:text-yellow-700 transition">Shop</Link>
+                    <Link to="/collections" className="text-gray-800 hover:text-yellow-700 transition">Collections</Link>
+                    <Link to="/about" className="text-gray-800 hover:text-yellow-700 transition">About</Link>
+                    <Link to="/contact" className="text-gray-800 hover:text-yellow-700 transition">Contact</Link>
+                    {/* <a href="#" className="text-gray-800 hover:text-yellow-700 transition">Home</a>
                     <a href="#shop" className="text-gray-800 hover:text-yellow-700 transition">Shop</a>
                     <a href="#collections" className="text-gray-800 hover:text-yellow-700 transition">Collections</a>
                     <a href="#about" className="text-gray-800 hover:text-yellow-700 transition">About</a>
-                    <a href="#contact" className="text-gray-800 hover:text-yellow-700 transition">Contact</a>
+                    <a href="#contact" className="text-gray-800 hover:text-yellow-700 transition">Contact</a> */}
                     
                 </div>
                 

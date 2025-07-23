@@ -1,6 +1,6 @@
-import { faDiagramSuccessor } from "@fortawesome/free-solid-svg-icons";
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useMemo } from "react";
 import { toast } from "react-toastify";
+
 
 
 export const CartContext = createContext();
@@ -60,7 +60,7 @@ export const CartProvider = ({children}) => {
         // show toast
         toast.success(`${product.name} added to cart`, {
             position: "bottom-right",
-            autoClose: 3000,
+            autoClose: 2000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,

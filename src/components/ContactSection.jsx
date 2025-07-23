@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from "react-toastify";
 
 function ContactSection() {
             const [formData, setFormData] = useState({
@@ -16,7 +17,17 @@ function ContactSection() {
 
             const handleSubmit = (e) => {
                 e.preventDefault();
-                alert(`Thank you for your message, ${formData.name}! We'll get back to you soon.`);
+                toast.success("Message sent successfully!", 
+                    {
+                        position: "bottom-right",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
                 setFormData({ name: '', email: '', message: '' });
             };
 
