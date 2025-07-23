@@ -1,4 +1,7 @@
+import { faDiagramSuccessor } from "@fortawesome/free-solid-svg-icons";
 import React, { useState, createContext } from "react";
+import { toast } from "react-toastify";
+
 
 export const CartContext = createContext();
 
@@ -54,8 +57,17 @@ export const CartProvider = ({children}) => {
             }
         });
         
-        // Show quick notification
-        alert(`${product.name} (${variant}) added to cart!`);
+        // show toast
+        toast.success(`${product.name} added to cart`, {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
     };
     return (
         <CartContext.Provider value={{ isMobileMenuOpen, setIsMobileMenuOpen, cartItems, setCartItems, isCartOpen, setIsCartOpen, totalItems, toggleCart, removeItem, totalAmount, updateQuantity, addToCart}}>

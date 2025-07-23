@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { CartContext, CartProvider } from './contexts/CartContext.jsx'
+import { ProductContext, ProductProvider } from './contexts/Product.jsx'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons'
+import { ToastContainer } from "react-toastify";
 
-import { products } from './products.js'
 
 import {Navbar, MobileMenu} from './components/Navbar.jsx'
 import HeroSection from './components/HeroSection.jsx'
@@ -17,8 +18,10 @@ import ContactSection from './components/ContactSection.jsx'
 import Footer from './components/Footer.jsx'
 
 
+
 function AppCode() {
     const { isMobileMenuOpen, setIsMobileMenuOpen, isCartOpen, setIsCartOpen, toggleCart, cartItems, totalItems, totalAmount, addToCart, updateQuantity, removeItem } = useContext(CartContext);
+    const { products } = useContext(ProductContext);
 
     const [showScrollButton, setShowScrollButton] = useState(false);
     useEffect(() => {
@@ -76,7 +79,7 @@ function AppCode() {
           <FontAwesomeIcon icon={faArrowUp} />
         </button>
       )}
-      
+      <ToastContainer />
         </div>
     </>
   )
@@ -85,7 +88,9 @@ function AppCode() {
 function App() {
   return (
     <CartProvider>
-      <AppCode />
+        <ProductProvider>
+            <AppCode />
+        </ProductProvider>
     </CartProvider>
   )
 }
