@@ -58,13 +58,21 @@ export const CartProvider = ({ children }) => {
                 };
                 return updatedItems;
             } else {
-                // If new, add to cart
-                return [...prevItems, { product, variant, quantity: 1 }];
+                // If new, add to cart with variant price
+                const variantPrice = getVariantPrice(product, variant);
+                return [...prevItems, {
+                    product: {
+                        ...product,
+                        price: variantPrice // Set the specific variant price for cart calculations
+                    },
+                    variant,
+                    quantity: 1
+                }];
             }
         });
 
         // show toast
-        toast.success(`${product.name} added to cart`, {
+        toast.success(`${product.name} (${variant}) added to cart`, {
             position: "bottom-right",
             autoClose: 2000,
             hideProgressBar: false,
@@ -74,6 +82,16 @@ export const CartProvider = ({ children }) => {
             progress: undefined,
             theme: "light",
         });
+    };
+
+    // Helper function to get variant price
+    const getVariantPrice = (product, variant) => {
+        // Support both new variantPricing structure and legacy price structure
+        if (product.variantPricing && product.variantPricing[variant]) {
+            return product.variantPricing[variant];
+        }
+        // Fallback to legacy single price
+        return product.price || 0;
     };
 
     const clearCart = () => {

@@ -211,6 +211,23 @@ function ProductManagement() {
 
 // Product Card Component
 function ProductCard({ product, onEdit, onDelete, formatCurrency, formatDate, getCollectionName, getTotalStock }) {
+    // Helper function to get price display for admin card
+    const getPriceDisplay = () => {
+        if (product.variantPricing) {
+            const prices = Object.values(product.variantPricing).filter(price => price > 0);
+            if (prices.length > 0) {
+                const minPrice = Math.min(...prices);
+                const maxPrice = Math.max(...prices);
+                if (minPrice === maxPrice) {
+                    return formatCurrency(minPrice);
+                }
+                return `${formatCurrency(minPrice)} - ${formatCurrency(maxPrice)}`;
+            }
+        }
+        // Fallback to legacy price
+        return formatCurrency(product.price || 0);
+    };
+
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
             <div className="relative">
@@ -245,7 +262,7 @@ function ProductCard({ product, onEdit, onDelete, formatCurrency, formatDate, ge
                 <div className="space-y-2 mb-3">
                     <div className="flex justify-between items-center">
                         <span className="font-bold text-lg text-gray-900">
-                            {formatCurrency(product.price)}
+                            {getPriceDisplay()}
                         </span>
                         <div className="flex items-center text-gray-600">
                             <FontAwesomeIcon icon={faBox} className="text-xs mr-1" />
@@ -255,8 +272,12 @@ function ProductCard({ product, onEdit, onDelete, formatCurrency, formatDate, ge
 
                     <div className="flex flex-wrap gap-1">
                         {product.variants?.map((variant) => (
-                            <span key={variant} className="px-2 py-1 bg-gray-100 text-xs rounded">
-                                {variant}: {product.stock?.[variant] || 0}
+                            <span key={variant} className="px-2 py-1 bg-gray-100 text-xs rounded flex flex-col items-center">
+                                <span className="font-medium">{variant}</span>
+                                {product.variantPricing && product.variantPricing[variant] && (
+                                    <span className="text-green-600">{formatCurrency(product.variantPricing[variant])}</span>
+                                )}
+                                <span className="text-gray-500">Stock: {product.stock?.[variant] || 0}</span>
                             </span>
                         ))}
                     </div>
@@ -292,10 +313,10 @@ function ProductModal({ product, collections, onClose, onSave }) {
     const [formData, setFormData] = useState({
         name: product?.name || '',
         description: product?.description || '',
-        price: product?.price || '',
         collectionRef: product?.collectionRef || '',
         image: product?.image || '',
         variants: product?.variants || ['50ml', '100ml'],
+        variantPricing: product?.variantPricing || { '50ml': 0, '100ml': 0 },
         stock: product?.stock || { '50ml': 0, '100ml': 0 },
         sold: product?.sold || { '50ml': 0, '100ml': 0 },
         discountPercentage: product?.discountPercentage || ''
@@ -317,6 +338,10 @@ function ProductModal({ product, collections, onClose, onSave }) {
             setFormData(prev => ({
                 ...prev,
                 variants: [...prev.variants, variant],
+                variantPricing: {
+                    ...prev.variantPricing,
+                    [variant]: 0
+                },
                 stock: {
                     ...prev.stock,
                     [variant]: 0
@@ -333,14 +358,17 @@ function ProductModal({ product, collections, onClose, onSave }) {
     const removeVariant = (variantToRemove) => {
         if (formData.variants.length > 1) {
             setFormData(prev => {
+                const newVariantPricing = { ...prev.variantPricing };
                 const newStock = { ...prev.stock };
                 const newSold = { ...prev.sold };
+                delete newVariantPricing[variantToRemove];
                 delete newStock[variantToRemove];
                 delete newSold[variantToRemove];
 
                 return {
                     ...prev,
                     variants: prev.variants.filter(v => v !== variantToRemove),
+                    variantPricing: newVariantPricing,
                     stock: newStock,
                     sold: newSold
                 };
@@ -358,6 +386,16 @@ function ProductModal({ product, collections, onClose, onSave }) {
         }));
     };
 
+    const handlePriceChange = (variant, value) => {
+        setFormData(prev => ({
+            ...prev,
+            variantPricing: {
+                ...prev.variantPricing,
+                [variant]: parseFloat(value) || 0
+            }
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -368,6 +406,16 @@ function ProductModal({ product, collections, onClose, onSave }) {
 
         if (formData.variants.length === 0) {
             toast.error('Please add at least one variant');
+            return;
+        }
+
+        // Validate that all variants have prices
+        const hasEmptyPrices = formData.variants.some(variant =>
+            !formData.variantPricing[variant] || formData.variantPricing[variant] <= 0
+        );
+
+        if (hasEmptyPrices) {
+            toast.error('Please set a price for all variants');
             return;
         }
 
@@ -384,11 +432,15 @@ function ProductModal({ product, collections, onClose, onSave }) {
 
             const productData = {
                 ...formData,
-                price: parseFloat(formData.price),
                 rating: 0, // Always default to 0
                 sold: soldData,
                 discountPercentage: formData.discountPercentage ? parseFloat(formData.discountPercentage) : null
             };
+
+            // Remove the old price field if it exists (for migration)
+            if (productData.price) {
+                delete productData.price;
+            }
 
             if (product) {
                 await ProductService.updateProduct(product.id, productData);
@@ -412,6 +464,16 @@ function ProductModal({ product, collections, onClose, onSave }) {
             e.preventDefault();
             addVariant();
         }
+    };
+
+    const getLowestPrice = () => {
+        const prices = Object.values(formData.variantPricing).filter(price => price > 0);
+        return prices.length > 0 ? Math.min(...prices) : 0;
+    };
+
+    const getHighestPrice = () => {
+        const prices = Object.values(formData.variantPricing).filter(price => price > 0);
+        return prices.length > 0 ? Math.max(...prices) : 0;
     };
 
     return (
@@ -497,25 +559,30 @@ function ProductModal({ product, collections, onClose, onSave }) {
                         </div>
                     </div>
 
-                    {/* Pricing */}
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Pricing</h3>
+                    {/* Pricing Overview */}
+                    {formData.variants.length > 0 && (
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Pricing Overview</h3>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Price ($) *
-                                </label>
-                                <input
-                                    type="number"
-                                    name="price"
-                                    required
-                                    step="0.01"
-                                    min="0"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
-                                    value={formData.price}
-                                    onChange={handleChange}
-                                />
+                            <div className="bg-blue-50 p-4 rounded-lg">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                                    <div>
+                                        <p className="text-sm text-gray-600">Price Range</p>
+                                        <p className="text-lg font-semibold text-blue-600">
+                                            ${getLowestPrice().toFixed(2)} - ${getHighestPrice().toFixed(2)}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-600">Total Variants</p>
+                                        <p className="text-lg font-semibold text-blue-600">{formData.variants.length}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-600">Discount</p>
+                                        <p className="text-lg font-semibold text-blue-600">
+                                            {formData.discountPercentage ? `${formData.discountPercentage}%` : 'None'}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
 
                             <div>
@@ -535,11 +602,11 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                 />
                             </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Variants & Stock */}
                     <div className="space-y-4">
-                        <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Product Variants & Stock</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Product Variants, Pricing & Stock</h3>
 
                         {/* Add Variant Section */}
                         <div className="bg-gray-50 p-4 rounded-lg">
@@ -590,30 +657,48 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                                 )}
                                             </div>
 
-                                            <div>
-                                                <label className="block text-xs font-medium text-gray-600 mb-2">
-                                                    Stock Quantity
-                                                </label>
-                                                <input
-                                                    type="number"
-                                                    min="0"
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
-                                                    value={formData.stock[variant] || 0}
-                                                    onChange={(e) => handleStockChange(variant, e.target.value)}
-                                                />
-                                            </div>
-
-                                            {/* Show sold count for existing products (read-only) */}
-                                            {product && formData.sold && formData.sold[variant] !== undefined && (
-                                                <div className="mt-3">
-                                                    <label className="block text-xs font-medium text-gray-600 mb-1">
-                                                        Units Sold
+                                            <div className="space-y-3">
+                                                <div>
+                                                    <label className="block text-xs font-medium text-gray-600 mb-2">
+                                                        Price ($) *
                                                     </label>
-                                                    <div className="px-3 py-2 bg-gray-100 rounded-lg text-sm text-gray-700">
-                                                        {formData.sold[variant] || 0} sold
-                                                    </div>
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        min="0"
+                                                        required
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                                        value={formData.variantPricing[variant] || ''}
+                                                        onChange={(e) => handlePriceChange(variant, e.target.value)}
+                                                        placeholder="0.00"
+                                                    />
                                                 </div>
-                                            )}
+
+                                                <div>
+                                                    <label className="block text-xs font-medium text-gray-600 mb-2">
+                                                        Stock Quantity
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        min="0"
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                                        value={formData.stock[variant] || 0}
+                                                        onChange={(e) => handleStockChange(variant, e.target.value)}
+                                                    />
+                                                </div>
+
+                                                {/* Show sold count for existing products (read-only) */}
+                                                {product && formData.sold && formData.sold[variant] !== undefined && (
+                                                    <div>
+                                                        <label className="block text-xs font-medium text-gray-600 mb-1">
+                                                            Units Sold
+                                                        </label>
+                                                        <div className="px-3 py-2 bg-gray-100 rounded-lg text-sm text-gray-700">
+                                                            {formData.sold[variant] || 0} sold
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
