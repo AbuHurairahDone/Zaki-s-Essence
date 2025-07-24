@@ -211,6 +211,12 @@ function ProductManagement() {
 
 // Product Card Component
 function ProductCard({ product, onEdit, onDelete, formatCurrency, formatDate, getCollectionName, getTotalStock }) {
+    const [imageError, setImageError] = useState(false);
+
+    const handleImageError = () => {
+        setImageError(true);
+    };
+
     // Helper function to get price display for admin card
     const getPriceDisplay = () => {
         if (product.variantPricing) {
@@ -231,11 +237,21 @@ function ProductCard({ product, onEdit, onDelete, formatCurrency, formatDate, ge
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
             <div className="relative">
-                <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-32 sm:h-48 object-cover"
-                />
+                {!imageError ? (
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-32 sm:h-48 object-cover"
+                        onError={handleImageError}
+                    />
+                ) : (
+                    <div className="w-full h-32 sm:h-48 bg-gray-200 flex items-center justify-center">
+                        <div className="text-center text-gray-500">
+                            <FontAwesomeIcon icon={faEye} className="text-2xl mb-1" />
+                            <p className="text-xs">No Image</p>
+                        </div>
+                    </div>
+                )}
                 <div className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded flex items-center">
                     <FontAwesomeIcon icon={faLayerGroup} className="mr-1" />
                     {getCollectionName(product.collectionRef)}

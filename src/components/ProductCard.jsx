@@ -4,6 +4,7 @@ import { useIntersectionObserver, usePreventAnimationFlash } from '../hooks/useA
 function ProductCard({ product, addToCart }) {
     const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
     const [isLoading, setIsLoading] = useState(false);
+    const [imageError, setImageError] = useState(false);
     const [cardRef, isCardVisible] = useIntersectionObserver();
     const isReady = usePreventAnimationFlash();
 
@@ -12,6 +13,10 @@ function ProductCard({ product, addToCart }) {
         await new Promise(resolve => setTimeout(resolve, 200));
         addToCart(product, selectedVariant);
         setIsLoading(false);
+    };
+
+    const handleImageError = () => {
+        setImageError(true);
     };
 
     // Get price for selected variant
@@ -52,11 +57,21 @@ function ProductCard({ product, addToCart }) {
                 }`}
         >
             <div className="product-image relative overflow-hidden">
-                <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-64 object-cover smooth-transition group-hover:scale-105"
-                />
+                {!imageError ? (
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-64 object-cover smooth-transition group-hover:scale-105"
+                        onError={handleImageError}
+                    />
+                ) : (
+                    <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
+                        <div className="text-center text-gray-500">
+                            <i className="fas fa-image text-4xl mb-2"></i>
+                            <p className="text-sm">Image not available</p>
+                        </div>
+                    </div>
+                )}
                 <div className="absolute top-2 right-2 bg-gray-900 text-white text-xs px-2 py-1 rounded">
                     {product.category}
                 </div>
