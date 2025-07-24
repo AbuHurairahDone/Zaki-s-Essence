@@ -6,6 +6,7 @@ import AdminDashboard from './AdminDashboard.jsx';
 import ProductManagement from './ProductManagement.jsx';
 import CollectionManagement from './CollectionManagement.jsx';
 import OrderManagement from './OrderManagement.jsx';
+import HeroImageManagement from './HeroImageManagement.jsx';
 
 function AdminPanel() {
     const { user, loading, isAdmin } = useAuth();
@@ -38,6 +39,8 @@ function AdminPanel() {
                 return <CollectionManagement />;
             case 'orders':
                 return <OrderManagement />;
+            case 'hero-images':
+                return <HeroImageManagement />;
             default:
                 return <AdminDashboard />;
         }

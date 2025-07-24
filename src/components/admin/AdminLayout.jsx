@@ -9,7 +9,8 @@ import {
     faSignOutAlt,
     faBars,
     faTimes,
-    faLayerGroup
+    faLayerGroup,
+    faImage
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 
@@ -46,6 +47,11 @@ function AdminLayout({ children, currentPage, onPageChange }) {
             id: 'orders',
             label: 'Orders',
             icon: faShoppingCart
+        },
+        {
+            id: 'hero-images',
+            label: 'Hero Images',
+            icon: faImage
         }
     ];
 
