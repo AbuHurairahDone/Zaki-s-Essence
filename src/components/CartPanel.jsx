@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import React, { useState } from 'react';
+import { faTrash, faTimes, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, useContext } from 'react';
+import { CartContext } from '../contexts/CartContext.jsx';
 
 function CartItem({ item, updateQuantity, removeItem }) {
     const [isRemoving, setIsRemoving] = useState(false);
@@ -59,7 +60,307 @@ function CartItem({ item, updateQuantity, removeItem }) {
     );
 }
 
+function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
+    const { createOrder, isCheckingOut } = useContext(CartContext);
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        city: '',
+        state: '',
+        zipCode: '',
+        country: 'United States'
+    });
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+        // Clear error when user starts typing
+        if (errors[name]) {
+            setErrors(prev => ({
+                ...prev,
+                [name]: ''
+            }));
+        }
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!formData.name.trim()) newErrors.name = 'Name is required';
+        if (!formData.email.trim()) newErrors.email = 'Email is required';
+        else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Invalid email format';
+        if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
+        if (!formData.address.trim()) newErrors.address = 'Address is required';
+        if (!formData.city.trim()) newErrors.city = 'City is required';
+        if (!formData.state.trim()) newErrors.state = 'State is required';
+        if (!formData.zipCode.trim()) newErrors.zipCode = 'ZIP code is required';
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!validateForm()) return;
+
+        try {
+            const customerInfo = {
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone
+            };
+
+            const shippingAddress = {
+                street: formData.address,
+                city: formData.city,
+                state: formData.state,
+                zipCode: formData.zipCode,
+                country: formData.country
+            };
+
+            await createOrder(customerInfo, shippingAddress);
+            onClose();
+            // Reset form
+            setFormData({
+                name: '', email: '', phone: '', address: '',
+                city: '', state: '', zipCode: '', country: 'United States'
+            });
+        } catch (error) {
+            console.error('Checkout error:', error);
+        }
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div className="p-6 border-b border-gray-200">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-xl font-bold">Checkout</h2>
+                        <button
+                            onClick={onClose}
+                            className="text-gray-400 hover:text-gray-600"
+                            disabled={isCheckingOut}
+                        >
+                            <FontAwesomeIcon icon={faTimes} />
+                        </button>
+                    </div>
+                </div>
+
+                <form onSubmit={handleSubmit} className="p-6">
+                    {/* Order Summary */}
+                    <div className="mb-6">
+                        <h3 className="text-lg font-semibold mb-4">Order Summary</h3>
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                            <div className="space-y-2">
+                                {cartItems.map((item) => (
+                                    <div key={`${item.product.id}-${item.variant}`} className="flex justify-between">
+                                        <span>{item.product.name} ({item.variant}) × {item.quantity}</span>
+                                        <span>${(item.product.price * item.quantity).toFixed(2)}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="border-t border-gray-200 mt-4 pt-4">
+                                <div className="flex justify-between font-bold text-lg">
+                                    <span>Total</span>
+                                    <span>${totalAmount.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Customer Information */}
+                    <div className="mb-6">
+                        <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Full Name *
+                                </label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.name ? 'border-red-500' : 'border-gray-300'
+                                        }`}
+                                    disabled={isCheckingOut}
+                                />
+                                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Email *
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.email ? 'border-red-500' : 'border-gray-300'
+                                        }`}
+                                    disabled={isCheckingOut}
+                                />
+                                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Phone Number *
+                                </label>
+                                <input
+                                    type="tel"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.phone ? 'border-red-500' : 'border-gray-300'
+                                        }`}
+                                    disabled={isCheckingOut}
+                                />
+                                {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Shipping Address */}
+                    <div className="mb-6">
+                        <h3 className="text-lg font-semibold mb-4">Shipping Address</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Address *
+                                </label>
+                                <input
+                                    type="text"
+                                    name="address"
+                                    value={formData.address}
+                                    onChange={handleChange}
+                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.address ? 'border-red-500' : 'border-gray-300'
+                                        }`}
+                                    disabled={isCheckingOut}
+                                />
+                                {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        City *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="city"
+                                        value={formData.city}
+                                        onChange={handleChange}
+                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.city ? 'border-red-500' : 'border-gray-300'
+                                            }`}
+                                        disabled={isCheckingOut}
+                                    />
+                                    {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        State *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="state"
+                                        value={formData.state}
+                                        onChange={handleChange}
+                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.state ? 'border-red-500' : 'border-gray-300'
+                                            }`}
+                                        disabled={isCheckingOut}
+                                    />
+                                    {errors.state && <p className="text-red-500 text-xs mt-1">{errors.state}</p>}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        ZIP Code *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="zipCode"
+                                        value={formData.zipCode}
+                                        onChange={handleChange}
+                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.zipCode ? 'border-red-500' : 'border-gray-300'
+                                            }`}
+                                        disabled={isCheckingOut}
+                                    />
+                                    {errors.zipCode && <p className="text-red-500 text-xs mt-1">{errors.zipCode}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Country
+                                    </label>
+                                    <select
+                                        name="country"
+                                        value={formData.country}
+                                        onChange={handleChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                        disabled={isCheckingOut}
+                                    >
+                                        <option value="United States">United States</option>
+                                        <option value="Canada">Canada</option>
+                                        <option value="United Kingdom">United Kingdom</option>
+                                        <option value="Australia">Australia</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="flex justify-end space-x-3">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                            disabled={isCheckingOut}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={isCheckingOut}
+                            className="px-6 py-2 bg-yellow-700 hover:bg-yellow-800 text-white rounded-md transition-colors disabled:opacity-50 flex items-center"
+                        >
+                            {isCheckingOut ? (
+                                <>
+                                    <FontAwesomeIcon icon={faSpinner} className="animate-spin mr-2" />
+                                    Processing...
+                                </>
+                            ) : (
+                                'Place Order'
+                            )}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
 function CartPanel({ isOpen, cartItems, toggleCart, updateQuantity, removeItem, totalItems, totalAmount }) {
+    const [showCheckout, setShowCheckout] = useState(false);
+
+    const handleCheckout = () => {
+        setShowCheckout(true);
+    };
+
     return (
         <>
             {/* Backdrop */}
@@ -130,7 +431,10 @@ function CartPanel({ isOpen, cartItems, toggleCart, updateQuantity, removeItem, 
                                     ${totalAmount.toFixed(2)}
                                 </span>
                             </div>
-                            <button className="w-full bg-yellow-700 hover:bg-yellow-800 text-white py-4 rounded-md transition-all duration-300 font-medium text-lg btn-animate hover-lift shadow-lg hover:shadow-xl">
+                            <button
+                                onClick={handleCheckout}
+                                className="w-full bg-yellow-700 hover:bg-yellow-800 text-white py-4 rounded-md transition-all duration-300 font-medium text-lg btn-animate hover-lift shadow-lg hover:shadow-xl"
+                            >
                                 Proceed to Checkout
                             </button>
                             <p className="text-xs text-gray-500 text-center mt-3">
@@ -140,6 +444,14 @@ function CartPanel({ isOpen, cartItems, toggleCart, updateQuantity, removeItem, 
                     )}
                 </div>
             </div>
+
+            {/* Checkout Modal */}
+            <CheckoutModal
+                isOpen={showCheckout}
+                onClose={() => setShowCheckout(false)}
+                cartItems={cartItems}
+                totalAmount={totalAmount}
+            />
         </>
     );
 }

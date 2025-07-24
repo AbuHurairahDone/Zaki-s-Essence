@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 
 import { CartContext, CartProvider } from './contexts/CartContext.jsx'
 import { ProductContext, ProductProvider } from './contexts/Product.jsx'
+import { AuthProvider } from './contexts/AuthContext.jsx'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons'
@@ -18,6 +19,7 @@ import AboutSection from './components/AboutSection.jsx'
 import NewsLetterSection from './components/NewsLetterSection.jsx'
 import ContactSection from './components/ContactSection.jsx'
 import Footer from './components/Footer.jsx'
+import AdminPanel from './components/admin/AdminPanel.jsx'
 
 // Simplified page transition component
 function PageTransition({ children }) {
@@ -99,95 +101,105 @@ function AppCode() {
 
     return (
         <div className="relative min-h-screen">
-            <Navbar
-                cartCount={totalItems}
-                toggleCart={toggleCart}
-                toggleMobileMenu={toggleMobileMenu}
-            />
+            <Routes>
+                {/* Admin Routes */}
+                <Route path="/admin/*" element={<AdminPanel />} />
 
-            <MobileMenu
-                isOpen={isMobileMenuOpen}
-                toggleMobileMenu={toggleMobileMenu}
-            />
+                {/* Main Website Routes */}
+                <Route path="/*" element={
+                    <>
+                        <Navbar
+                            cartCount={totalItems}
+                            toggleCart={toggleCart}
+                            toggleMobileMenu={toggleMobileMenu}
+                        />
 
-            <CartPanel
-                isOpen={isCartOpen}
-                cartItems={cartItems}
-                toggleCart={toggleCart}
-                updateQuantity={updateQuantity}
-                removeItem={removeItem}
-                totalItems={totalItems}
-                totalAmount={totalAmount}
-            />
+                        <MobileMenu
+                            isOpen={isMobileMenuOpen}
+                            toggleMobileMenu={toggleMobileMenu}
+                        />
 
-            <main className="overflow-hidden">
-                <PageTransition>
-                    <Routes>
-                        <Route
-                            path="/"
-                            element={
-                                <>
-                                    <HeroSection />
-                                    <ShopSection products={products} addToCart={addToCart} />
-                                    <CollectionsSection />
-                                    <NewsLetterSection />
-                                </>
-                            }
+                        <CartPanel
+                            isOpen={isCartOpen}
+                            cartItems={cartItems}
+                            toggleCart={toggleCart}
+                            updateQuantity={updateQuantity}
+                            removeItem={removeItem}
+                            totalItems={totalItems}
+                            totalAmount={totalAmount}
                         />
-                        <Route
-                            path="/shop"
-                            element={
-                                <div className="pt-20">
-                                    <div className="container mx-auto px-4 py-16">
-                                        <ShopSection products={products} addToCart={addToCart} />
-                                    </div>
-                                </div>
-                            }
-                        />
-                        <Route
-                            path="/collections"
-                            element={
-                                <div className="pt-20">
-                                    <div className="container mx-auto px-4 py-16">
-                                        <CollectionsSection />
-                                    </div>
-                                </div>
-                            }
-                        />
-                        <Route
-                            path="/about"
-                            element={
-                                <div className="pt-20">
-                                    <div className="container mx-auto px-4 py-16">
-                                        <AboutSection />
-                                    </div>
-                                </div>
-                            }
-                        />
-                        <Route
-                            path="/contact"
-                            element={
-                                <div className="pt-20">
-                                    <div className="container mx-auto px-4 py-16">
-                                        <ContactSection />
-                                    </div>
-                                </div>
-                            }
-                        />
-                    </Routes>
-                </PageTransition>
-            </main>
 
-            <Footer />
+                        <main className="overflow-hidden">
+                            <PageTransition>
+                                <Routes>
+                                    <Route
+                                        path="/"
+                                        element={
+                                            <>
+                                                <HeroSection />
+                                                <ShopSection products={products} addToCart={addToCart} />
+                                                <CollectionsSection />
+                                                <NewsLetterSection />
+                                            </>
+                                        }
+                                    />
+                                    <Route
+                                        path="/shop"
+                                        element={
+                                            <div className="pt-20">
+                                                <div className="container mx-auto px-4 py-16">
+                                                    <ShopSection products={products} addToCart={addToCart} />
+                                                </div>
+                                            </div>
+                                        }
+                                    />
+                                    <Route
+                                        path="/collections"
+                                        element={
+                                            <div className="pt-20">
+                                                <div className="container mx-auto px-4 py-16">
+                                                    <CollectionsSection />
+                                                </div>
+                                            </div>
+                                        }
+                                    />
+                                    <Route
+                                        path="/about"
+                                        element={
+                                            <div className="pt-20">
+                                                <div className="container mx-auto px-4 py-16">
+                                                    <AboutSection />
+                                                </div>
+                                            </div>
+                                        }
+                                    />
+                                    <Route
+                                        path="/contact"
+                                        element={
+                                            <div className="pt-20">
+                                                <div className="container mx-auto px-4 py-16">
+                                                    <ContactSection />
+                                                </div>
+                                            </div>
+                                        }
+                                    />
+                                </Routes>
+                            </PageTransition>
+                        </main>
 
-            <button
-                onClick={scrollToTop}
-                className={`fixed bottom-6 right-6 bg-yellow-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-yellow-800 smooth-transition z-40 hover-lift gpu-accelerated ${showScrollButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
-                    }`}
-                aria-label="Scroll to top"
-            >
-                <FontAwesomeIcon icon={faArrowUp} className="smooth-transition" />
-            </button>
+                        <Footer />
+
+                        <button
+                            onClick={scrollToTop}
+                            className={`fixed bottom-6 right-6 bg-yellow-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-yellow-800 smooth-transition z-40 hover-lift gpu-accelerated ${showScrollButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
+                                }`}
+                            aria-label="Scroll to top"
+                        >
+                            <FontAwesomeIcon icon={faArrowUp} className="smooth-transition" />
+                        </button>
+                    </>
+                } />
+            </Routes>
 
             <ToastContainer
                 position="bottom-right"
@@ -208,11 +220,13 @@ function AppCode() {
 function App() {
     return (
         <Router>
-            <CartProvider>
-                <ProductProvider>
-                    <AppCode />
-                </ProductProvider>
-            </CartProvider>
+            <AuthProvider>
+                <CartProvider>
+                    <ProductProvider>
+                        <AppCode />
+                    </ProductProvider>
+                </CartProvider>
+            </AuthProvider>
         </Router>
     )
 }
