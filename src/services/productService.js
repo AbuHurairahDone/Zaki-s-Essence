@@ -169,4 +169,113 @@ export class ProductService {
             throw error;
         }
     }
+
+    // Get featured collections (limited to 3)
+    static async getFeaturedCollections() {
+        try {
+            const q = query(
+                collection(db, COLLECTIONS_COLLECTION),
+                where('isFeatured', '==', true),
+                orderBy('featuredOrder', 'asc'),
+                limit(3)
+            );
+            const querySnapshot = await getDocs(q);
+            return querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+        } catch (error) {
+            console.error('Error fetching featured collections:', error);
+            throw error;
+        }
+    }
+
+    // Toggle featured status of a collection (Admin only)
+    static async toggleFeaturedCollection(collectionId, isFeatured) {
+        try {
+            // If featuring a collection, check if we already have 3 featured
+            if (isFeatured) {
+                const featuredCollections = await this.getFeaturedCollections();
+                if (featuredCollections.length >= 3) {
+                    throw new Error('Maximum of 3 collections can be featured at once');
+                }
+            }
+
+            const docRef = doc(db, COLLECTIONS_COLLECTION, collectionId);
+            const updateData = {
+                isFeatured,
+                updatedAt: serverTimestamp()
+            };
+
+            // If featuring, add featuredOrder based on current count
+            if (isFeatured) {
+                const featuredCollections = await this.getFeaturedCollections();
+                updateData.featuredOrder = featuredCollections.length + 1;
+            } else {
+                // If unfeaturing, remove featuredOrder
+                updateData.featuredOrder = null;
+            }
+
+            await updateDoc(docRef, updateData);
+
+            // If unfeaturing, reorder the remaining featured collections
+            if (!isFeatured) {
+                await this.reorderFeaturedCollections();
+            }
+        } catch (error) {
+            console.error('Error toggling featured collection:', error);
+            throw error;
+        }
+    }
+
+    // Reorder featured collections to maintain sequential order
+    static async reorderFeaturedCollections() {
+        try {
+            const featuredCollections = await this.getFeaturedCollections();
+
+            // Update the order for remaining featured collections
+            const updatePromises = featuredCollections.map((collection, index) => {
+                const docRef = doc(db, COLLECTIONS_COLLECTION, collection.id);
+                return updateDoc(docRef, {
+                    featuredOrder: index + 1,
+                    updatedAt: serverTimestamp()
+                });
+            });
+
+            await Promise.all(updatePromises);
+        } catch (error) {
+            console.error('Error reordering featured collections:', error);
+            throw error;
+        }
+    }
+
+    // Get collections with filter options
+    static async getCollections(options = {}) {
+        try {
+            let q = query(collection(db, COLLECTIONS_COLLECTION));
+
+            if (options.featured) {
+                q = query(q, where('isFeatured', '==', true));
+            }
+
+            if (options.orderBy) {
+                q = query(q, orderBy(options.orderBy, options.order || 'desc'));
+            } else {
+                q = query(q, orderBy('createdAt', 'desc'));
+            }
+
+            if (options.limit) {
+                q = query(q, limit(options.limit));
+            }
+
+            const querySnapshot = await getDocs(q);
+            return querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+        } catch (error) {
+            console.error('Error fetching collections:', error);
+            throw error;
+        }
+    }
 }

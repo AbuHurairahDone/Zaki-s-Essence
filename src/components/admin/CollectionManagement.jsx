@@ -8,7 +8,9 @@ import {
     faSearch,
     faLayerGroup,
     faTimes,
-    faBox
+    faBox,
+    faStar,
+    faStarHalfAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 
@@ -19,10 +21,12 @@ function CollectionManagement() {
     const [searchTerm, setSearchTerm] = useState('');
     const [showCollectionModal, setShowCollectionModal] = useState(false);
     const [editingCollection, setEditingCollection] = useState(null);
+    const [featuredCollections, setFeaturedCollections] = useState([]);
 
     useEffect(() => {
         loadCollections();
         loadProducts();
+        loadFeaturedCollections();
     }, []);
 
     const loadCollections = async () => {
@@ -43,6 +47,31 @@ function CollectionManagement() {
             setProducts(productsData);
         } catch (error) {
             console.error('Error loading products:', error);
+        }
+    };
+
+    const loadFeaturedCollections = async () => {
+        try {
+            const featured = await ProductService.getFeaturedCollections();
+            setFeaturedCollections(featured);
+        } catch (error) {
+            console.error('Error loading featured collections:', error);
+        }
+    };
+
+    const handleToggleFeatured = async (collectionId, currentFeaturedStatus) => {
+        try {
+            await ProductService.toggleFeaturedCollection(collectionId, !currentFeaturedStatus);
+            toast.success(
+                !currentFeaturedStatus
+                    ? 'Collection featured successfully'
+                    : 'Collection unfeatured successfully'
+            );
+            loadCollections();
+            loadFeaturedCollections();
+        } catch (error) {
+            console.error('Error toggling featured status:', error);
+            toast.error(error.message || 'Failed to update featured status');
         }
     };
 
@@ -143,6 +172,7 @@ function CollectionManagement() {
                             setShowCollectionModal(true);
                         }}
                         onDelete={() => handleDeleteCollection(collection.id)}
+                        onToggleFeatured={() => handleToggleFeatured(collection.id, collection.isFeatured)}
                         formatDate={formatDate}
                     />
                 ))}
@@ -181,7 +211,7 @@ function CollectionManagement() {
 }
 
 // Collection Card Component
-function CollectionCard({ collection, productCount, onEdit, onDelete, formatDate }) {
+function CollectionCard({ collection, productCount, onEdit, onDelete, onToggleFeatured, formatDate }) {
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
             <div className="relative">
@@ -222,6 +252,18 @@ function CollectionCard({ collection, productCount, onEdit, onDelete, formatDate
                     >
                         <FontAwesomeIcon icon={faTrash} className="mr-1" />
                         Delete
+                    </button>
+                </div>
+
+                {/* Featured Collection Toggle */}
+                <div className="mt-3">
+                    <button
+                        onClick={onToggleFeatured}
+                        className={`w-full px-4 py-2 rounded-lg flex items-center justify-center transition-all
+                        ${collection.isFeatured ? 'bg-yellow-600 hover:bg-yellow-700 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'}`}
+                    >
+                        <FontAwesomeIcon icon={collection.isFeatured ? faStar : faStarHalfAlt} className="mr-2" />
+                        {collection.isFeatured ? 'Featured Collection' : 'Mark as Featured'}
                     </button>
                 </div>
             </div>
