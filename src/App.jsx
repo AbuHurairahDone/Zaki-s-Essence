@@ -23,6 +23,7 @@ import CollectionsSection from './components/CollectionsSection.jsx'
 import AboutSection from './components/AboutSection.jsx'
 import NewsLetterSection from './components/NewsLetterSection.jsx'
 import ContactSection from './components/ContactSection.jsx'
+import TrackOrder from './components/TrackOrder.jsx'
 import Footer from './components/Footer.jsx'
 import AdminPanel from './components/admin/AdminPanel.jsx'
 
@@ -155,8 +156,8 @@ function AppCode() {
                                     <Route
                                         path="/shop"
                                         element={
-                                            <div className="pt-20">
-                                                <div className="container mx-auto px-4 py-16">
+                                            <div className="pt-10">
+                                                <div className="container mx-auto px-4 py-8">
                                                     <ShopSection products={products} addToCart={addToCart} />
                                                 </div>
                                             </div>
@@ -165,8 +166,8 @@ function AppCode() {
                                     <Route
                                         path="/collections"
                                         element={
-                                            <div className="pt-20">
-                                                <div className="container mx-auto px-4 py-16">
+                                            <div className="pt-10">
+                                                <div className="container mx-auto px-4 py-8">
                                                     <CollectionsSection />
                                                 </div>
                                             </div>
@@ -175,8 +176,8 @@ function AppCode() {
                                     <Route
                                         path="/about"
                                         element={
-                                            <div className="pt-20">
-                                                <div className="container mx-auto px-4 py-16">
+                                            <div className="pt-10">
+                                                <div className="container mx-auto px-4 py-8">
                                                     <AboutSection />
                                                 </div>
                                             </div>
@@ -185,9 +186,19 @@ function AppCode() {
                                     <Route
                                         path="/contact"
                                         element={
-                                            <div className="pt-20">
-                                                <div className="container mx-auto px-4 py-16">
+                                            <div className="pt-10">
+                                                <div className="container mx-auto px-4 py-8">
                                                     <ContactSection />
+                                                </div>
+                                            </div>
+                                        }
+                                    />
+                                    <Route
+                                        path="/track-order"
+                                        element={
+                                            <div className="pt-10">
+                                                <div className="container mx-auto px-4 py-8">
+                                                    <TrackOrder />
                                                 </div>
                                             </div>
                                         }

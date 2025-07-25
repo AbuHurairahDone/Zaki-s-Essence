@@ -314,4 +314,61 @@ export class OrderService {
             throw error;
         }
     }
+    static async trackOrderByOrderNumber(no) {
+        try {
+            const q = query(
+                collection(db, ORDERS_COLLECTION),
+                where('orderNumber', '==', no),
+                limit(1)
+            );
+
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                throw new Error('Order not found');
+            }
+
+            const docSnap = querySnapshot.docs[0];
+            const data = docSnap.data();
+
+            return {
+                id: docSnap.id,
+                ...data,
+                createdAt: data.createdAt?.toDate(),
+                updatedAt: data.updatedAt?.toDate()
+            };
+        } catch (error) {
+            console.error('Error tracking order by order number:', error);
+            throw error;
+        }
+    }
+    static async trackOrderByPhone(phone) {
+        try {
+            const q = query(
+                collection(db, ORDERS_COLLECTION),
+                where('customerInfo.phone', '==', phone),
+                limit(1)
+            );
+
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                throw new Error('No order found for this phone number');
+            }
+
+            const docSnap = querySnapshot.docs[0];
+            const data = docSnap.data();
+
+            return {
+                id: docSnap.id,
+                ...data,
+                createdAt: data.createdAt?.toDate(),
+                updatedAt: data.updatedAt?.toDate()
+            };
+        } catch (error) {
+            console.error('Error tracking order by phone:', error);
+            throw error;
+        }
+    }
+
 }

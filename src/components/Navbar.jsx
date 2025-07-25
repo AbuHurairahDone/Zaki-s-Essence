@@ -48,7 +48,8 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                         { to: "/shop", label: "Shop" },
                         { to: "/collections", label: "Collections" },
                         { to: "/about", label: "About" },
-                        { to: "/contact", label: "Contact" }
+                        { to: "/contact", label: "Contact" },
+                        { to: "/track-order", label: "Track Order" }
                     ].map((item, index) => (
                         <Link
                             key={item.to}
