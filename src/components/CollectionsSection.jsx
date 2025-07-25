@@ -1,36 +1,52 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useIntersectionObserver } from '../hooks/useAnimations.js';
+import { ProductService } from '../services/productService.js';
 
 function CollectionsSection() {
     const [sectionRef, isSectionVisible] = useIntersectionObserver();
+    const [collections, setCollections] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const collections = [
-        {
-            id: 1,
-            name: "Floral Fantasy",
-            description: "A romantic bouquet of delicate florals",
-            image: "https://placehold.co/800x500/EEE/31343C?text=Floral+Fantasy"
-        },
-        {
-            id: 2,
-            name: "Oriental Dreams",
-            description: "Exotic spices and warm ambers",
-            image: "https://placehold.co/800x500/EEE/31343C?text=Oriental+Dreams"
-        },
-        {
-            id: 3,
-            name: "Fresh Escapes",
-            description: "Crisp and invigorating citrus notes",
-            image: "https://placehold.co/800x500/EEE/31343C?text=Fresh+Escapes"
+    useEffect(() => {
+        loadFeaturedCollections();
+    }, []);
+
+    const loadFeaturedCollections = async () => {
+        try {
+            const featuredCollections = await ProductService.getFeaturedCollections();
+            setCollections(featuredCollections);
+        } catch (error) {
+            console.error('Error loading featured collections:', error);
+            // Fallback to empty array if there's an error
+            setCollections([]);
+        } finally {
+            setLoading(false);
         }
-    ];
+    };
+
+    if (loading) {
+        return (
+            <section id="collections" className="py-16">
+                <div className="container mx-auto px-4">
+                    <div className="flex items-center justify-center h-64">
+                        <div className="animate-spin w-8 h-8 border-2 border-yellow-700 border-t-transparent rounded-full"></div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    // Don't render the section if there are no featured collections
+    if (collections.length === 0) {
+        return null;
+    }
 
     return (
         <section id="collections" className="py-16">
             <div className="container mx-auto px-4">
                 <div
                     ref={sectionRef}
-                    className={`text-center mb-12 transition-all duration-800 ${isSectionVisible ? 'animate-slide' : 'opacity-0 translate-y-10'
+                    className={`text-center mb-12 transition-all duration-800 ${isSectionVisible ? 'animate-slide' : 'translate-y-10'
                         }`}
                 >
                     <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade">
@@ -65,7 +81,7 @@ function CollectionsSection() {
                                     {collection.description}
                                 </p>
                                 <a
-                                    href="#"
+                                    href="#shop"
                                     className="text-white border border-white px-4 py-2 rounded-md hover:bg-white hover:text-gray-900 transition-all duration-300 inline-block w-max btn-animate transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-150"
                                 >
                                     View Collection
