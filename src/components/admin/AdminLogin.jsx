@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
+import logo from '../../assets/logo.png';
 
 function AdminLogin() {
     const { signIn, loading, error } = useAuth();
@@ -46,7 +47,7 @@ function AdminLogin() {
                 <div className="text-center">
                     <img
                         className="mx-auto h-16 w-auto"
-                        src="../../assets/logo.png"
+                        src={logo}
                         alt="Zaki's Essence"
                     />
                     <h2 className="mt-6 text-3xl font-bold text-gray-900">

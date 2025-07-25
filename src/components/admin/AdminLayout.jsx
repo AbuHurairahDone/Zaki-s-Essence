@@ -13,6 +13,7 @@ import {
     faImage
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
+import logo from '../../assets/logo.png';
 
 function AdminLayout({ children, currentPage, onPageChange }) {
     const { user, signOut } = useAuth();
@@ -23,6 +24,8 @@ function AdminLayout({ children, currentPage, onPageChange }) {
             await signOut();
             toast.success('Signed out successfully');
         } catch (error) {
+            console.error('Error signing out:', error);
+            setSidebarOpen(false);
             toast.error('Error signing out');
         }
     };
@@ -61,7 +64,7 @@ function AdminLayout({ children, currentPage, onPageChange }) {
             <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gray-900 transition-transform duration-300 ease-in-out`}>
                 <div className="flex items-center justify-between h-16 px-6 bg-gray-800">
                     <div className="flex items-center">
-                        <img src="../../assets/logo.png" alt="Logo" className="h-8 w-8" />
+                        <img src={logo} alt="Logo" className="h-8 w-8" />
                         <span className="ml-2 text-white font-semibold">Admin Panel</span>
                     </div>
                     <button
