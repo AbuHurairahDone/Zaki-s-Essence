@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faBars } from '@fortawesome/free-solid-svg-icons';
+import logo from '../assets/logo.png';
 
 export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
     const [scrolled, setScrolled] = useState(false);
@@ -31,13 +32,13 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
 
     return (
         <header className={`navbar fixed top-0 w-full z-50 transition-all duration-500 ${scrolled
-                ? 'bg-white/95 backdrop-blur-md shadow-lg py-2'
-                : 'bg-transparent py-3'
+            ? 'bg-white/95 backdrop-blur-md shadow-lg py-2'
+            : 'bg-transparent py-3'
             }`}>
             <div className="container mx-auto px-4 flex justify-between items-center">
                 <div className="flex items-center animate-slide-left">
                     <Link to="/" className="border border-yellow-700 p-2 text-gray-800 hover:text-yellow-700 transition-all duration-300 hover:border-yellow-800 hover:shadow-md rounded">
-                        <img src="./src/assets/logo.png" alt="Logo" className="h-8 transition-transform hover:scale-110" />
+                        <img src={logo} alt="Logo" className="h-8 transition-transform hover:scale-110" />
                     </Link>
                 </div>
 

@@ -4,6 +4,7 @@ import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { useIntersectionObserver, usePreventAnimationFlash, useScrollAnimation } from '../hooks/useAnimations.js';
 import { AppDataService } from '../services/appDataService.js';
 import { CloudinaryService } from '../services/cloudinaryService.js';
+import heroImage from '../assets/hero.jpg';
 
 function HeroSection() {
     const heroRef = useRef(null);
@@ -50,7 +51,7 @@ function HeroSection() {
             setHeroData({
                 images: [{
                     id: 'default',
-                    url: './src/assets/hero.jpg',
+                    url: heroImage,
                     alt: 'Luxury perfume bottles elegantly displayed on a marble surface with soft lighting',
                     isActive: true
                 }],

@@ -7,6 +7,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../config/firebase.js';
 import { CloudinaryService } from './cloudinaryService.js';
+import heroImage from '../assets/hero.jpg';
 
 const APP_DATA_COLLECTION = 'appData';
 const HERO_IMAGES_DOC = 'heroImages';
@@ -26,7 +27,7 @@ export class AppDataService {
                     images: [
                         {
                             id: 'default',
-                            url: './src/assets/hero.jpg',
+                            url: heroImage,
                             alt: 'Luxury perfume bottles elegantly displayed on a marble surface with soft lighting',
                             isActive: true,
                             order: 1

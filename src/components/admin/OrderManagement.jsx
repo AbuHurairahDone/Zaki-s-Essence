@@ -13,6 +13,31 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 
+// Helper functions accessible to all components
+const getStatusColor = (status) => {
+    const colors = {
+        pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+        confirmed: 'bg-blue-100 text-blue-800 border-blue-200',
+        processing: 'bg-purple-100 text-purple-800 border-purple-200',
+        shipped: 'bg-green-100 text-green-800 border-green-200',
+        delivered: 'bg-gray-100 text-gray-800 border-gray-200',
+        cancelled: 'bg-red-100 text-red-800 border-red-200'
+    };
+    return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
+};
+
+const getStatusIcon = (status) => {
+    const icons = {
+        pending: faBox,
+        confirmed: faCheck,
+        processing: faEdit,
+        shipped: faTruck,
+        delivered: faCheck,
+        cancelled: faTimes
+    };
+    return icons[status] || faBox;
+};
+
 function OrderManagement() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -79,30 +104,6 @@ function OrderManagement() {
             hour: '2-digit',
             minute: '2-digit'
         }).format(date);
-    };
-
-    const getStatusColor = (status) => {
-        const colors = {
-            pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-            confirmed: 'bg-blue-100 text-blue-800 border-blue-200',
-            processing: 'bg-purple-100 text-purple-800 border-purple-200',
-            shipped: 'bg-green-100 text-green-800 border-green-200',
-            delivered: 'bg-gray-100 text-gray-800 border-gray-200',
-            cancelled: 'bg-red-100 text-red-800 border-red-200'
-        };
-        return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
-    };
-
-    const getStatusIcon = (status) => {
-        const icons = {
-            pending: faBox,
-            confirmed: faCheck,
-            processing: faEdit,
-            shipped: faTruck,
-            delivered: faCheck,
-            cancelled: faTimes
-        };
-        return icons[status] || faBox;
     };
 
     if (loading) {
@@ -539,18 +540,5 @@ function OrderDetailModal({ order, onClose, onStatusUpdate, onOrderUpdated }) {
         </div>
     );
 }
-
-// Helper function to get status icon (defined outside component to avoid redefinition)
-const getStatusIcon = (status) => {
-    const icons = {
-        pending: faBox,
-        confirmed: faCheck,
-        processing: faEdit,
-        shipped: faTruck,
-        delivered: faCheck,
-        cancelled: faTimes
-    };
-    return icons[status] || faBox;
-};
 
 export default OrderManagement;
