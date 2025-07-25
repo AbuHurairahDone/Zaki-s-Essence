@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useIntersectionObserver } from '../hooks/useAnimations.js';
+import { AnalyticsService } from '../services/analyticsService.js';
 
 function NewsletterSection() {
     const [email, setEmail] = useState("");
@@ -11,15 +12,28 @@ function NewsletterSection() {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        try {
+            // Track newsletter signup attempt
+            AnalyticsService.trackNewsletterSignup(email);
+            AnalyticsService.trackFunnelStep(3, 'newsletter_signup', {
+                email_provided: !!email,
+                source: 'homepage'
+            });
 
-        setIsSubscribed(true);
-        setTimeout(() => {
-            setEmail("");
-            setIsSubscribed(false);
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            setIsSubscribed(true);
+            setTimeout(() => {
+                setEmail("");
+                setIsSubscribed(false);
+                setIsSubmitting(false);
+            }, 3000);
+        } catch (error) {
+            console.error('Newsletter signup error:', error);
+            AnalyticsService.trackError('newsletter_error', error.message, 'newsletter_signup');
             setIsSubmitting(false);
-        }, 3000);
+        }
     };
 
     return (

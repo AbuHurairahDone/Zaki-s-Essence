@@ -1,14 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 
-import { CartContext, CartProvider } from './contexts/CartContext.jsx'
-import { ProductContext, ProductProvider } from './contexts/Product.jsx'
+import { CartContext } from './contexts/contexts.js'
+import { ProductContext } from './contexts/contexts.js'
+import { CartProvider } from './contexts/CartContext.jsx'
+import { ProductProvider } from './contexts/Product.jsx'
 import { AuthProvider } from './contexts/AuthContext.jsx'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+// Import analytics hooks
+import { usePageTracking, usePerformanceTracking } from './hooks/useAnalytics.js'
 
 import { Navbar, MobileMenu } from './components/Navbar.jsx'
 import HeroSection from './components/HeroSection.jsx'
@@ -59,6 +64,10 @@ function AppCode() {
 
     const [showScrollButton, setShowScrollButton] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+
+    // Initialize analytics tracking
+    usePageTracking();
+    usePerformanceTracking();
 
     useEffect(() => {
         const handleScroll = () => {

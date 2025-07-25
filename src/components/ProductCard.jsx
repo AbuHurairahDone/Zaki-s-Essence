@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useIntersectionObserver, usePreventAnimationFlash } from '../hooks/useAnimations.js';
 import { CloudinaryService } from '../services/cloudinaryService.js';
+import { AnalyticsService } from '../services/analyticsService.js';
 
 function ProductCard({ product, addToCart }) {
     const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
@@ -9,11 +10,30 @@ function ProductCard({ product, addToCart }) {
     const [cardRef, isCardVisible] = useIntersectionObserver();
     const isReady = usePreventAnimationFlash();
 
+    // Track product view when card becomes visible
+    useEffect(() => {
+        if (isCardVisible && product) {
+            AnalyticsService.trackProductView(product);
+        }
+    }, [isCardVisible, product]);
+
     const handleAddToCart = async () => {
         setIsLoading(true);
         await new Promise(resolve => setTimeout(resolve, 200));
         addToCart(product, selectedVariant);
         setIsLoading(false);
+    };
+
+    const handleVariantChange = (variant) => {
+        setSelectedVariant(variant);
+
+        // Track variant selection
+        AnalyticsService.trackFunnelStep(0, 'variant_selected', {
+            product_id: product.id,
+            product_name: product.name,
+            variant_selected: variant,
+            variant_price: getVariantPrice(variant)
+        });
     };
 
     const handleImageError = () => {
@@ -114,7 +134,7 @@ function ProductCard({ product, addToCart }) {
                         {product.variants.map((variant) => (
                             <button
                                 key={variant}
-                                onClick={() => setSelectedVariant(variant)}
+                                onClick={() => handleVariantChange(variant)}
                                 className={`px-3 py-1 text-xs rounded-full smooth-transition hover-scale ${selectedVariant === variant
                                     ? 'bg-yellow-700 text-white shadow-md'
                                     : 'border border-gray-300 hover:border-yellow-700 hover:text-yellow-700'

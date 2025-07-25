@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { OrderService, ORDER_STATUS } from '../../services/orderService.js';
+import { AnalyticsService } from '../../services/analyticsService.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faSearch,
@@ -59,8 +60,15 @@ function OrderManagement() {
             const filter = statusFilter === 'All' ? null : statusFilter;
             const ordersData = await OrderService.getAllOrders(filter, 100);
             setOrders(ordersData);
+
+            // Track admin dashboard view
+            AnalyticsService.trackAdminAction('view_orders', {
+                filter_applied: statusFilter,
+                orders_count: ordersData.length
+            });
         } catch (error) {
             console.error('Error loading orders:', error);
+            AnalyticsService.trackError('admin_error', error.message, 'load_orders');
             toast.error('Failed to load orders');
         } finally {
             setLoading(false);
@@ -74,6 +82,9 @@ function OrderManagement() {
     const handleStatusUpdate = async (orderId, newStatus, notes = '') => {
         try {
             await OrderService.updateOrderStatus(orderId, newStatus, notes);
+
+            // Track order status update
+            AnalyticsService.trackOrderManagement('status_update', orderId, newStatus);
 
             // Provide specific success messages based on status change
             if (newStatus === ORDER_STATUS.CONFIRMED) {
@@ -91,6 +102,9 @@ function OrderManagement() {
             loadOrders();
         } catch (error) {
             console.error('Error updating order status:', error);
+
+            // Track error with context
+            AnalyticsService.trackError('order_management_error', error.message, `status_update_${orderId}`);
 
             // Handle specific stock-related errors
             if (error.message.includes('Insufficient stock')) {
@@ -131,6 +145,15 @@ function OrderManagement() {
 
     const exportToExcel = () => {
         try {
+            // Track export action
+            AnalyticsService.trackDataExport('orders', filteredOrders.length);
+            AnalyticsService.trackAdminAction('export_orders', {
+                export_format: 'excel',
+                record_count: filteredOrders.length,
+                filter_applied: statusFilter,
+                search_term: searchTerm || 'none'
+            });
+
             // Prepare data for Excel export with detailed customer and order information
             const excelData = filteredOrders.map(order => {
                 // Format order items into a readable string
@@ -205,6 +228,7 @@ function OrderManagement() {
             });
         } catch (error) {
             console.error('Error exporting to Excel:', error);
+            AnalyticsService.trackError('export_error', error.message, 'orders_excel');
             toast.error('Failed to export Excel file. Please try again.');
         }
     };

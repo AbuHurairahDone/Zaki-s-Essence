@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext.jsx';
+import { useAuth } from '../../hooks/useAuth.js';
 import AdminLogin from './AdminLogin.jsx';
 import AdminLayout from './AdminLayout.jsx';
 import AdminDashboard from './AdminDashboard.jsx';

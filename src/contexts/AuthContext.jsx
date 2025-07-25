@@ -1,15 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthService } from '../services/authService.js';
-
-const AuthContext = createContext();
-
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
-    return context;
-};
+import { AnalyticsService } from '../services/analyticsService.js';
+import { AuthContext } from './contexts.js';
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -20,6 +12,11 @@ export const AuthProvider = ({ children }) => {
         const unsubscribe = AuthService.onAuthStateChanged((user) => {
             setUser(user);
             setLoading(false);
+
+            // Initialize analytics for the user
+            if (user) {
+                AnalyticsService.initializeUser(user);
+            }
         });
 
         return unsubscribe;
@@ -31,9 +28,15 @@ export const AuthProvider = ({ children }) => {
             setLoading(true);
             const userData = await AuthService.signIn(email, password);
             setUser(userData);
+
+            // Track login event
+            AnalyticsService.trackLogin('email');
+            AnalyticsService.initializeUser(userData);
+
             return userData;
         } catch (error) {
             setError(error.message);
+            AnalyticsService.trackError('auth_error', error.message, 'sign_in');
             throw error;
         } finally {
             setLoading(false);
@@ -46,9 +49,15 @@ export const AuthProvider = ({ children }) => {
             setLoading(true);
             const userData = await AuthService.signUp(email, password, displayName, isAdmin);
             setUser(userData);
+
+            // Track signup event
+            AnalyticsService.trackSignup('email');
+            AnalyticsService.initializeUser(userData);
+
             return userData;
         } catch (error) {
             setError(error.message);
+            AnalyticsService.trackError('auth_error', error.message, 'sign_up');
             throw error;
         } finally {
             setLoading(false);
@@ -61,6 +70,7 @@ export const AuthProvider = ({ children }) => {
             setUser(null);
         } catch (error) {
             setError(error.message);
+            AnalyticsService.trackError('auth_error', error.message, 'sign_out');
             throw error;
         }
     };

@@ -1,8 +1,8 @@
-import React, { useState, createContext, useMemo } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { OrderService } from "../services/orderService.js";
-
-export const CartContext = createContext();
+import { AnalyticsService } from "../services/analyticsService.js";
+import { CartContext } from "./contexts.js";
 
 export const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState([]);
@@ -19,9 +19,17 @@ export const CartProvider = ({ children }) => {
     const toggleCart = () => {
         setIsCartOpen(!isCartOpen);
         setIsMobileMenuOpen(false); // Close mobile menu if open
+
+        // Track cart view when opening
+        if (!isCartOpen && cartItems.length > 0) {
+            AnalyticsService.trackViewCart(cartItems, totalAmount);
+        }
     };
 
     const removeItem = (item) => {
+        // Track remove from cart
+        AnalyticsService.trackRemoveFromCart(item.product, item.variant, item.quantity);
+
         setCartItems(prevItems =>
             prevItems.filter(cartItem =>
                 !(cartItem.product.id === item.product.id && cartItem.variant === item.variant)
@@ -33,6 +41,16 @@ export const CartProvider = ({ children }) => {
     const updateQuantity = (item, newQuantity) => {
         if (newQuantity < 1) return;
 
+        const oldQuantity = item.quantity;
+        const quantityDifference = newQuantity - oldQuantity;
+
+        // Track add or remove based on quantity change
+        if (quantityDifference > 0) {
+            AnalyticsService.trackAddToCart(item.product, item.variant, quantityDifference);
+        } else if (quantityDifference < 0) {
+            AnalyticsService.trackRemoveFromCart(item.product, item.variant, Math.abs(quantityDifference));
+        }
+
         setCartItems(prevItems =>
             prevItems.map(cartItem =>
                 cartItem.product.id === item.product.id && cartItem.variant === item.variant
@@ -43,6 +61,9 @@ export const CartProvider = ({ children }) => {
     };
 
     const addToCart = (product, variant) => {
+        // Track add to cart event
+        AnalyticsService.trackAddToCart(product, variant, 1);
+
         setCartItems(prevItems => {
             // Check if item already exists in cart with same variant
             const existingItemIndex = prevItems.findIndex(
@@ -104,6 +125,13 @@ export const CartProvider = ({ children }) => {
             throw new Error('Cart is empty');
         }
 
+        // Track checkout initiation
+        AnalyticsService.trackBeginCheckout(cartItems, totalAmount);
+        AnalyticsService.trackFunnelStep(1, 'checkout_initiated', {
+            cart_value: totalAmount,
+            items_count: totalItems
+        });
+
         setIsCheckingOut(true);
         try {
             const orderData = {
@@ -115,6 +143,13 @@ export const CartProvider = ({ children }) => {
             };
 
             const order = await OrderService.createOrder(orderData);
+
+            // Track successful purchase
+            AnalyticsService.trackPurchase(order);
+            AnalyticsService.trackFunnelStep(2, 'order_completed', {
+                order_id: order.orderNumber,
+                order_value: order.totalAmount
+            });
 
             // Clear cart after successful order
             clearCart();
@@ -128,6 +163,10 @@ export const CartProvider = ({ children }) => {
             return order;
         } catch (error) {
             console.error('Error creating order:', error);
+
+            // Track checkout failure
+            AnalyticsService.trackError('checkout_error', error.message, 'order_creation');
+
             toast.error('Failed to create order. Please try again.');
             throw error;
         } finally {

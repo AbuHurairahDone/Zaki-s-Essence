@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext.jsx';
+import { useAuth } from '../../hooks/useAuth.js';
 import { OrderService } from '../../services/orderService.js';
 import { ProductService } from '../../services/productService.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faTimes, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import React, { useState, useContext } from 'react';
-import { CartContext } from '../contexts/CartContext.jsx';
+import { CartContext } from '../contexts/contexts.js';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { GetCountries, GetState, GetCity } from 'react-country-state-city';
@@ -30,7 +30,7 @@ function CartItem({ item, updateQuantity, removeItem }) {
                 <div className="animate-slide-right delay-1">
                     <h4 className="font-medium hover:text-yellow-700 transition-colors">{item.product.name}</h4>
                     <p className="text-gray-500 text-sm">{item.variant}</p>
-                    <p className="text-yellow-600 font-bold">${item.product.price}</p>
+                    <p className="text-yellow-600 font-bold">Rs. {item.product.price}</p>
                 </div>
             </div>
 
