@@ -13,6 +13,7 @@ import {
     Timestamp
 } from 'firebase/firestore';
 import { db } from '../config/firebase.js';
+import { ProductService } from './productService.js';
 
 // Collection reference
 const ORDERS_COLLECTION = 'orders';
@@ -139,8 +140,11 @@ export class OrderService {
                 updateData.adminNotes = adminNotes;
             }
 
-            // Add status history
+            // Get the current order to check previous status
             const order = await this.getOrder(orderId);
+            const previousStatus = order.status;
+
+            // Add status history
             const statusHistory = order.statusHistory || [];
             statusHistory.push({
                 status,
@@ -149,9 +153,110 @@ export class OrderService {
             });
             updateData.statusHistory = statusHistory;
 
+            // If order is being confirmed, update product stock and sold counts
+            if (status === ORDER_STATUS.CONFIRMED && previousStatus !== ORDER_STATUS.CONFIRMED) {
+                await this.processOrderConfirmation(order);
+                updateData.stockUpdatedAt = serverTimestamp();
+            }
+
+            // If order is being cancelled after confirmation, restore stock
+            if (status === ORDER_STATUS.CANCELLED && previousStatus === ORDER_STATUS.CONFIRMED) {
+                await this.processOrderCancellation(order);
+                updateData.stockRestoredAt = serverTimestamp();
+            }
+
             await updateDoc(docRef, updateData);
         } catch (error) {
             console.error('Error updating order status:', error);
+            throw error;
+        }
+    }
+
+    // Process order confirmation - update stock and sold counts
+    static async processOrderConfirmation(order) {
+        try {
+            // Check stock availability first
+            const stockCheck = await ProductService.checkStockAvailability(order.items);
+
+            if (!stockCheck.allSufficient) {
+                const insufficientItems = stockCheck.insufficientStock.map(item =>
+                    `${item.productName} (${item.variant}): requested ${item.requested}, available ${item.available}`
+                ).join(', ');
+
+                throw new Error(`Insufficient stock for: ${insufficientItems}`);
+            }
+
+            // Prepare stock updates
+            const stockUpdates = {};
+
+            order.items.forEach(item => {
+                const productId = item.product.id;
+                const variant = item.variant;
+                const quantity = item.quantity;
+
+                if (!stockUpdates[productId]) {
+                    stockUpdates[productId] = {};
+                }
+
+                stockUpdates[productId][variant] = {
+                    quantitySold: quantity
+                };
+            });
+
+            // Update product stock and sold counts
+            const updateResults = await ProductService.batchUpdateProductStock(stockUpdates);
+
+            console.log('Stock updated for order confirmation:', {
+                orderId: order.id,
+                orderNumber: order.orderNumber,
+                updates: updateResults
+            });
+
+            return updateResults;
+        } catch (error) {
+            console.error('Error processing order confirmation:', error);
+            throw error;
+        }
+    }
+
+    // Process order cancellation - restore stock
+    static async processOrderCancellation(order) {
+        try {
+            // Only restore stock if order was previously confirmed
+            if (!order.stockUpdatedAt) {
+                return; // Stock was never updated, nothing to restore
+            }
+
+            // Prepare stock restoration (reverse the confirmation process)
+            const stockUpdates = {};
+
+            order.items.forEach(item => {
+                const productId = item.product.id;
+                const variant = item.variant;
+                const quantity = item.quantity;
+
+                if (!stockUpdates[productId]) {
+                    stockUpdates[productId] = {};
+                }
+
+                // Negative quantity to restore stock (add back) and reduce sold count
+                stockUpdates[productId][variant] = {
+                    quantitySold: -quantity
+                };
+            });
+
+            // Update product stock (restore)
+            const updateResults = await ProductService.batchUpdateProductStock(stockUpdates);
+
+            console.log('Stock restored for order cancellation:', {
+                orderId: order.id,
+                orderNumber: order.orderNumber,
+                updates: updateResults
+            });
+
+            return updateResults;
+        } catch (error) {
+            console.error('Error processing order cancellation:', error);
             throw error;
         }
     }

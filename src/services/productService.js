@@ -278,4 +278,100 @@ export class ProductService {
             throw error;
         }
     }
+
+    // Update product stock and sold counts when order is confirmed
+    static async updateProductStock(productId, variantUpdates) {
+        try {
+            const docRef = doc(db, PRODUCTS_COLLECTION, productId);
+            const productDoc = await getDoc(docRef);
+
+            if (!productDoc.exists()) {
+                throw new Error(`Product ${productId} not found`);
+            }
+
+            const productData = productDoc.data();
+            const currentStock = productData.stock || {};
+            const currentSold = productData.sold || {};
+
+            // Update stock and sold counts for each variant
+            const updatedStock = { ...currentStock };
+            const updatedSold = { ...currentSold };
+
+            Object.entries(variantUpdates).forEach(([variant, { quantitySold }]) => {
+                if (quantitySold > 0) {
+                    // Confirming order: decrement stock, increment sold
+                    updatedStock[variant] = Math.max(0, (updatedStock[variant] || 0) - quantitySold);
+                    updatedSold[variant] = (updatedSold[variant] || 0) + quantitySold;
+                } else {
+                    // Cancelling order: increment stock, decrement sold
+                    const absQuantity = Math.abs(quantitySold);
+                    updatedStock[variant] = (updatedStock[variant] || 0) + absQuantity;
+                    updatedSold[variant] = Math.max(0, (updatedSold[variant] || 0) - absQuantity);
+                }
+            });
+
+            // Update the product document
+            await updateDoc(docRef, {
+                stock: updatedStock,
+                sold: updatedSold,
+                updatedAt: serverTimestamp()
+            });
+
+            return {
+                productId,
+                updatedStock,
+                updatedSold
+            };
+        } catch (error) {
+            console.error('Error updating product stock:', error);
+            throw error;
+        }
+    }
+
+    // Batch update stock for multiple products (used when confirming orders)
+    static async batchUpdateProductStock(stockUpdates) {
+        try {
+            const updatePromises = Object.entries(stockUpdates).map(([productId, variantUpdates]) =>
+                this.updateProductStock(productId, variantUpdates)
+            );
+
+            const results = await Promise.all(updatePromises);
+            return results;
+        } catch (error) {
+            console.error('Error batch updating product stock:', error);
+            throw error;
+        }
+    }
+
+    // Check if products have sufficient stock for an order
+    static async checkStockAvailability(orderItems) {
+        try {
+            const stockChecks = await Promise.all(
+                orderItems.map(async (item) => {
+                    const product = await this.getProduct(item.product.id);
+                    const availableStock = product.stock?.[item.variant] || 0;
+
+                    return {
+                        productId: item.product.id,
+                        productName: item.product.name,
+                        variant: item.variant,
+                        requested: item.quantity,
+                        available: availableStock,
+                        sufficient: availableStock >= item.quantity
+                    };
+                })
+            );
+
+            const insufficientStock = stockChecks.filter(check => !check.sufficient);
+
+            return {
+                allSufficient: insufficientStock.length === 0,
+                stockChecks,
+                insufficientStock
+            };
+        } catch (error) {
+            console.error('Error checking stock availability:', error);
+            throw error;
+        }
+    }
 }

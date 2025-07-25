@@ -51,10 +51,6 @@ function OrderManagement() {
         ...Object.values(ORDER_STATUS)
     ];
 
-    useEffect(() => {
-        loadOrders();
-    }, [statusFilter]); // Removed loadOrders dependency to avoid infinite loop
-
     const loadOrders = useCallback(async () => {
         try {
             setLoading(true);
@@ -69,14 +65,39 @@ function OrderManagement() {
         }
     }, [statusFilter]);
 
+    useEffect(() => {
+        loadOrders();
+    }, [loadOrders]);
+
     const handleStatusUpdate = async (orderId, newStatus, notes = '') => {
         try {
             await OrderService.updateOrderStatus(orderId, newStatus, notes);
-            toast.success('Order status updated successfully');
+
+            // Provide specific success messages based on status change
+            if (newStatus === ORDER_STATUS.CONFIRMED) {
+                toast.success('Order confirmed successfully! Product stock has been updated.', {
+                    duration: 4000
+                });
+            } else if (newStatus === ORDER_STATUS.CANCELLED) {
+                toast.success('Order cancelled successfully! Stock has been restored.', {
+                    duration: 4000
+                });
+            } else {
+                toast.success(`Order status updated to ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}`);
+            }
+
             loadOrders();
         } catch (error) {
             console.error('Error updating order status:', error);
-            toast.error('Failed to update order status');
+
+            // Handle specific stock-related errors
+            if (error.message.includes('Insufficient stock')) {
+                toast.error(`Cannot confirm order: ${error.message}`, {
+                    duration: 6000
+                });
+            } else {
+                toast.error('Failed to update order status. Please try again.');
+            }
         }
     };
 
