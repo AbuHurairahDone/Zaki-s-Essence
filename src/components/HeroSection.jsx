@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { useIntersectionObserver, usePreventAnimationFlash, useScrollAnimation } from '../hooks/useAnimations.js';
 import { AppDataService } from '../services/appDataService.js';
 import { CloudinaryService } from '../services/cloudinaryService.js';
@@ -141,7 +141,7 @@ function HeroSection() {
                             <button
                                 key={index}
                                 onClick={() => goToImage(index)}
-                                className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentImageIndex
+                                className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentImageIndex
                                     ? 'bg-white scale-125'
                                     : 'bg-white/50 hover:bg-white/75'
                                     }`}
@@ -150,23 +150,7 @@ function HeroSection() {
                         ))}
                     </div>
 
-                    {/* Side Arrows */}
-                    <div className="absolute inset-y-0 flex items-center justify-between w-full px-4 sm:px-6 z-20">
-                        <button
-                            onClick={() => goToImage((currentImageIndex - 1 + heroData.images.length) % heroData.images.length)}
-                            className="p-2 rounded-full bg-black/50 hover:bg-black/70 transition-all duration-300"
-                            aria-label="Previous image"
-                        >
-                            <FontAwesomeIcon icon={faChevronLeft} className="text-white" />
-                        </button>
-                        <button
-                            onClick={() => goToImage((currentImageIndex + 1) % heroData.images.length)}
-                            className="p-2 rounded-full bg-black/50 hover:bg-black/70 transition-all duration-300"
-                            aria-label="Next image"
-                        >
-                            <FontAwesomeIcon icon={faChevronRight} className="text-white" />
-                        </button>
-                    </div>
+
                 </>
             )}
 

@@ -159,14 +159,26 @@ export class CloudinaryService {
             folder: 'products',
             publicId: publicId,
             tags: ['product', 'catalog', metadata.productId || 'product-image'],
-            transformation: {
-                quality: 'auto:best', // Best quality for product images
-                fetch_format: 'auto',
-                width: 1200, // Higher resolution for product images
-                height: 1500, // 4:5 ratio at high resolution
-                crop: 'fill',
-                gravity: 'auto'
-            }
+
+        });
+    }
+
+    /**
+     * Upload collection image with optimized settings for best quality
+     * @param {File} file - The file to upload
+     * @param {Object} metadata - Additional metadata
+     * @returns {Promise<Object>} Upload result
+     */
+    static async uploadCollectionImage(file, metadata = {}) {
+        const timestamp = Date.now();
+        const fileName = file.name.split('.')[0];
+        const publicId = `collections/${timestamp}-${fileName}`;
+
+        return await this.uploadImage(file, {
+            folder: 'collections',
+            publicId: publicId,
+            tags: ['collection', 'catalog', metadata.collectionName || 'collection-image'],
+
         });
     }
 
