@@ -1,12 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, } from '@fortawesome/free-solid-svg-icons';
 import { useIntersectionObserver, usePreventAnimationFlash, useScrollAnimation } from '../hooks/useAnimations.js';
 import { AppDataService } from '../services/appDataService.js';
 
 function HeroSection() {
     const heroRef = useRef(null);
-    const [contentRef, isContentVisible] = useIntersectionObserver();
+    const [contentRef,] = useIntersectionObserver();
     const isReady = usePreventAnimationFlash();
     const scrollY = useScrollAnimation();
 
@@ -68,13 +68,7 @@ function HeroSection() {
         setTimeout(() => setIsTransitioning(false), 300);
     };
 
-    const prevImage = () => {
-        if (!heroData?.images || heroData.images.length <= 1) return;
 
-        setIsTransitioning(true);
-        setCurrentImageIndex((prev) => (prev - 1 + heroData.images.length) % heroData.images.length);
-        setTimeout(() => setIsTransitioning(false), 300);
-    };
 
     const goToImage = (index) => {
         if (index === currentImageIndex || !heroData?.images) return;
@@ -82,6 +76,21 @@ function HeroSection() {
         setIsTransitioning(true);
         setCurrentImageIndex(index);
         setTimeout(() => setIsTransitioning(false), 300);
+    };
+
+    // Get optimized image URL for current viewport
+    const getOptimizedImageUrl = (image) => {
+        if (!image) return null;
+
+        // Use AppDataService's optimized URL method
+        return AppDataService.getOptimizedImageUrl(image, {
+            width: window.innerWidth > 1920 ? 1920 : window.innerWidth,
+            height: window.innerHeight > 1080 ? 1080 : window.innerHeight,
+            quality: 'auto:good',
+            format: 'auto',
+            crop: 'fill',
+            gravity: 'auto'
+        });
     };
 
     // Calculate parallax transforms with reduced intensity
@@ -111,7 +120,7 @@ function HeroSection() {
             >
                 {currentImage && (
                     <img
-                        src={currentImage.url}
+                        src={getOptimizedImageUrl(currentImage) || currentImage.url}
                         alt={currentImage.alt}
                         className={`w-full h-full object-cover transition-opacity duration-300 ${isTransitioning ? 'opacity-75' : 'opacity-100'
                             }`}

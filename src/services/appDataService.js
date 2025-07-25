@@ -2,20 +2,11 @@ import {
     doc,
     getDoc,
     setDoc,
-    updateDoc,
     serverTimestamp,
-    collection,
-    getDocs,
-    addDoc,
-    deleteDoc
+
 } from 'firebase/firestore';
-import {
-    ref,
-    uploadBytes,
-    getDownloadURL,
-    deleteObject
-} from 'firebase/storage';
-import { db, storage } from '../config/firebase.js';
+import { db } from '../config/firebase.js';
+import { CloudinaryService } from './cloudinaryService.js';
 
 const APP_DATA_COLLECTION = 'appData';
 const HERO_IMAGES_DOC = 'heroImages';
@@ -66,27 +57,41 @@ export class AppDataService {
         }
     }
 
-    // Upload new hero image
+    // Upload new hero image using Cloudinary
     static async uploadHeroImage(file, imageData) {
         try {
-            // Create unique filename
-            const timestamp = Date.now();
-            const filename = `hero-images/${timestamp}-${file.name}`;
-            const storageRef = ref(storage, filename);
+            // Validate file before upload
+            const validation = CloudinaryService.validateFile(file, {
+                maxSize: 10 * 1024 * 1024, // 10MB
+                allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+            });
 
-            // Upload file
-            const snapshot = await uploadBytes(storageRef, file);
-            const downloadURL = await getDownloadURL(snapshot.ref);
+            if (!validation.isValid) {
+                throw new Error(validation.errors.join(', '));
+            }
+
+            // Upload to Cloudinary
+            const uploadResult = await CloudinaryService.uploadHeroImage(file, {
+                alt: imageData.alt || 'Hero image'
+            });
 
             // Get current hero images
             const currentData = await this.getHeroImages();
             const newImage = {
-                id: `hero-${timestamp}`,
-                url: downloadURL,
+                id: `hero-${Date.now()}`,
+                url: uploadResult.url,
+                publicId: uploadResult.publicId,
                 alt: imageData.alt || 'Hero image',
                 isActive: imageData.isActive || false,
                 order: currentData.images.length + 1,
-                uploadedAt: new Date()
+                uploadedAt: new Date(),
+                cloudinaryData: {
+                    publicId: uploadResult.publicId,
+                    width: uploadResult.width,
+                    height: uploadResult.height,
+                    format: uploadResult.format,
+                    bytes: uploadResult.bytes
+                }
             };
 
             // Add new image to the array
@@ -120,13 +125,14 @@ export class AppDataService {
                 throw new Error('Cannot delete the last hero image');
             }
 
-            // Delete from storage if it's not the default image
-            if (imageToDelete.url.startsWith('https://')) {
+            // Delete from Cloudinary if it has a publicId
+            if (imageToDelete.publicId || imageToDelete.cloudinaryData?.publicId) {
                 try {
-                    const storageRef = ref(storage, imageToDelete.url);
-                    await deleteObject(storageRef);
-                } catch (storageError) {
-                    console.warn('Could not delete image from storage:', storageError);
+                    const publicId = imageToDelete.publicId || imageToDelete.cloudinaryData?.publicId;
+                    await CloudinaryService.deleteImage(publicId);
+                } catch (cloudinaryError) {
+                    console.warn('Could not delete image from Cloudinary:', cloudinaryError);
+                    // Continue with deletion from database even if Cloudinary deletion fails
                 }
             }
 
@@ -197,5 +203,18 @@ export class AppDataService {
             console.error('Error toggling carousel:', error);
             throw error;
         }
+    }
+
+    // Get optimized image URL for display
+    static getOptimizedImageUrl(image, options = {}) {
+        if (!image.url) return null;
+
+        // If it's a Cloudinary URL, optimize it
+        if (image.url.includes('cloudinary.com')) {
+            return CloudinaryService.getOptimizedUrl(image.url, options);
+        }
+
+        // Return original URL for non-Cloudinary images
+        return image.url;
     }
 }

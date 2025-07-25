@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ProductService } from '../../services/productService.js';
+import { CloudinaryService } from '../../services/cloudinaryService.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faPlus,
@@ -11,7 +12,9 @@ import {
     faBox,
     faPercentage,
     faTimes,
-    faLayerGroup
+    faLayerGroup,
+    faUpload,
+    faImage
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 
@@ -335,10 +338,15 @@ function ProductModal({ product, collections, onClose, onSave }) {
         variantPricing: product?.variantPricing || { '50ml': 0, '100ml': 0 },
         stock: product?.stock || { '50ml': 0, '100ml': 0 },
         sold: product?.sold || { '50ml': 0, '100ml': 0 },
-        discountPercentage: product?.discountPercentage || ''
+        discountPercentage: product?.discountPercentage || '',
+        publicId: product?.publicId || '', // For Cloudinary
+        cloudinaryData: product?.cloudinaryData || null
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [newVariant, setNewVariant] = useState('');
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(formData.image);
+    const [uploadingImage, setUploadingImage] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -346,6 +354,62 @@ function ProductModal({ product, collections, onClose, onSave }) {
             ...prev,
             [name]: value
         }));
+    };
+
+    const handleImageSelect = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            // Validate file
+            const validation = CloudinaryService.validateFile(file, {
+                maxSize: 10 * 1024 * 1024, // 10MB
+                allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+            });
+
+            if (!validation.isValid) {
+                toast.error(validation.errors.join(', '));
+                return;
+            }
+
+            setImageFile(file);
+            
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = (e) => setImagePreview(e.target.result);
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const uploadImage = async () => {
+        if (!imageFile) return;
+
+        setUploadingImage(true);
+        try {
+            const uploadResult = await CloudinaryService.uploadProductImage(imageFile, {
+                productName: formData.name || 'product',
+                collection: collections.find(c => c.id === formData.collectionRef)?.name || 'general'
+            });
+
+            setFormData(prev => ({
+                ...prev,
+                image: uploadResult.url,
+                publicId: uploadResult.publicId,
+                cloudinaryData: {
+                    publicId: uploadResult.publicId,
+                    width: uploadResult.width,
+                    height: uploadResult.height,
+                    format: uploadResult.format,
+                    bytes: uploadResult.bytes
+                }
+            }));
+
+            setImageFile(null);
+            toast.success('Image uploaded successfully');
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            toast.error('Failed to upload image');
+        } finally {
+            setUploadingImage(false);
+        }
     };
 
     const addVariant = () => {
@@ -420,6 +484,11 @@ function ProductModal({ product, collections, onClose, onSave }) {
             return;
         }
 
+        if (!formData.image) {
+            toast.error('Please upload a product image');
+            return;
+        }
+
         if (formData.variants.length === 0) {
             toast.error('Please add at least one variant');
             return;
@@ -433,6 +502,12 @@ function ProductModal({ product, collections, onClose, onSave }) {
         if (hasEmptyPrices) {
             toast.error('Please set a price for all variants');
             return;
+        }
+
+        // Upload image if there's a new file selected
+        if (imageFile) {
+            await uploadImage();
+            return; // Let the upload complete, then user can submit again
         }
 
         setIsSubmitting(true);
@@ -560,18 +635,73 @@ function ProductModal({ product, collections, onClose, onSave }) {
                             />
                         </div>
 
+                        {/* Product Image Upload */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Image URL *
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Product Image *
                             </label>
-                            <input
-                                type="url"
-                                name="image"
-                                required
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
-                                value={formData.image}
-                                onChange={handleChange}
-                            />
+                            
+                            {/* Current Image Preview */}
+                            {imagePreview && (
+                                <div className="mb-4">
+                                    <div className="relative inline-block">
+                                        <img
+                                            src={imagePreview}
+                                            alt="Product preview"
+                                            className="w-32 h-32 object-cover rounded-lg border border-gray-300"
+                                        />
+                                        {formData.image && (
+                                            <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                                                Current
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* File Upload */}
+                            <div className="flex flex-col sm:flex-row gap-3">
+                                <div className="flex-1">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageSelect}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        Supports JPEG, PNG, WebP. Max size: 10MB
+                                    </p>
+                                </div>
+                                
+                                {imageFile && (
+                                    <button
+                                        type="button"
+                                        onClick={uploadImage}
+                                        disabled={uploadingImage}
+                                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center"
+                                    >
+                                        {uploadingImage ? (
+                                            <>
+                                                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                                                Uploading...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FontAwesomeIcon icon={faUpload} className="mr-2" />
+                                                Upload
+                                            </>
+                                        )}
+                                    </button>
+                                )}
+                            </div>
+
+                            {!formData.image && !imageFile && (
+                                <div className="mt-3 p-4 border-2 border-dashed border-gray-300 rounded-lg text-center text-gray-500">
+                                    <FontAwesomeIcon icon={faImage} className="text-2xl mb-2" />
+                                    <p className="text-sm">No image selected</p>
+                                    <p className="text-xs">Please upload a product image</p>
+                                </div>
+                            )}
                         </div>
                     </div>
 

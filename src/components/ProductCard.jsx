@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useIntersectionObserver, usePreventAnimationFlash } from '../hooks/useAnimations.js';
+import { CloudinaryService } from '../services/cloudinaryService.js';
 
 function ProductCard({ product, addToCart }) {
     const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
@@ -50,6 +51,26 @@ function ProductCard({ product, addToCart }) {
         return getVariantPrice(selectedVariant);
     };
 
+    // Get optimized image URL for product display
+    const getOptimizedImageUrl = () => {
+        if (!product.image) return null;
+
+        // If it's a Cloudinary URL, optimize it for product card display
+        if (product.image.includes('cloudinary.com')) {
+            return CloudinaryService.getOptimizedUrl(product.image, {
+                width: 400,
+                height: 400,
+                quality: 'auto:good',
+                format: 'auto',
+                crop: 'fill',
+                gravity: 'auto'
+            });
+        }
+
+        // Return original URL for non-Cloudinary images
+        return product.image;
+    };
+
     return (
         <div
             ref={cardRef}
@@ -59,10 +80,11 @@ function ProductCard({ product, addToCart }) {
             <div className="product-image relative overflow-hidden">
                 {!imageError ? (
                     <img
-                        src={product.image}
+                        src={getOptimizedImageUrl() || product.image}
                         alt={product.name}
                         className="w-full h-64 object-cover smooth-transition group-hover:scale-105"
                         onError={handleImageError}
+                        loading="lazy"
                     />
                 ) : (
                     <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
