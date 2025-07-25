@@ -133,14 +133,7 @@ export class CloudinaryService {
             folder: 'hero-images',
             publicId: publicId,
             tags: ['hero', 'website', metadata.alt || 'hero-image'],
-            transformation: {
-                quality: 'auto:best', // Best quality for hero images
-                fetch_format: 'auto',
-                width: 2560, // Higher resolution for hero images
-                height: 1440,
-                crop: 'fill',
-                gravity: 'auto'
-            }
+
         });
     }
 

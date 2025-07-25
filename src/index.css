@@ -330,3 +330,13 @@
     backface-visibility: hidden;
     perspective: 1000px;
 }
+
+/* Hide scrollbars for mobile horizontal scrolling */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}

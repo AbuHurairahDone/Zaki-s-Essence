@@ -1,18 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard.jsx';
 import { useIntersectionObserver, usePreventAnimationFlash } from '../hooks/useAnimations.js';
+import { ProductService } from '../services/productService.js';
 
 function ShopSection({ products, addToCart }) {
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [isTransitioning, setIsTransitioning] = useState(false);
+    const [categories, setCategories] = useState(["All"]);
+    const [collections, setCollections] = useState([]);
     const [sectionRef, isSectionVisible] = useIntersectionObserver();
     const isReady = usePreventAnimationFlash();
 
+    useEffect(() => {
+        const loadCollections = async () => {
+            try {
+                const collectionsData = await ProductService.getAllCollections();
+                setCollections(collectionsData);
+
+                // Create filter options: "All" + collection names
+                const collectionNames = collectionsData.map(collection => collection.name);
+                setCategories(["All", ...collectionNames]);
+            } catch (error) {
+                console.error('Error loading collections:', error);
+                // Fallback to category-based filtering if collections fail
+                const fallbackCategories = [...new Set(products.map(product => product.category).filter(Boolean))];
+                setCategories(["All", ...fallbackCategories.sort()]);
+            }
+        };
+
+        loadCollections();
+    }, [products]); // Re-load when products change
+
     const filteredProducts = selectedCategory === "All"
         ? products
-        : products.filter(product => product.category === selectedCategory);
-
-    const categories = ["All", "Floral", "Oriental", "Fresh", "Woody", "Aquatic", "Amber"];
+        : products.filter(product => {
+            // First try to filter by collection name
+            const collection = collections.find(col => col.name === selectedCategory);
+            if (collection) {
+                return product.collectionRef === collection.id;
+            }
+            // Fallback to category filtering for backward compatibility
+            return product.category === selectedCategory;
+        });
 
     const handleCategoryChange = async (category) => {
         if (category === selectedCategory) return;
@@ -39,20 +68,23 @@ function ShopSection({ products, addToCart }) {
                     </p>
                 </div>
 
-                <div className="flex overflow-x-auto pb-4 mb-8 scrollbar-hide">
-                    <div className="flex space-x-4 mx-auto">
-                        {categories.map((category) => (
-                            <button
-                                key={category}
-                                onClick={() => handleCategoryChange(category)}
-                                className={`whitespace-nowrap px-6 py-3 rounded-full font-medium smooth-transition hover-lift gpu-accelerated ${selectedCategory === category
+                <div className="mb-8 flex justify-center">
+                    <div className="flex overflow-x-auto pb-4 scrollbar-hide">
+                        <div className="flex space-x-2 sm:space-x-3 px-6 sm:px-4 py-2">
+                            {categories.map((category) => (
+                                <button
+                                    key={category}
+                                    onClick={() => handleCategoryChange(category)}
+                                    className={`flex-shrink-0 px-3 py-2 sm:px-4 sm:py-2.5 lg:px-6 lg:py-3 rounded-full font-medium text-sm sm:text-base smooth-transition hover-lift gpu-accelerated ${selectedCategory === category
                                         ? 'bg-yellow-700 text-white shadow-lg scale-105'
                                         : 'bg-white text-gray-800 border border-gray-200 hover:border-yellow-700 hover:text-yellow-700 hover:shadow-md'
-                                    }`}
-                            >
-                                {category}
-                            </button>
-                        ))}
+                                        }`}
+                                    style={{ margin: '4px' }}
+                                >
+                                    {category}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
 
