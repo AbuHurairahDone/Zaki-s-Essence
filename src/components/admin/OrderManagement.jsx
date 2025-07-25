@@ -9,9 +9,11 @@ import {
     faCheck,
     faTruck,
     faTimes,
-    faBox
+    faBox,
+    faDownload
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
+import * as XLSX from 'xlsx';
 
 // Helper functions accessible to all components
 const getStatusColor = (status) => {
@@ -127,6 +129,86 @@ function OrderManagement() {
         }).format(date);
     };
 
+    const exportToExcel = () => {
+        try {
+            // Prepare data for Excel export with detailed customer and order information
+            const excelData = filteredOrders.map(order => {
+                // Format order items into a readable string
+                const orderItems = order.items?.map(item =>
+                    `${item.product?.name} (${item.variant}) - Qty: ${item.quantity} - Price: ${formatCurrency(item.product?.price || 0)}`
+                ).join('; ') || 'No items';
+
+                // Format shipping address
+                const shippingAddress = order.shippingAddress ?
+                    `${order.shippingAddress.street}, ${order.shippingAddress.city}${order.shippingAddress.state ? `, ${order.shippingAddress.state}` : ''}${order.shippingAddress.zipCode ? ` ${order.shippingAddress.zipCode}` : ''}, ${order.shippingAddress.country}`
+                    : 'No address provided';
+
+                return {
+                    'Order Number': order.orderNumber,
+                    'Order Date': formatDate(order.createdAt),
+                    'Customer Name': order.customerInfo?.name || 'N/A',
+                    'Customer Email': order.customerInfo?.email || 'N/A',
+                    'Customer Phone': order.customerInfo?.phone || 'N/A',
+                    'Complete Address': shippingAddress,
+                    'Street Address': order.shippingAddress?.street || 'N/A',
+                    'City': order.shippingAddress?.city || 'N/A',
+                    'State/Province': order.shippingAddress?.state || 'N/A',
+                    'ZIP/Postal Code': order.shippingAddress?.zipCode || 'N/A',
+                    'Country': order.shippingAddress?.country || 'N/A',
+                    'Order Status': order.status?.charAt(0).toUpperCase() + order.status?.slice(1) || 'N/A',
+                    'Total Amount': order.totalAmount || 0,
+                    'Total Items': order.items?.length || 0,
+                    'Order Details': orderItems,
+                    'Admin Notes': order.adminNotes || 'No notes'
+                };
+            });
+
+            // Create worksheet
+            const ws = XLSX.utils.json_to_sheet(excelData);
+
+            // Set column widths for better readability
+            const colWidths = [
+                { wch: 15 }, // Order Number
+                { wch: 20 }, // Order Date
+                { wch: 25 }, // Customer Name
+                { wch: 30 }, // Customer Email
+                { wch: 20 }, // Customer Phone
+                { wch: 50 }, // Complete Address
+                { wch: 30 }, // Street Address
+                { wch: 20 }, // City
+                { wch: 20 }, // State/Province
+                { wch: 15 }, // ZIP/Postal Code
+                { wch: 15 }, // Country
+                { wch: 15 }, // Order Status
+                { wch: 15 }, // Total Amount
+                { wch: 12 }, // Total Items
+                { wch: 60 }, // Order Details
+                { wch: 30 }  // Admin Notes
+            ];
+            ws['!cols'] = colWidths;
+
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Orders');
+
+            // Generate filename with current date and applied filters
+            const currentDate = new Date().toISOString().split('T')[0];
+            const filterSuffix = statusFilter !== 'All' ? `_${statusFilter}` : '';
+            const searchSuffix = searchTerm ? `_search` : '';
+            const filename = `orders_export_${currentDate}${filterSuffix}${searchSuffix}.xlsx`;
+
+            // Download the file
+            XLSX.writeFile(wb, filename);
+
+            toast.success(`Excel file exported successfully! ${filteredOrders.length} orders exported.`, {
+                duration: 4000
+            });
+        } catch (error) {
+            console.error('Error exporting to Excel:', error);
+            toast.error('Failed to export Excel file. Please try again.');
+        }
+    };
+
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
@@ -181,6 +263,17 @@ function OrderManagement() {
                         </select>
                     </div>
                 </div>
+            </div>
+
+            {/* Export Button */}
+            <div className="flex justify-end">
+                <button
+                    onClick={exportToExcel}
+                    className="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                >
+                    <FontAwesomeIcon icon={faDownload} className="mr-2" />
+                    Export to Excel
+                </button>
             </div>
 
             {/* Orders Table */}
