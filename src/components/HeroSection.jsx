@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { useIntersectionObserver, usePreventAnimationFlash, useScrollAnimation } from '../hooks/useAnimations.js';
 import { AppDataService } from '../services/appDataService.js';
+import { CloudinaryService } from '../services/cloudinaryService.js';
 
 function HeroSection() {
     const heroRef = useRef(null);
@@ -78,18 +79,14 @@ function HeroSection() {
         setTimeout(() => setIsTransitioning(false), 300);
     };
 
-    // Get optimized image URL for current viewport
+    // Get optimized image URL for current viewport with best quality
     const getOptimizedImageUrl = (image) => {
         if (!image) return null;
 
-        // Use AppDataService's optimized URL method
-        return AppDataService.getOptimizedImageUrl(image, {
-            width: window.innerWidth > 1920 ? 1920 : window.innerWidth,
-            height: window.innerHeight > 1080 ? 1080 : window.innerHeight,
-            quality: 'auto:good',
-            format: 'auto',
-            crop: 'fill',
-            gravity: 'auto'
+        // Use CloudinaryService's high-quality hero method
+        return CloudinaryService.getHeroQualityUrl(image.url, {
+            width: window.innerWidth > 1920 ? 2560 : window.innerWidth * 1.5,
+            height: window.innerHeight > 1080 ? 1440 : window.innerHeight * 1.5
         });
     };
 
@@ -138,7 +135,6 @@ function HeroSection() {
             {/* Carousel Navigation */}
             {showCarouselControls && (
                 <>
-
                     {/* Dots Indicator */}
                     <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-20 flex space-x-3">
                         {heroData.images.map((_, index) => (
@@ -152,6 +148,24 @@ function HeroSection() {
                                 aria-label={`Go to image ${index + 1}`}
                             />
                         ))}
+                    </div>
+
+                    {/* Side Arrows */}
+                    <div className="absolute inset-y-0 flex items-center justify-between w-full px-4 sm:px-6 z-20">
+                        <button
+                            onClick={() => goToImage((currentImageIndex - 1 + heroData.images.length) % heroData.images.length)}
+                            className="p-2 rounded-full bg-black/50 hover:bg-black/70 transition-all duration-300"
+                            aria-label="Previous image"
+                        >
+                            <FontAwesomeIcon icon={faChevronLeft} className="text-white" />
+                        </button>
+                        <button
+                            onClick={() => goToImage((currentImageIndex + 1) % heroData.images.length)}
+                            className="p-2 rounded-full bg-black/50 hover:bg-black/70 transition-all duration-300"
+                            aria-label="Next image"
+                        >
+                            <FontAwesomeIcon icon={faChevronRight} className="text-white" />
+                        </button>
                     </div>
                 </>
             )}

@@ -371,7 +371,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
             }
 
             setImageFile(file);
-            
+
             // Create preview
             const reader = new FileReader();
             reader.onload = (e) => setImagePreview(e.target.result);
@@ -640,7 +640,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Product Image *
                             </label>
-                            
+
                             {/* Current Image Preview */}
                             {imagePreview && (
                                 <div className="mb-4">
@@ -672,7 +672,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                         Supports JPEG, PNG, WebP. Max size: 10MB
                                     </p>
                                 </div>
-                                
+
                                 {imageFile && (
                                     <button
                                         type="button"

@@ -110,6 +110,7 @@ export class CloudinaryService {
             if (transformations.quality) params.push(`q_${transformations.quality}`);
             if (transformations.format) params.push(`f_${transformations.format}`);
             if (transformations.gravity) params.push(`g_${transformations.gravity}`);
+            if (transformations.dpr) params.push(`dpr_${transformations.dpr}`);
 
             transformStr = params.length > 0 ? `/${params.join(',')}` : '';
         }
@@ -118,7 +119,7 @@ export class CloudinaryService {
     }
 
     /**
-     * Upload hero image with optimized settings
+     * Upload hero image with optimized settings for best quality
      * @param {File} file - The file to upload
      * @param {Object} metadata - Additional metadata
      * @returns {Promise<Object>} Upload result
@@ -133,10 +134,10 @@ export class CloudinaryService {
             publicId: publicId,
             tags: ['hero', 'website', metadata.alt || 'hero-image'],
             transformation: {
-                quality: 'auto:good',
+                quality: 'auto:best', // Best quality for hero images
                 fetch_format: 'auto',
-                width: 1920,
-                height: 1080,
+                width: 2560, // Higher resolution for hero images
+                height: 1440,
                 crop: 'fill',
                 gravity: 'auto'
             }
@@ -144,7 +145,7 @@ export class CloudinaryService {
     }
 
     /**
-     * Upload product image with optimized settings
+     * Upload product image with optimized settings for best quality
      * @param {File} file - The file to upload
      * @param {Object} metadata - Additional metadata
      * @returns {Promise<Object>} Upload result
@@ -158,12 +159,19 @@ export class CloudinaryService {
             folder: 'products',
             publicId: publicId,
             tags: ['product', 'catalog', metadata.productId || 'product-image'],
-
+            transformation: {
+                quality: 'auto:best', // Best quality for product images
+                fetch_format: 'auto',
+                width: 1200, // Higher resolution for product images
+                height: 1500, // 4:5 ratio at high resolution
+                crop: 'fill',
+                gravity: 'auto'
+            }
         });
     }
 
     /**
-     * Get optimized image URL for display
+     * Get optimized image URL for display with best quality settings
      * @param {string} url - Original Cloudinary URL
      * @param {Object} options - Display options
      * @returns {string} Optimized URL
@@ -181,9 +189,14 @@ export class CloudinaryService {
 
             const publicId = urlParts.slice(uploadIndex + 1).join('/');
 
+            // Detect device pixel ratio for high-DPI displays
+            const dpr = window.devicePixelRatio || 1;
+            const highDPI = dpr > 1;
+
             const transformations = {
-                quality: options.quality || 'auto:good',
+                quality: options.quality || (highDPI ? 'auto:best' : 'auto:good'),
                 format: options.format || 'auto',
+                dpr: highDPI ? 'auto' : undefined,
                 ...options
             };
 
@@ -192,6 +205,50 @@ export class CloudinaryService {
             console.error('Error generating optimized URL:', error);
             return url; // Return original URL on error
         }
+    }
+
+    /**
+     * Get high-quality image URL for hero displays
+     * @param {string} url - Original Cloudinary URL
+     * @param {Object} options - Display options
+     * @returns {string} High-quality optimized URL
+     */
+    static getHeroQualityUrl(url, options = {}) {
+        const defaultOptions = {
+            quality: 'auto:best',
+            format: 'auto',
+            dpr: 'auto',
+            width: options.width || (window.innerWidth > 1920 ? 2560 : window.innerWidth * 1.5),
+            height: options.height || (window.innerHeight > 1080 ? 1440 : window.innerHeight * 1.5),
+            crop: 'fill',
+            gravity: 'auto'
+        };
+
+        return this.getOptimizedUrl(url, { ...defaultOptions, ...options });
+    }
+
+    /**
+     * Get high-quality image URL for product displays
+     * @param {string} url - Original Cloudinary URL
+     * @param {Object} options - Display options
+     * @returns {string} High-quality optimized URL
+     */
+    static getProductQualityUrl(url, options = {}) {
+        const dpr = window.devicePixelRatio || 1;
+        const baseWidth = options.width || 400;
+        const baseHeight = options.height || 500;
+
+        const defaultOptions = {
+            quality: 'auto:best',
+            format: 'auto',
+            dpr: 'auto',
+            width: baseWidth * Math.min(dpr, 2), // Cap at 2x for performance
+            height: baseHeight * Math.min(dpr, 2),
+            crop: 'fill',
+            gravity: 'auto'
+        };
+
+        return this.getOptimizedUrl(url, { ...defaultOptions, ...options });
     }
 
     /**

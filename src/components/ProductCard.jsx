@@ -51,19 +51,15 @@ function ProductCard({ product, addToCart }) {
         return getVariantPrice(selectedVariant);
     };
 
-    // Get optimized image URL for product display
+    // Get optimized image URL for product display with best quality
     const getOptimizedImageUrl = () => {
         if (!product.image) return null;
 
-        // If it's a Cloudinary URL, optimize it for product card display
+        // If it's a Cloudinary URL, optimize it for product card display with best quality
         if (product.image.includes('cloudinary.com')) {
-            return CloudinaryService.getOptimizedUrl(product.image, {
+            return CloudinaryService.getProductQualityUrl(product.image, {
                 width: 400,
-                height: 400,
-                quality: 'auto:good',
-                format: 'auto',
-                crop: 'fill',
-                gravity: 'auto'
+                height: 500 // 4:5 aspect ratio
             });
         }
 
@@ -82,12 +78,12 @@ function ProductCard({ product, addToCart }) {
                     <img
                         src={getOptimizedImageUrl() || product.image}
                         alt={product.name}
-                        className="w-full h-64 object-cover smooth-transition group-hover:scale-105"
+                        className="w-full aspect-[4/5] object-cover smooth-transition group-hover:scale-105"
                         onError={handleImageError}
                         loading="lazy"
                     />
                 ) : (
-                    <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
+                    <div className="w-full aspect-[4/5] bg-gray-200 flex items-center justify-center">
                         <div className="text-center text-gray-500">
                             <i className="fas fa-image text-4xl mb-2"></i>
                             <p className="text-sm">Image not available</p>
