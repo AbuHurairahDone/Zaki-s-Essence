@@ -2,6 +2,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faTimes, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import React, { useState, useContext } from 'react';
 import { CartContext } from '../contexts/CartContext.jsx';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import { GetCountries, GetState, GetCity } from 'react-country-state-city';
+import Select from 'react-select';
 
 function CartItem({ item, updateQuantity, removeItem }) {
     const [isRemoving, setIsRemoving] = useState(false);
@@ -70,9 +74,59 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
         city: '',
         state: '',
         zipCode: '',
-        country: 'United States'
+        country: ''
     });
     const [errors, setErrors] = useState({});
+    const [countryList, setCountryList] = useState([]);
+    const [stateList, setStateList] = useState([]);
+    const [cityList, setCityList] = useState([]);
+    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [selectedState, setSelectedState] = useState(null);
+    const [selectedCity, setSelectedCity] = useState(null);
+
+    // Load countries on component mount
+    React.useEffect(() => {
+        GetCountries().then((result) => {
+            const countries = result.map(country => ({
+                value: country.id,
+                label: country.name,
+                ...country
+            }));
+            setCountryList(countries);
+        });
+    }, []);
+
+    // Load states when country changes
+    React.useEffect(() => {
+        if (selectedCountry) {
+            GetState(selectedCountry.value).then((result) => {
+                const states = result.map(state => ({
+                    value: state.id,
+                    label: state.name,
+                    ...state
+                }));
+                setStateList(states);
+                setCityList([]); // Clear cities when country changes
+                setSelectedState(null);
+                setSelectedCity(null);
+            });
+        }
+    }, [selectedCountry]);
+
+    // Load cities when state changes
+    React.useEffect(() => {
+        if (selectedState) {
+            GetCity(selectedCountry.value, selectedState.value).then((result) => {
+                const cities = result.map(city => ({
+                    value: city.id,
+                    label: city.name,
+                    ...city
+                }));
+                setCityList(cities);
+                setSelectedCity(null);
+            });
+        }
+    }, [selectedState, selectedCountry]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -89,17 +143,87 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
         }
     };
 
+    const handlePhoneChange = (value) => {
+        setFormData(prev => ({
+            ...prev,
+            phone: value
+        }));
+        // Clear phone error
+        if (errors.phone) {
+            setErrors(prev => ({
+                ...prev,
+                phone: ''
+            }));
+        }
+    };
+
+    const handleCountryChange = (selectedOption) => {
+        setSelectedCountry(selectedOption);
+        setFormData(prev => ({
+            ...prev,
+            country: selectedOption ? selectedOption.label : '',
+            state: '',
+            city: ''
+        }));
+        // Clear related errors
+        if (errors.country) {
+            setErrors(prev => ({
+                ...prev,
+                country: ''
+            }));
+        }
+    };
+
+    const handleStateChange = (selectedOption) => {
+        setSelectedState(selectedOption);
+        setFormData(prev => ({
+            ...prev,
+            state: selectedOption ? selectedOption.label : '',
+            city: ''
+        }));
+        // Clear related errors
+        if (errors.state) {
+            setErrors(prev => ({
+                ...prev,
+                state: ''
+            }));
+        }
+    };
+
+    const handleCityChange = (selectedOption) => {
+        setSelectedCity(selectedOption);
+        setFormData(prev => ({
+            ...prev,
+            city: selectedOption ? selectedOption.label : ''
+        }));
+        // Clear city error
+        if (errors.city) {
+            setErrors(prev => ({
+                ...prev,
+                city: ''
+            }));
+        }
+    };
+
     const validateForm = () => {
         const newErrors = {};
 
         if (!formData.name.trim()) newErrors.name = 'Name is required';
         if (!formData.email.trim()) newErrors.email = 'Email is required';
         else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Invalid email format';
-        if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
+
+        // Enhanced phone validation
+        if (!formData.phone.trim()) {
+            newErrors.phone = 'Phone is required';
+        } else if (formData.phone.length < 10) {
+            newErrors.phone = 'Please enter a valid phone number';
+        }
+
         if (!formData.address.trim()) newErrors.address = 'Address is required';
+        if (!formData.country.trim()) newErrors.country = 'Country is required';
+        if (!formData.state.trim()) newErrors.state = 'State/Province is required';
         if (!formData.city.trim()) newErrors.city = 'City is required';
-        if (!formData.state.trim()) newErrors.state = 'State is required';
-        if (!formData.zipCode.trim()) newErrors.zipCode = 'ZIP code is required';
+        if (!formData.zipCode.trim()) newErrors.zipCode = 'ZIP/Postal code is required';
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -130,18 +254,37 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
             // Reset form
             setFormData({
                 name: '', email: '', phone: '', address: '',
-                city: '', state: '', zipCode: '', country: 'United States'
+                city: '', state: '', zipCode: '', country: ''
             });
+            setSelectedCountry(null);
+            setSelectedState(null);
+            setSelectedCity(null);
         } catch (error) {
             console.error('Checkout error:', error);
         }
+    };
+
+    const customSelectStyles = {
+        control: (provided, state) => ({
+            ...provided,
+            borderColor: state.isFocused ? '#b45309' : '#d1d5db',
+            boxShadow: state.isFocused ? '0 0 0 2px rgba(180, 83, 9, 0.2)' : 'none',
+            '&:hover': {
+                borderColor: '#b45309'
+            }
+        }),
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isSelected ? '#b45309' : state.isFocused ? '#fef3c7' : 'white',
+            color: state.isSelected ? 'white' : '#374151'
+        })
     };
 
     if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
                 <div className="p-6 border-b border-gray-200">
                     <div className="flex justify-between items-center">
                         <h2 className="text-xl font-bold">Checkout</h2>
@@ -217,13 +360,18 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Phone Number *
                                 </label>
-                                <input
-                                    type="tel"
-                                    name="phone"
+                                <PhoneInput
+                                    country={'us'}
                                     value={formData.phone}
-                                    onChange={handleChange}
-                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.phone ? 'border-red-500' : 'border-gray-300'
-                                        }`}
+                                    onChange={handlePhoneChange}
+                                    inputProps={{
+                                        name: 'phone',
+                                        required: true,
+                                        className: `w-full pl-12 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`
+                                    }}
+                                    containerClass="w-full"
+                                    buttonClass="!border-gray-300 hover:!border-yellow-700"
+                                    dropdownClass="!z-50"
                                     disabled={isCheckingOut}
                                 />
                                 {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
@@ -237,7 +385,7 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Address *
+                                    Street Address *
                                 </label>
                                 <input
                                     type="text"
@@ -247,48 +395,68 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
                                     className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.address ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     disabled={isCheckingOut}
+                                    placeholder="Enter your street address"
                                 />
                                 {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Country *
+                                    </label>
+                                    <Select
+                                        value={selectedCountry}
+                                        onChange={handleCountryChange}
+                                        options={countryList}
+                                        isSearchable
+                                        placeholder="Select country..."
+                                        styles={customSelectStyles}
+                                        isDisabled={isCheckingOut}
+                                        className={errors.country ? 'border-red-500' : ''}
+                                    />
+                                    {errors.country && <p className="text-red-500 text-xs mt-1">{errors.country}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        State/Province *
+                                    </label>
+                                    <Select
+                                        value={selectedState}
+                                        onChange={handleStateChange}
+                                        options={stateList}
+                                        isSearchable
+                                        placeholder="Select state/province..."
+                                        styles={customSelectStyles}
+                                        isDisabled={isCheckingOut || !selectedCountry}
+                                        className={errors.state ? 'border-red-500' : ''}
+                                    />
+                                    {errors.state && <p className="text-red-500 text-xs mt-1">{errors.state}</p>}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         City *
                                     </label>
-                                    <input
-                                        type="text"
-                                        name="city"
-                                        value={formData.city}
-                                        onChange={handleChange}
-                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.city ? 'border-red-500' : 'border-gray-300'
-                                            }`}
-                                        disabled={isCheckingOut}
+                                    <Select
+                                        value={selectedCity}
+                                        onChange={handleCityChange}
+                                        options={cityList}
+                                        isSearchable
+                                        placeholder="Select city..."
+                                        styles={customSelectStyles}
+                                        isDisabled={isCheckingOut || !selectedState}
+                                        className={errors.city ? 'border-red-500' : ''}
                                     />
                                     {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
                                 </div>
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        State *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="state"
-                                        value={formData.state}
-                                        onChange={handleChange}
-                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.state ? 'border-red-500' : 'border-gray-300'
-                                            }`}
-                                        disabled={isCheckingOut}
-                                    />
-                                    {errors.state && <p className="text-red-500 text-xs mt-1">{errors.state}</p>}
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        ZIP Code *
+                                        ZIP/Postal Code *
                                     </label>
                                     <input
                                         type="text"
@@ -298,26 +466,9 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
                                         className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.zipCode ? 'border-red-500' : 'border-gray-300'
                                             }`}
                                         disabled={isCheckingOut}
+                                        placeholder="Enter ZIP/Postal code"
                                     />
                                     {errors.zipCode && <p className="text-red-500 text-xs mt-1">{errors.zipCode}</p>}
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Country
-                                    </label>
-                                    <select
-                                        name="country"
-                                        value={formData.country}
-                                        onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700"
-                                        disabled={isCheckingOut}
-                                    >
-                                        <option value="United States">United States</option>
-                                        <option value="Canada">Canada</option>
-                                        <option value="United Kingdom">United Kingdom</option>
-                                        <option value="Australia">Australia</option>
-                                    </select>
                                 </div>
                             </div>
                         </div>

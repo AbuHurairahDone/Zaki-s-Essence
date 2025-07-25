@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { OrderService, ORDER_STATUS } from '../../services/orderService.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -53,9 +53,9 @@ function OrderManagement() {
 
     useEffect(() => {
         loadOrders();
-    }, [statusFilter]);
+    }, [statusFilter]); // Removed loadOrders dependency to avoid infinite loop
 
-    const loadOrders = async () => {
+    const loadOrders = useCallback(async () => {
         try {
             setLoading(true);
             const filter = statusFilter === 'All' ? null : statusFilter;
@@ -67,7 +67,7 @@ function OrderManagement() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [statusFilter]);
 
     const handleStatusUpdate = async (orderId, newStatus, notes = '') => {
         try {
@@ -398,6 +398,14 @@ function OrderDetailModal({ order, onClose, onStatusUpdate, onOrderUpdated }) {
         }).format(date);
     };
 
+    const formatPhoneNumber = (phone) => {
+        if (!phone) return 'N/A';
+        // If phone already includes country code, return as is
+        if (phone.startsWith('+')) return phone;
+        // Otherwise format it nicely
+        return phone;
+    };
+
     return (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -455,20 +463,48 @@ function OrderDetailModal({ order, onClose, onStatusUpdate, onOrderUpdated }) {
                                 </div>
                                 <div>
                                     <span className="text-gray-600">Phone:</span>
-                                    <span className="ml-2">{order.customerInfo?.phone || 'N/A'}</span>
+                                    <span className="ml-2 font-mono">{formatPhoneNumber(order.customerInfo?.phone)}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Shipping Address */}
+                    {/* Enhanced Shipping Address */}
                     {order.shippingAddress && (
                         <div>
                             <h3 className="text-lg font-semibold mb-4">Shipping Address</h3>
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <p>{order.shippingAddress.street}</p>
-                                <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}</p>
-                                <p>{order.shippingAddress.country}</p>
+                            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                <div className="space-y-1">
+                                    <p className="font-medium text-gray-900">{order.shippingAddress.street}</p>
+                                    <p className="text-gray-700">
+                                        {order.shippingAddress.city}
+                                        {order.shippingAddress.state && `, ${order.shippingAddress.state}`}
+                                        {order.shippingAddress.zipCode && ` ${order.shippingAddress.zipCode}`}
+                                    </p>
+                                    <p className="text-gray-700 font-medium">{order.shippingAddress.country}</p>
+                                </div>
+
+                                {/* Address labels for better organization */}
+                                <div className="mt-3 pt-3 border-t border-gray-300">
+                                    <div className="grid grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <span className="text-gray-500">City:</span>
+                                            <span className="ml-1 text-gray-700">{order.shippingAddress.city}</span>
+                                        </div>
+                                        <div>
+                                            <span className="text-gray-500">State/Province:</span>
+                                            <span className="ml-1 text-gray-700">{order.shippingAddress.state || 'N/A'}</span>
+                                        </div>
+                                        <div>
+                                            <span className="text-gray-500">ZIP/Postal:</span>
+                                            <span className="ml-1 text-gray-700">{order.shippingAddress.zipCode}</span>
+                                        </div>
+                                        <div>
+                                            <span className="text-gray-500">Country:</span>
+                                            <span className="ml-1 text-gray-700">{order.shippingAddress.country}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
