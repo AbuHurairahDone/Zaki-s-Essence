@@ -6,6 +6,7 @@ import AdminDashboard from './AdminDashboard.jsx';
 import ProductManagement from './ProductManagement.jsx';
 import CollectionManagement from './CollectionManagement.jsx';
 import OrderManagement from './OrderManagement.jsx';
+import InventoryManagement from './InventoryManagement.jsx';
 import HeroImageManagement from './HeroImageManagement.jsx';
 
 function AdminPanel() {
@@ -39,6 +40,8 @@ function AdminPanel() {
                 return <CollectionManagement />;
             case 'orders':
                 return <OrderManagement />;
+            case 'inventory':
+                return <InventoryManagement />;
             case 'hero-images':
                 return <HeroImageManagement />;
             default:

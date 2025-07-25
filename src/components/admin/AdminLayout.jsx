@@ -5,12 +5,12 @@ import {
     faTachometerAlt,
     faBox,
     faShoppingCart,
-    faUsers,
     faSignOutAlt,
     faBars,
     faTimes,
     faLayerGroup,
-    faImage
+    faImage,
+    faWarehouse
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import logo from '../../assets/logo.png';
@@ -50,6 +50,11 @@ function AdminLayout({ children, currentPage, onPageChange }) {
             id: 'orders',
             label: 'Orders',
             icon: faShoppingCart
+        },
+        {
+            id: 'inventory',
+            label: 'Inventory',
+            icon: faWarehouse
         },
         {
             id: 'hero-images',
