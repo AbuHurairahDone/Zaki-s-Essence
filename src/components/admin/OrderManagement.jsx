@@ -65,9 +65,9 @@ function OrderManagement() {
     });
 
     const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-US', {
+        return new Intl.NumberFormat('en-PK', {
             style: 'currency',
-            currency: 'USD'
+            currency: 'PKR'
         }).format(amount);
     };
 
@@ -380,9 +380,9 @@ function StatusDropdown({ currentStatus, orderId, onStatusUpdate }) {
 // Order Detail Modal Component
 function OrderDetailModal({ order, onClose, onStatusUpdate, onOrderUpdated }) {
     const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-US', {
+        return new Intl.NumberFormat('en-PK', {
             style: 'currency',
-            currency: 'USD'
+            currency: 'PKR'
         }).format(amount);
     };
 

@@ -38,13 +38,13 @@ function ProductCard({ product, addToCart }) {
                 const minPrice = Math.min(...prices);
                 const maxPrice = Math.max(...prices);
                 if (minPrice === maxPrice) {
-                    return `$${minPrice.toFixed(2)}`;
+                    return `Rs. ${minPrice.toFixed(0)}`;
                 }
-                return `$${minPrice.toFixed(2)} - $${maxPrice.toFixed(2)}`;
+                return `Rs. ${minPrice.toFixed(0)} - Rs. ${maxPrice.toFixed(0)}`;
             }
         }
         // Fallback to legacy price
-        return `$${(product.price || 0).toFixed(2)}`;
+        return `Rs. ${(product.price || 0).toFixed(0)}`;
     };
 
     const getCurrentPrice = () => {
@@ -134,7 +134,7 @@ function ProductCard({ product, addToCart }) {
                 <div className="flex justify-between items-center">
                     <div className="flex flex-col">
                         <span className="font-bold text-lg text-gray-800">
-                            ${getCurrentPrice().toFixed(2)}
+                            Rs. {getCurrentPrice().toFixed(0)}
                         </span>
                         <span className="text-xs text-gray-500">{selectedVariant}</span>
                     </div>

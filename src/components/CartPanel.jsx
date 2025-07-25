@@ -164,14 +164,14 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
                                 {cartItems.map((item) => (
                                     <div key={`${item.product.id}-${item.variant}`} className="flex justify-between">
                                         <span>{item.product.name} ({item.variant}) × {item.quantity}</span>
-                                        <span>${(item.product.price * item.quantity).toFixed(2)}</span>
+                                        <span>Rs. {(item.product.price * item.quantity).toFixed(0)}</span>
                                     </div>
                                 ))}
                             </div>
                             <div className="border-t border-gray-200 mt-4 pt-4">
                                 <div className="flex justify-between font-bold text-lg">
                                     <span>Total</span>
-                                    <span>${totalAmount.toFixed(2)}</span>
+                                    <span>Rs. {totalAmount.toFixed(0)}</span>
                                 </div>
                             </div>
                         </div>
@@ -428,7 +428,7 @@ function CartPanel({ isOpen, cartItems, toggleCart, updateQuantity, removeItem, 
                             <div className="flex justify-between items-center mb-4 text-lg">
                                 <span className="text-gray-600 font-medium">Subtotal</span>
                                 <span className="font-bold text-xl text-gray-800 animate-pulse">
-                                    ${totalAmount.toFixed(2)}
+                                    Rs. {totalAmount.toFixed(0)}
                                 </span>
                             </div>
                             <button

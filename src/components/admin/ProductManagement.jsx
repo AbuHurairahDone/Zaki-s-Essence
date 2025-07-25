@@ -76,9 +76,9 @@ function ProductManagement() {
     });
 
     const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-US', {
+        return new Intl.NumberFormat('en-PK', {
             style: 'currency',
-            currency: 'USD'
+            currency: 'PKR'
         }).format(amount);
     };
 
@@ -715,7 +715,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                     <div>
                                         <p className="text-sm text-gray-600">Price Range</p>
                                         <p className="text-lg font-semibold text-blue-600">
-                                            ${getLowestPrice().toFixed(2)} - ${getHighestPrice().toFixed(2)}
+                                            Rs. {getLowestPrice().toFixed(0)} - Rs. {getHighestPrice().toFixed(0)}
                                         </p>
                                     </div>
                                     <div>
