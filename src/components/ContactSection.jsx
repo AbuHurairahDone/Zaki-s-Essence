@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { toast } from "react-toastify";
 import { useIntersectionObserver } from '../hooks/useAnimations.js';
+import { ContactService } from '../services/contactService.js';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 function ContactSection() {
     const [formData, setFormData] = useState({
         name: '',
-        email: '',
+        phone: '',
         message: ''
     });
+    const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [sectionRef, isSectionVisible] = useIntersectionObserver();
 
@@ -18,24 +22,39 @@ function ContactSection() {
         });
     };
 
+    const handlePhoneChange = (value) => {
+        setFormData(prev => ({ ...prev, phone: value }));
+        if (errors.phone) setErrors(prev => ({ ...prev, phone: '' }));
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+        if (!formData.name.trim()) newErrors.name = 'Name is required';
+        if (!formData.phone || formData.phone.replace(/\D/g, '').length < 10) newErrors.phone = 'Valid phone number required';
+        if (!formData.message.trim()) newErrors.message = 'Message is required';
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validateForm()) return;
         setIsSubmitting(true);
-
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        toast.success("Message sent successfully!", {
-            position: "bottom-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-
-        setFormData({ name: '', email: '', message: '' });
+        try {
+            await ContactService.submitContactMessage(formData);
+            toast.success("Message sent successfully!", {
+                position: "bottom-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            setFormData({ name: '', phone: '', message: '' });
+        } catch (error) {
+            toast.error("Failed to send message. Please try again.");
+        }
         setIsSubmitting(false);
     };
 
@@ -72,19 +91,23 @@ function ContactSection() {
                         </div>
 
                         <div className="animate-slide delay-4">
-                            <label htmlFor="email" className="block text-gray-700 mb-2 font-medium">
-                                Email
+                            <label htmlFor="phone" className="block text-gray-700 mb-2 font-medium">
+                                Phone Number
                             </label>
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                className="form-field w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:border-transparent transition-all duration-300"
-                                placeholder="your.email@example.com"
-                                required
+                            <PhoneInput
+                                country={'pk'}
+                                value={formData.phone}
+                                onChange={handlePhoneChange}
+                                inputProps={{
+                                    name: 'phone',
+                                    required: true,
+                                    className: `form-field w-full pl-12 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:border-transparent transition-all duration-300 ${errors.phone ? 'border-red-500' : ''}`
+                                }}
+                                containerClass="w-full"
+                                buttonClass="!border-gray-300 hover:!border-yellow-700"
+                                dropdownClass="!z-50"
                             />
+                            {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
                         </div>
 
                         <div className="animate-slide delay-5">

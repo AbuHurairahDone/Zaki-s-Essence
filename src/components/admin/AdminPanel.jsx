@@ -8,6 +8,7 @@ import CollectionManagement from './CollectionManagement.jsx';
 import OrderManagement from './OrderManagement.jsx';
 import InventoryManagement from './InventoryManagement.jsx';
 import HeroImageManagement from './HeroImageManagement.jsx';
+import ContactMessages from './ContactMessages.jsx';
 
 function AdminPanel() {
     const { user, loading, isAdmin } = useAuth();
@@ -44,6 +45,8 @@ function AdminPanel() {
                 return <InventoryManagement />;
             case 'hero-images':
                 return <HeroImageManagement />;
+            case 'contact-messages':
+                return <ContactMessages />;
             default:
                 return <AdminDashboard />;
         }

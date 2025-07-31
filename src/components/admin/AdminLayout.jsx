@@ -10,7 +10,8 @@ import {
     faTimes,
     faLayerGroup,
     faImage,
-    faWarehouse
+    faWarehouse,
+    faEnvelope
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import logo from '../../assets/logo.png';
@@ -60,6 +61,11 @@ function AdminLayout({ children, currentPage, onPageChange }) {
             id: 'hero-images',
             label: 'Hero Images',
             icon: faImage
+        },
+        {
+            id: 'contact-messages',
+            label: 'Contact Messages',
+            icon: faEnvelope
         }
     ];
 
