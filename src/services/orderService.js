@@ -70,12 +70,20 @@ export class OrderService {
             }
 
             const querySnapshot = await getDocs(q);
-            return querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                createdAt: doc.data().createdAt?.toDate(),
-                updatedAt: doc.data().updatedAt?.toDate()
-            }));
+            return querySnapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data,
+                    createdAt: data.createdAt?.toDate(),
+                    updatedAt: data.updatedAt?.toDate(),
+                    // Convert statusHistory timestamps to Date objects
+                    statusHistory: data.statusHistory?.map(history => ({
+                        ...history,
+                        timestamp: history.timestamp?.toDate ? history.timestamp.toDate() : history.timestamp
+                    })) || []
+                };
+            });
         } catch (error) {
             console.error('Error fetching orders:', error);
             throw error;
@@ -148,7 +156,7 @@ export class OrderService {
             const statusHistory = order.statusHistory || [];
             statusHistory.push({
                 status,
-                timestamp: new Date(),
+                timestamp: serverTimestamp(), // Use Firebase serverTimestamp for consistency
                 notes: adminNotes
             });
             updateData.statusHistory = statusHistory;
@@ -335,7 +343,12 @@ export class OrderService {
                 id: docSnap.id,
                 ...data,
                 createdAt: data.createdAt?.toDate(),
-                updatedAt: data.updatedAt?.toDate()
+                updatedAt: data.updatedAt?.toDate(),
+                // Convert statusHistory timestamps to Date objects
+                statusHistory: data.statusHistory?.map(history => ({
+                    ...history,
+                    timestamp: history.timestamp?.toDate ? history.timestamp.toDate() : history.timestamp
+                })) || []
             };
         } catch (error) {
             console.error('Error tracking order by order number:', error);
@@ -363,7 +376,12 @@ export class OrderService {
                 id: docSnap.id,
                 ...data,
                 createdAt: data.createdAt?.toDate(),
-                updatedAt: data.updatedAt?.toDate()
+                updatedAt: data.updatedAt?.toDate(),
+                // Convert statusHistory timestamps to Date objects
+                statusHistory: data.statusHistory?.map(history => ({
+                    ...history,
+                    timestamp: history.timestamp?.toDate ? history.timestamp.toDate() : history.timestamp
+                })) || []
             };
         } catch (error) {
             console.error('Error tracking order by phone:', error);
