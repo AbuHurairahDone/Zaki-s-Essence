@@ -14,7 +14,7 @@ import {
     faEnvelope
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/logo.PNG';
 
 function AdminLayout({ children, currentPage, onPageChange }) {
     const { user, signOut } = useAuth();
