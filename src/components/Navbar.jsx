@@ -91,32 +91,50 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
     );
 }
 
+
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+
 export function MobileMenu({ isOpen, toggleMobileMenu }) {
     const menuItems = [
         { href: "/", label: "Home" },
         { href: "/shop", label: "Shop" },
         { href: "/collections", label: "Collections" },
         { href: "/about", label: "About" },
-        { href: "/contact", label: "Contact" }
+        { href: "/contact", label: "Contact" },
+        { href: "/track-order", label: "Track Order" }
     ];
 
     return (
-        <div className={`mobile-menu md:hidden fixed top-16 inset-x-0 bg-white/95 backdrop-blur-md shadow-lg py-6 px-4 z-40 transition-all duration-300 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'
-            }`}>
-            <nav className="flex flex-col space-y-6">
-                {menuItems.map((item, index) => (
-                    <Link
-                        key={item.href}
-                        to={item.href}
-                        className={`text-gray-800 hover:text-yellow-700 transition-all duration-300 font-medium text-lg py-2 border-b border-gray-100 hover:border-yellow-700 animate-slide-right ${isOpen ? 'animate-fade' : ''
-                            }`}
-                        style={{ animationDelay: `${index * 0.1}s` }}
-                        onClick={toggleMobileMenu}
-                    >
-                        {item.label}
-                    </Link>
-                ))}
-            </nav>
-        </div>
+        <>
+            {/* Overlay */}
+            <div
+                className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                onClick={toggleMobileMenu}
+            />
+
+            {/* Slide-in Menu */}
+            <div className={`fixed top-0 right-0 h-full w-3/4 max-w-sm bg-white z-50 shadow-lg transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                {/* Close Button */}
+                <div className="flex justify-end px-5 py-4">
+                    <button onClick={toggleMobileMenu} aria-label="Close menu">
+                        <FontAwesomeIcon icon={faXmark} className="text-2xl text-gray-600 hover:text-yellow-700 transition" />
+                    </button>
+                </div>
+
+                {/* Navigation Links */}
+                <nav className="flex flex-col px-6 py-2 space-y-4">
+                    {menuItems.map((item, index) => (
+                        <Link
+                            key={item.href}
+                            to={item.href}
+                            onClick={toggleMobileMenu}
+                            className="text-lg text-gray-800 hover:text-yellow-700 font-medium tracking-wide transition-all duration-300"
+                        >
+                            {item.label}
+                        </Link>
+                    ))}
+                </nav>
+            </div>
+        </>
     );
 }
