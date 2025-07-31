@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useIntersectionObserver } from '../hooks/useAnimations.js';
 import { ProductService } from '../services/productService.js';
+import { useNavigate } from 'react-router-dom';
 
 function CollectionsSection({ showAll = false }) {
     const [sectionRef, isSectionVisible] = useIntersectionObserver();
     const [collections, setCollections] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (showAll) {
@@ -94,12 +96,12 @@ function CollectionsSection({ showAll = false }) {
                                 <p className="text-gray-200 mb-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 delay-75">
                                     {collection.description}
                                 </p>
-                                <a
-                                    href="#shop"
+                                <button
+                                    onClick={() => navigate(`/shop?collection=${collection.id}`)}
                                     className="text-white border border-white px-4 py-2 rounded-md hover:bg-white hover:text-gray-900 transition-all duration-300 inline-block w-max btn-animate transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-150"
                                 >
                                     View Collection
-                                </a>
+                                </button>
                             </div>
                         </div>
                     ))}

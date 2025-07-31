@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard.jsx';
 import { useIntersectionObserver, usePreventAnimationFlash } from '../hooks/useAnimations.js';
 import { ProductService } from '../services/productService.js';
+import { useLocation } from 'react-router-dom';
 
 function ShopSection({ products, addToCart }) {
     const [selectedCategory, setSelectedCategory] = useState("All");
@@ -10,6 +11,11 @@ function ShopSection({ products, addToCart }) {
     const [collections, setCollections] = useState([]);
     const [sectionRef, isSectionVisible] = useIntersectionObserver();
     const isReady = usePreventAnimationFlash();
+    const location = useLocation();
+
+    // Get collection query param from URL
+    const params = new URLSearchParams(location.search);
+    const collectionParam = params.get('collection');
 
     useEffect(() => {
         const loadCollections = async () => {
@@ -29,7 +35,12 @@ function ShopSection({ products, addToCart }) {
         };
 
         loadCollections();
-    }, [products]); // Re-load when products change
+        // If collectionParam exists, set selectedCategory to that collection's name
+        if (collectionParam && collections.length > 0) {
+            const found = collections.find(col => col.id === collectionParam);
+            if (found) setSelectedCategory(found.name);
+        }
+    }, [products, collectionParam, collections]); // Add collections to dependency array
 
     const filteredProducts = selectedCategory === "All"
         ? products
