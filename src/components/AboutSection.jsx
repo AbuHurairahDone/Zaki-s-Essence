@@ -1,5 +1,6 @@
 import React from 'react';
 import { useIntersectionObserver } from '../hooks/useAnimations.js';
+import logo_bg from '../assets/logo_bg.JPG'
 
 function AboutSection() {
     const [sectionRef, isSectionVisible] = useIntersectionObserver();
@@ -20,7 +21,7 @@ function AboutSection() {
                     >
                         <div className="relative group">
                             <img
-                                src="https://placehold.co/600x400/EEE/31343C?text=Perfume+Creation"
+                                src={logo_bg}
                                 alt="Perfume artisan carefully crafting fragrance with natural ingredients"
                                 className="rounded-lg shadow-2xl w-full transition-transform duration-500 group-hover:scale-105"
                             />
@@ -34,13 +35,14 @@ function AboutSection() {
                             }`}
                     >
                         <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-fade delay-1">
-                            The Art of Perfumery
+                            Zaki’s Essence — Where Scent Meets Soul
                         </h2>
                         <p className="mb-4 text-gray-300 leading-relaxed animate-fade delay-2">
-                            Founded in 2010, Essence has been dedicated to creating exceptional fragrances that capture emotions and memories.
+                            At Zaki’s Essence, we don’t just create perfumes — we craft unforgettable experiences.
                         </p>
                         <p className="mb-8 text-gray-300 leading-relaxed animate-fade delay-3">
-                            Our master perfumers combine traditional techniques with modern innovation to craft scents that stand the test of time.
+                            Born out of a passion for excellence and a deep respect for authenticity, our brand represents a new era of fragrance in Pakistan: one that fuses premium quality, modern aesthetics, and timeless values.
+
                         </p>
                         <button className="bg-yellow-700 hover:bg-yellow-800 text-white px-8 py-3 rounded-md font-medium transition-all duration-300 btn-animate hover-lift animate-fade delay-4 shadow-lg hover:shadow-xl">
                             Read Our Story
