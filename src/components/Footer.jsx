@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faInstagram, faXTwitter, } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faInstagram, faWhatsapp, } from '@fortawesome/free-brands-svg-icons';
 import { useIntersectionObserver } from '../hooks/useAnimations.js';
 
 function Footer() {
@@ -15,19 +15,17 @@ function Footer() {
         {
             title: "Shop",
             links: [
-                "All Perfumes",
-                "Collections",
-                "Gift Sets",
-                "Limited Editions"
+                { label: "Home", href: "/" },
+                { label: "Shop", href: "/shop" },
+                { label: "Collections", href: "/collections" },
+                { label: "About", href: "/about" },
             ]
         },
         {
             title: "Help",
             links: [
-                "FAQ",
-                "Shipping",
-                "Returns",
-                "Contact Us"
+                { label: "Contact", href: "/contact" },
+                { label: "Track Order", href: "/track-order" }
             ]
         },
         {
@@ -37,9 +35,9 @@ function Footer() {
     ];
 
     const socialIcons = [
-        { icon: faFacebook, href: "#", label: "Facebook" },
-        { icon: faInstagram, href: "#", label: "Instagram" },
-        { icon: faXTwitter, href: "#", label: "Twitter" }
+        { icon: faFacebook, href: "https://www.facebook.com/profile.php?id=61577027240104", label: "Facebook" },
+        { icon: faInstagram, href: "https://www.instagram.com/zakisessence/", label: "Instagram" },
+        { icon: faWhatsapp, href: "https://api.whatsapp.com/send/?phone=923156684779", label: "WhatsApp" }
     ];
 
     return (
@@ -75,6 +73,7 @@ function Footer() {
                                                 className="text-gray-400 hover:text-white transition-all duration-300 text-xl hover:scale-125 hover-lift animate-scale"
                                                 style={{ animationDelay: `${socialIndex * 0.1}s` }}
                                                 aria-label={social.label}
+                                                target='_blank'
                                             >
                                                 <FontAwesomeIcon icon={social.icon} />
                                             </a>
@@ -86,13 +85,13 @@ function Footer() {
                                     <h4 className="text-lg font-semibold mb-4">{section.title}</h4>
                                     <ul className="space-y-2">
                                         {section.links.map((link, linkIndex) => (
-                                            <li key={link}>
+                                            <li key={link.label}>
                                                 <a
-                                                    href="#"
+                                                    href={link.href}
                                                     className="text-gray-400 hover:text-white transition-all duration-300 relative group animate-slide-left"
                                                     style={{ animationDelay: `${linkIndex * 0.1}s` }}
                                                 >
-                                                    {link}
+                                                    {link.label}
                                                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-400 transition-all duration-300 group-hover:w-full"></span>
                                                 </a>
                                             </li>

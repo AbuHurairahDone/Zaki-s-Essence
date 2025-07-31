@@ -12,7 +12,7 @@ import {
     faPlus
 } from '@fortawesome/free-solid-svg-icons';
 
-function AdminDashboard() {
+function AdminDashboard({ onPageChange }) {
     const { user } = useAuth();
     const [stats, setStats] = useState({
         orders: 0,
@@ -195,19 +195,28 @@ function AdminDashboard() {
 
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <button className="bg-yellow-700 hover:bg-yellow-800 text-white p-6 rounded-lg shadow-md transition-colors">
+                <button
+                    className="bg-yellow-700 hover:bg-yellow-800 text-white p-6 rounded-lg shadow-md transition-colors"
+                    onClick={() => onPageChange && onPageChange('products')}
+                >
                     <FontAwesomeIcon icon={faPlus} className="text-2xl mb-3" />
                     <h3 className="font-semibold mb-2">Add New Product</h3>
                     <p className="text-sm opacity-90">Create a new fragrance product</p>
                 </button>
 
-                <button className="bg-gray-700 hover:bg-gray-800 text-white p-6 rounded-lg shadow-md transition-colors">
+                <button
+                    className="bg-gray-700 hover:bg-gray-800 text-white p-6 rounded-lg shadow-md transition-colors"
+                    onClick={() => onPageChange && onPageChange('collections')}
+                >
                     <FontAwesomeIcon icon={faPlus} className="text-2xl mb-3" />
                     <h3 className="font-semibold mb-2">Add Collection</h3>
                     <p className="text-sm opacity-90">Create a new product collection</p>
                 </button>
 
-                <button className="bg-blue-700 hover:bg-blue-800 text-white p-6 rounded-lg shadow-md transition-colors">
+                <button
+                    className="bg-blue-700 hover:bg-blue-800 text-white p-6 rounded-lg shadow-md transition-colors"
+                    onClick={() => onPageChange && onPageChange('orders')}
+                >
                     <FontAwesomeIcon icon={faShoppingCart} className="text-2xl mb-3" />
                     <h3 className="font-semibold mb-2">Manage Orders</h3>
                     <p className="text-sm opacity-90">View and update order status</p>

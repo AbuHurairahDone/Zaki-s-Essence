@@ -34,7 +34,7 @@ function AdminPanel() {
     const renderCurrentPage = () => {
         switch (currentPage) {
             case 'dashboard':
-                return <AdminDashboard />;
+                return <AdminDashboard onPageChange={setCurrentPage} />;
             case 'products':
                 return <ProductManagement />;
             case 'collections':
@@ -48,7 +48,7 @@ function AdminPanel() {
             case 'contact-messages':
                 return <ContactMessages />;
             default:
-                return <AdminDashboard />;
+                return <AdminDashboard onPageChange={setCurrentPage} />;
         }
     };
 
