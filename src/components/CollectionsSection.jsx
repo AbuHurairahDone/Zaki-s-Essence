@@ -2,14 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useIntersectionObserver } from '../hooks/useAnimations.js';
 import { ProductService } from '../services/productService.js';
 
-function CollectionsSection() {
+function CollectionsSection({ showAll = false }) {
     const [sectionRef, isSectionVisible] = useIntersectionObserver();
     const [collections, setCollections] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        loadFeaturedCollections();
-    }, []);
+        if (showAll) {
+            loadAllCollections();
+        } else {
+            loadFeaturedCollections();
+        }
+    }, [showAll]);
 
     const loadFeaturedCollections = async () => {
         try {
@@ -17,7 +21,18 @@ function CollectionsSection() {
             setCollections(featuredCollections);
         } catch (error) {
             console.error('Error loading featured collections:', error);
-            // Fallback to empty array if there's an error
+            setCollections([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const loadAllCollections = async () => {
+        try {
+            const allCollections = await ProductService.getAllCollections();
+            setCollections(allCollections);
+        } catch (error) {
+            console.error('Error loading all collections:', error);
             setCollections([]);
         } finally {
             setLoading(false);
@@ -36,7 +51,6 @@ function CollectionsSection() {
         );
     }
 
-    // Don't render the section if there are no featured collections
     if (collections.length === 0) {
         return null;
     }
@@ -50,7 +64,7 @@ function CollectionsSection() {
                         }`}
                 >
                     <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade">
-                        Featured Collections
+                        {showAll ? 'All Collections' : 'Featured Collections'}
                     </h2>
                     <p className="text-gray-600 max-w-2xl mx-auto animate-fade delay-1">
                         Explore our curated fragrance families for every occasion.
