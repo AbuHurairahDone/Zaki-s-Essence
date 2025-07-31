@@ -27,6 +27,7 @@ import ContactSection from './components/ContactSection.jsx'
 import TrackOrder from './components/TrackOrder.jsx'
 import Footer from './components/Footer.jsx'
 import AdminPanel from './components/admin/AdminPanel.jsx'
+import ReviewOrder from './components/ReviewOrder.jsx'
 
 // Simplified page transition component
 function PageTransition({ children }) {
@@ -143,77 +144,57 @@ function AppCode() {
                         <main className="overflow-hidden">
                             <PageTransition>
                                 <Routes>
-                                    <Route
-                                        path="/"
-                                        element={
-                                            <>
-                                                <HeroSection />
+                                    <Route path="/" element={
+                                        <>
+                                            <HeroSection />
+                                            <ShopSection products={products} addToCart={addToCart} />
+                                            <CollectionsSection />
+                                            <NewsLetterSection />
+                                        </>
+                                    } />
+                                    <Route path="/shop" element={
+                                        <div className="pt-10">
+                                            <div className="container mx-auto px-4 py-8">
                                                 <ShopSection products={products} addToCart={addToCart} />
+                                            </div>
+                                        </div>
+                                    } />
+                                    <Route path="/collections" element={
+                                        <div className="pt-10">
+                                            <div className="container mx-auto px-4 py-8">
                                                 <CollectionsSection />
-                                                <NewsLetterSection />
-                                            </>
-                                        }
-                                    />
-                                    <Route
-                                        path="/shop"
-                                        element={
-                                            <div className="pt-10">
-                                                <div className="container mx-auto px-4 py-8">
-                                                    <ShopSection products={products} addToCart={addToCart} />
-                                                </div>
                                             </div>
-                                        }
-                                    />
-                                    <Route
-                                        path="/collections"
-                                        element={
-                                            <div className="pt-10">
-                                                <div className="container mx-auto px-4 py-8">
-                                                    <CollectionsSection />
-                                                </div>
+                                        </div>
+                                    } />
+                                    <Route path="/about" element={
+                                        <div className="pt-10">
+                                            <div className="container mx-auto px-4 py-8">
+                                                <AboutSection />
                                             </div>
-                                        }
-                                    />
-                                    <Route
-                                        path="/about"
-                                        element={
-                                            <div className="pt-10">
-                                                <div className="container mx-auto px-4 py-8">
-                                                    <AboutSection />
-                                                </div>
+                                        </div>
+                                    } />
+                                    <Route path="/our-story" element={
+                                        <div className="pt-10">
+                                            <div className="container mx-auto px-4 py-8">
+                                                <OurStory />
                                             </div>
-                                        }
-                                    />
-                                    <Route
-                                        path="/our-story"
-                                        element={
-                                            <div className="pt-10">
-                                                <div className="container mx-auto px-4 py-8">
-                                                    <OurStory />
-                                                </div>
+                                        </div>
+                                    } />
+                                    <Route path="/contact" element={
+                                        <div className="pt-10">
+                                            <div className="container mx-auto px-4 py-8">
+                                                <ContactSection />
                                             </div>
-                                        }
-                                    />
-                                    <Route
-                                        path="/contact"
-                                        element={
-                                            <div className="pt-10">
-                                                <div className="container mx-auto px-4 py-8">
-                                                    <ContactSection />
-                                                </div>
+                                        </div>
+                                    } />
+                                    <Route path="/track-order" element={
+                                        <div className="pt-10">
+                                            <div className="container mx-auto px-4 py-8">
+                                                <TrackOrder />
                                             </div>
-                                        }
-                                    />
-                                    <Route
-                                        path="/track-order"
-                                        element={
-                                            <div className="pt-10">
-                                                <div className="container mx-auto px-4 py-8">
-                                                    <TrackOrder />
-                                                </div>
-                                            </div>
-                                        }
-                                    />
+                                        </div>
+                                    } />
+                                    <Route path="/review-order/:orderId" element={<ReviewOrder />} />
                                 </Routes>
                             </PageTransition>
                         </main>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useIntersectionObserver, usePreventAnimationFlash } from '../hooks/useAnimations.js';
 import { CloudinaryService } from '../services/cloudinaryService.js';
 import { AnalyticsService } from '../services/analyticsService.js';
+import { faStar, } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function ProductCard({ product, addToCart }) {
     const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
@@ -123,7 +125,7 @@ function ProductCard({ product, addToCart }) {
                     </h3>
                     <div className="flex items-center text-yellow-600">
                         <span className="text-sm font-medium">{product.rating}</span>
-                        <i className="fas fa-star ml-1 text-xs"></i>
+                        <FontAwesomeIcon icon={faStar} className="text-sm ml-1" />
                     </div>
                 </div>
 

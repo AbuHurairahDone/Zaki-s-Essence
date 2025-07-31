@@ -374,4 +374,26 @@ export class ProductService {
             throw error;
         }
     }
+
+    // Update product rating based on new review
+    static async updateProductRating(productId, newRating) {
+        try {
+            const docRef = doc(db, PRODUCTS_COLLECTION, productId);
+            const productDoc = await getDoc(docRef);
+            if (!productDoc.exists()) throw new Error('Product not found');
+            const productData = productDoc.data();
+            // Calculate new average rating
+            let ratings = productData.ratings || [];
+            ratings.push(newRating);
+            const avgRating = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+            await updateDoc(docRef, {
+                rating: parseFloat(avgRating.toFixed(2)),
+                ratings,
+                updatedAt: serverTimestamp()
+            });
+        } catch (error) {
+            console.error('Error updating product rating:', error);
+            throw error;
+        }
+    }
 }

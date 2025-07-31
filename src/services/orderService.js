@@ -156,7 +156,7 @@ export class OrderService {
             const statusHistory = order.statusHistory || [];
             statusHistory.push({
                 status,
-                timestamp: serverTimestamp(), // Use Firebase serverTimestamp for consistency
+                timestamp: new Date(), // Use JS Date instead of serverTimestamp()
                 notes: adminNotes
             });
             updateData.statusHistory = statusHistory;
@@ -385,6 +385,39 @@ export class OrderService {
             };
         } catch (error) {
             console.error('Error tracking order by phone:', error);
+            throw error;
+        }
+    }
+
+    // Submit reviews for an order
+    static async submitOrderReviews(orderId, reviews) {
+        try {
+            const docRef = doc(db, ORDERS_COLLECTION, orderId);
+            // Save reviews array under 'reviews' field in the order document
+            await updateDoc(docRef, {
+                reviews,
+                reviewsSubmittedAt: serverTimestamp()
+            });
+            // Optionally, update product ratings here if needed
+        } catch (error) {
+            console.error('Error submitting order reviews:', error);
+            throw error;
+        }
+    }
+
+    // Get reviews for an order
+    static async getOrderReviews(orderId) {
+        try {
+            const docRef = doc(db, ORDERS_COLLECTION, orderId);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                return data.reviews || [];
+            } else {
+                throw new Error('Order not found');
+            }
+        } catch (error) {
+            console.error('Error fetching order reviews:', error);
             throw error;
         }
     }

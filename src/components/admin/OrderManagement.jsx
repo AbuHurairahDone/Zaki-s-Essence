@@ -544,6 +544,9 @@ function OrderDetailModal({ order, onClose, onStatusUpdate, onOrderUpdated }) {
         return phone;
     };
 
+    const [copied, setCopied] = useState(false);
+    const reviewUrl = `${window.location.origin}/review-order/${order.id}`;
+
     return (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -562,6 +565,34 @@ function OrderDetailModal({ order, onClose, onStatusUpdate, onOrderUpdated }) {
                 </div>
 
                 <div className="p-6 space-y-6">
+                    {/* Show Rate & Review URL if delivered */}
+                    {order.status === ORDER_STATUS.DELIVERED && (
+                        <div className="mb-6">
+                            <div className="flex flex-col md:flex-row md:items-center md:space-x-4">
+                                <span className="font-medium text-green-700 mb-2 md:mb-0">Rate & Review URL:</span>
+                                <div className="flex items-center w-full md:w-auto">
+                                    <input
+                                        type="text"
+                                        value={reviewUrl}
+                                        readOnly
+                                        className="w-full md:w-96 px-3 py-2 border border-gray-300 rounded-l-lg text-sm bg-gray-50 focus:outline-none"
+                                    />
+                                    <button
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(reviewUrl);
+                                            setCopied(true);
+                                            setTimeout(() => setCopied(false), 2000);
+                                        }}
+                                        className="px-4 py-2 bg-yellow-700 hover:bg-yellow-800 text-white rounded-r-lg text-sm font-medium transition-colors"
+                                    >
+                                        {copied ? 'Copied!' : 'Copy'}
+                                    </button>
+                                </div>
+                            </div>
+                            <p className="text-xs text-gray-500 mt-2">Share this link with the customer to collect their review for this order.</p>
+                        </div>
+                    )}
+
                     {/* Order Info */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
