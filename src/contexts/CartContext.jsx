@@ -61,17 +61,21 @@ export const CartProvider = ({ children }) => {
     };
 
     const addToCart = (product, variant) => {
+        // Calculate discounted price if applicable
+        let variantPrice = getVariantPrice(product, variant);
+        if (product.discountPercentage && product.discountPercentage > 0) {
+            variantPrice = variantPrice - (variantPrice * product.discountPercentage / 100);
+        }
+
         // Track add to cart event
         AnalyticsService.trackAddToCart(product, variant, 1);
 
         setCartItems(prevItems => {
-            // Check if item already exists in cart with same variant
             const existingItemIndex = prevItems.findIndex(
                 item => item.product.id === product.id && item.variant === variant
             );
 
             if (existingItemIndex !== -1) {
-                // If exists, update quantity
                 const updatedItems = [...prevItems];
                 updatedItems[existingItemIndex] = {
                     ...updatedItems[existingItemIndex],
@@ -79,12 +83,10 @@ export const CartProvider = ({ children }) => {
                 };
                 return updatedItems;
             } else {
-                // If new, add to cart with variant price
-                const variantPrice = getVariantPrice(product, variant);
                 return [...prevItems, {
                     product: {
                         ...product,
-                        price: variantPrice // Set the specific variant price for cart calculations
+                        price: variantPrice
                     },
                     variant,
                     quantity: 1
@@ -92,18 +94,12 @@ export const CartProvider = ({ children }) => {
             }
         });
 
-        // show toast
         toast.success(`${product.name} (${variant}) added to cart`, {
             position: "bottom-right",
             autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
         });
     };
+
 
     // Helper function to get variant price
     const getVariantPrice = (product, variant) => {

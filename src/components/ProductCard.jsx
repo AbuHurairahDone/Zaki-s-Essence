@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useIntersectionObserver, usePreventAnimationFlash } from '../hooks/useAnimations.js';
 import { CloudinaryService } from '../services/cloudinaryService.js';
 import { AnalyticsService } from '../services/analyticsService.js';
-import { faStar, } from '@fortawesome/free-solid-svg-icons';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function ProductCard({ product, addToCart }) {
@@ -12,7 +12,6 @@ function ProductCard({ product, addToCart }) {
     const [cardRef, isCardVisible] = useIntersectionObserver();
     const isReady = usePreventAnimationFlash();
 
-    // Track product view when card becomes visible
     useEffect(() => {
         if (isCardVisible && product) {
             AnalyticsService.trackProductView(product);
@@ -22,14 +21,15 @@ function ProductCard({ product, addToCart }) {
     const handleAddToCart = async () => {
         setIsLoading(true);
         await new Promise(resolve => setTimeout(resolve, 200));
-        addToCart(product, selectedVariant);
+
+        const finalPrice = getDiscountedPrice(getVariantPrice(selectedVariant));
+        addToCart({ ...product, price: finalPrice }, selectedVariant);
+
         setIsLoading(false);
     };
 
     const handleVariantChange = (variant) => {
         setSelectedVariant(variant);
-
-        // Track variant selection
         AnalyticsService.trackFunnelStep(0, 'variant_selected', {
             product_id: product.id,
             product_name: product.name,
@@ -42,52 +42,60 @@ function ProductCard({ product, addToCart }) {
         setImageError(true);
     };
 
-    // Get price for selected variant
     const getVariantPrice = (variant) => {
-        // Support both new variantPricing structure and legacy price structure
         if (product.variantPricing && product.variantPricing[variant]) {
             return product.variantPricing[variant];
         }
-        // Fallback to legacy single price
         return product.price || 0;
     };
 
-    // Get price range for display
+    const getDiscountedPrice = (price) => {
+        if (product.discountPercentage && product.discountPercentage > 0) {
+            return price - (price * product.discountPercentage / 100);
+        }
+        return price;
+    };
+
     const getPriceRange = () => {
         if (product.variantPricing) {
-            const prices = Object.values(product.variantPricing).filter(price => price > 0);
+            const prices = Object.values(product.variantPricing).filter(p => p > 0);
             if (prices.length > 0) {
-                const minPrice = Math.min(...prices);
-                const maxPrice = Math.max(...prices);
-                if (minPrice === maxPrice) {
-                    return `Rs. ${minPrice.toFixed(0)}`;
-                }
-                return `Rs. ${minPrice.toFixed(0)} - Rs. ${maxPrice.toFixed(0)}`;
+                const min = Math.min(...prices);
+                const max = Math.max(...prices);
+                if (min === max) return `Rs. ${min.toFixed(0)}`;
+                return `Rs. ${min.toFixed(0)} - Rs. ${max.toFixed(0)}`;
             }
         }
-        // Fallback to legacy price
         return `Rs. ${(product.price || 0).toFixed(0)}`;
     };
 
     const getCurrentPrice = () => {
-        return getVariantPrice(selectedVariant);
+        const price = getVariantPrice(selectedVariant);
+        return {
+            original: price,
+            discounted: getDiscountedPrice(price),
+        };
     };
 
-    // Get optimized image URL for product display with best quality
     const getOptimizedImageUrl = () => {
         if (!product.image) return null;
-
-        // If it's a Cloudinary URL, optimize it for product card display with best quality
         if (product.image.includes('cloudinary.com')) {
-            return CloudinaryService.getProductQualityUrl(product.image, {
-                width: 400,
-                height: 500 // 4:5 aspect ratio
-            });
+            return CloudinaryService.getProductQualityUrl(product.image, { width: 400, height: 500 });
         }
-
-        // Return original URL for non-Cloudinary images
         return product.image;
     };
+
+    // Returns the stock for a given variant
+    const getVariantStock = (variant) => {
+        if (product.stock && product.stock[variant] !== undefined) {
+            return product.stock[variant];
+        }
+        // Fallback: if no stock info, assume in stock
+        return null;
+    };
+
+    const { original, discounted } = getCurrentPrice();
+    const selectedVariantStock = getVariantStock(selectedVariant);
 
     return (
         <div
@@ -115,6 +123,13 @@ function ProductCard({ product, addToCart }) {
                 <div className="absolute top-2 right-2 bg-gray-900 text-white text-xs px-2 py-1 rounded">
                     {product.category}
                 </div>
+
+                {product.discountPercentage ? (
+                    <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+                        Limited Discount {product.discountPercentage}% OFF
+                    </div>
+                ) : null}
+
                 <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 smooth-transition"></div>
             </div>
 
@@ -156,22 +171,26 @@ function ProductCard({ product, addToCart }) {
                 <div className="flex justify-between items-center">
                     <div className="flex flex-col">
                         <span className="font-bold text-lg text-gray-800">
-                            Rs. {getCurrentPrice().toFixed(0)}
+                            Rs. {discounted.toFixed(0)}
                         </span>
+                        {discounted !== original && (
+                            <span className="text-xs line-through text-gray-500">
+                                Rs. {original.toFixed(0)}
+                            </span>
+                        )}
                         <span className="text-xs text-gray-500">{selectedVariant}</span>
                     </div>
                     <button
                         onClick={handleAddToCart}
-                        disabled={isLoading}
-                        className={`bg-yellow-700 hover:bg-yellow-800 text-white px-4 py-2 rounded-md smooth-transition flex items-center btn-animate hover-lift ${isLoading ? 'opacity-75 cursor-not-allowed' : ''
-                            }`}
+                        disabled={isLoading || (selectedVariantStock === 0)}
+                        className={`bg-yellow-700 hover:bg-yellow-800 text-white px-4 py-2 rounded-md smooth-transition flex items-center btn-animate hover-lift ${isLoading || (selectedVariantStock === 0) ? 'opacity-75 cursor-not-allowed' : ''}`}
                     >
                         {isLoading ? (
                             <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
                         ) : (
                             <i className="fas fa-plus mr-2 smooth-transition group-hover:rotate-90"></i>
                         )}
-                        {isLoading ? 'Adding...' : 'Add'}
+                        {isLoading ? 'Adding...' : selectedVariantStock === 0 ? 'Out of Stock' : 'Add'}
                     </button>
                 </div>
             </div>
