@@ -523,7 +523,8 @@ function ProductModal({ product, collections, onClose, onSave }) {
 
             const productData = {
                 ...formData,
-                rating: 0, // Always default to 0
+                rating: product?.rating || 0,
+
                 sold: soldData,
                 discountPercentage: formData.discountPercentage ? parseFloat(formData.discountPercentage) : null
             };
