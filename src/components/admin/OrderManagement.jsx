@@ -545,7 +545,20 @@ function OrderDetailModal({ order, onClose, onStatusUpdate, onOrderUpdated }) {
     };
 
     const [copied, setCopied] = useState(false);
+    const [orderReviews, setOrderReviews] = useState([]);
     const reviewUrl = `${window.location.origin}/review-order/${order.id}`;
+
+    useEffect(() => {
+        async function fetchReviews() {
+            try {
+                const reviews = await OrderService.getOrderReviews(order.id);
+                setOrderReviews(reviews);
+            } catch (err) {
+                setOrderReviews([]);
+            }
+        }
+        fetchReviews();
+    }, [order.id]);
 
     return (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -690,29 +703,41 @@ function OrderDetailModal({ order, onClose, onStatusUpdate, onOrderUpdated }) {
                                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
                                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
                                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
+                                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer Review</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
-                                    {order.items?.map((item, index) => (
-                                        <tr key={index}>
-                                            <td className="px-4 py-3">
-                                                <div className="flex items-center">
-                                                    <img
-                                                        src={item.product?.image}
-                                                        alt={item.product?.name}
-                                                        className="w-12 h-12 object-cover rounded mr-3"
-                                                    />
-                                                    <span className="font-medium">{item.product?.name}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-3">{item.variant}</td>
-                                            <td className="px-4 py-3">{item.quantity}</td>
-                                            <td className="px-4 py-3">{formatCurrency(item.product?.price)}</td>
-                                            <td className="px-4 py-3 font-medium">
-                                                {formatCurrency(item.product?.price * item.quantity)}
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    {order.items?.map((item, index) => {
+                                        const review = orderReviews.find(r => r.productId === item.product?.id);
+                                        return (
+                                            <tr key={index}>
+                                                <td className="px-4 py-3">
+                                                    <div className="flex items-center">
+                                                        <img
+                                                            src={item.product?.image}
+                                                            alt={item.product?.name}
+                                                            className="w-12 h-12 object-cover rounded mr-3"
+                                                        />
+                                                        <span className="font-medium">{item.product?.name}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-4 py-3">{item.variant}</td>
+                                                <td className="px-4 py-3">{item.quantity}</td>
+                                                <td className="px-4 py-3">{formatCurrency(item.product?.price)}</td>
+                                                <td className="px-4 py-3 font-medium">{formatCurrency(item.product?.price * item.quantity)}</td>
+                                                <td className="px-4 py-3">
+                                                    {review ? (
+                                                        <div>
+                                                            <span className="font-semibold text-yellow-700">Rating: {review.rating} / 5</span>
+                                                            <p className="text-sm text-gray-700 mt-1">{review.review}</p>
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-gray-400 italic">No review</span>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
