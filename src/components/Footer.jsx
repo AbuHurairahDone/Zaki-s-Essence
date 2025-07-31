@@ -8,7 +8,7 @@ function Footer() {
 
     const footerSections = [
         {
-            title: "ESSENCE",
+            title: "Zaki's Essence",
             content: "Luxury perfumes crafted with passion and precision.",
             type: "brand"
         },
@@ -106,7 +106,7 @@ function Footer() {
 
                 <div className="border-t border-gray-800 pt-8 animate-fade delay-5">
                     <p className="text-gray-400 text-center hover:text-gray-300 transition-colors duration-300">
-                        © 2023 Essence Perfumes. All rights reserved.
+                        © 2025 Zaki's Essence. All rights reserved.
                     </p>
                 </div>
             </div>

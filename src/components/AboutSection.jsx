@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useIntersectionObserver } from '../hooks/useAnimations.js';
 import logo_bg from '../assets/logo_bg.JPG'
 
@@ -35,18 +36,21 @@ function AboutSection() {
                             }`}
                     >
                         <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-fade delay-1">
-                            Zaki’s Essence — Where Scent Meets Soul
+                            Zaki's Essence — Where Scent Meets Soul
                         </h2>
                         <p className="mb-4 text-gray-300 leading-relaxed animate-fade delay-2">
-                            At Zaki’s Essence, we don’t just create perfumes — we craft unforgettable experiences.
+                            At Zaki's Essence, we don't just create perfumes — we craft unforgettable experiences.
                         </p>
                         <p className="mb-8 text-gray-300 leading-relaxed animate-fade delay-3">
                             Born out of a passion for excellence and a deep respect for authenticity, our brand represents a new era of fragrance in Pakistan: one that fuses premium quality, modern aesthetics, and timeless values.
 
                         </p>
-                        <button className="bg-yellow-700 hover:bg-yellow-800 text-white px-8 py-3 rounded-md font-medium transition-all duration-300 btn-animate hover-lift animate-fade delay-4 shadow-lg hover:shadow-xl">
+                        <Link
+                            to="/our-story"
+                            className="bg-yellow-700 hover:bg-yellow-800 text-white px-8 py-3 rounded-md font-medium transition-all duration-300 btn-animate hover-lift animate-fade delay-4 shadow-lg hover:shadow-xl inline-block"
+                        >
                             Read Our Story
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>

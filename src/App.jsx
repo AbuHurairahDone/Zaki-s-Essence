@@ -21,6 +21,7 @@ import ShopSection from './components/ShopSection.jsx'
 import CartPanel from './components/CartPanel.jsx'
 import CollectionsSection from './components/CollectionsSection.jsx'
 import AboutSection from './components/AboutSection.jsx'
+import OurStory from './components/OurStory.jsx'
 import NewsLetterSection from './components/NewsLetterSection.jsx'
 import ContactSection from './components/ContactSection.jsx'
 import TrackOrder from './components/TrackOrder.jsx'
@@ -179,6 +180,16 @@ function AppCode() {
                                             <div className="pt-10">
                                                 <div className="container mx-auto px-4 py-8">
                                                     <AboutSection />
+                                                </div>
+                                            </div>
+                                        }
+                                    />
+                                    <Route
+                                        path="/our-story"
+                                        element={
+                                            <div className="pt-10">
+                                                <div className="container mx-auto px-4 py-8">
+                                                    <OurStory />
                                                 </div>
                                             </div>
                                         }
