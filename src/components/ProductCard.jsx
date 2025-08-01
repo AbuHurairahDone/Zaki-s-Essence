@@ -135,7 +135,7 @@ function ProductCard({ product, addToCart }) {
 
             <div className="p-4">
                 <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold text-lg group-hover:text-yellow-700 smooth-transition">
+                    <h3 className="text-product-name text-lg group-hover:text-yellow-700 smooth-transition">
                         {product.name}
                     </h3>
                     <div className="flex items-center text-yellow-600">
@@ -144,7 +144,7 @@ function ProductCard({ product, addToCart }) {
                     </div>
                 </div>
 
-                <p className="text-gray-500 mb-3 text-sm leading-relaxed">{product.description}</p>
+                <p className="text-luxury-body text-gray-500 mb-3 text-sm leading-relaxed">{product.description}</p>
 
                 <div className="mb-3">
                     <div className="flex space-x-2">

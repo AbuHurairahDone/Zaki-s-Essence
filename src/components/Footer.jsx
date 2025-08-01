@@ -55,16 +55,16 @@ function Footer() {
                         >
                             {section.type === "brand" ? (
                                 <>
-                                    <h4 className="text-xl font-bold mb-4 text-yellow-400 animate-pulse">
+                                    <h4 className="text-brand-name text-xl mb-4 text-yellow-400 animate-pulse">
                                         {section.title}
                                     </h4>
-                                    <p className="text-gray-400 leading-relaxed">
+                                    <p className="text-luxury-body text-gray-400 leading-relaxed">
                                         {section.content}
                                     </p>
                                 </>
                             ) : section.type === "social" ? (
                                 <>
-                                    <h4 className="text-lg font-semibold mb-4">{section.title}</h4>
+                                    <h4 className="text-luxury-subtitle text-lg mb-4">{section.title}</h4>
                                     <div className="flex space-x-4">
                                         {socialIcons.map((social, socialIndex) => (
                                             <a
@@ -82,13 +82,13 @@ function Footer() {
                                 </>
                             ) : (
                                 <>
-                                    <h4 className="text-lg font-semibold mb-4">{section.title}</h4>
+                                    <h4 className="text-luxury-subtitle text-lg mb-4">{section.title}</h4>
                                     <ul className="space-y-2">
                                         {section.links.map((link, linkIndex) => (
                                             <li key={link.label}>
                                                 <a
                                                     href={link.href}
-                                                    className="text-gray-400 hover:text-white transition-all duration-300 relative group animate-slide-left"
+                                                    className="text-nav text-gray-400 hover:text-white transition-all duration-300 relative group animate-slide-left"
                                                     style={{ animationDelay: `${linkIndex * 0.1}s` }}
                                                 >
                                                     {link.label}

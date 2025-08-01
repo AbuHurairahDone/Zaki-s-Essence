@@ -56,7 +56,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                         <Link
                             key={item.to}
                             to={item.to}
-                            className="text-gray-800 hover:text-yellow-700 transition-all duration-300 relative group font-medium animate-fade"
+                            className="text-nav text-gray-800 hover:text-yellow-700 transition-all duration-300 relative group"
                             style={{ animationDelay: `${index * 0.1}s` }}
                         >
                             {item.label}

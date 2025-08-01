@@ -163,15 +163,15 @@ function HeroSection() {
                 style={{ transform: contentTransform }}
             >
                 <div className="max-w-2xl">
-                    <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                    <h1 className="text-hero-title text-4xl md:text-6xl text-gold-gradient mb-4 text-shadow-luxury">
                         Discover Your Signature Scent
                     </h1>
-                    <p className="text-lg md:text-xl mb-8">
+                    <p className="text-luxury-body text-lg md:text-xl mb-8 text-white/90">
                         Experience the art of perfumery with our curated collection of luxury fragrances from around the world.
                     </p>
                     <a
                         href="#shop"
-                        className="bg-white text-gray-900 px-6 py-3 rounded-md font-medium hover:bg-gray-100 smooth-transition inline-flex items-center btn-animate hover-lift"
+                        className="text-button bg-white text-gray-900 px-6 py-3 rounded-md hover:bg-gray-100 smooth-transition inline-flex items-center btn-animate hover-lift"
                     >
                         Explore Now &nbsp; <FontAwesomeIcon icon={faArrowRight} className="smooth-transition" />
                     </a>

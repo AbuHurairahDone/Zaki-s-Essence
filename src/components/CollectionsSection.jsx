@@ -65,10 +65,10 @@ function CollectionsSection({ showAll = false }) {
                     className={`text-center mb-12 transition-all duration-800 ${isSectionVisible ? 'animate-slide' : 'translate-y-10'
                         }`}
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade">
+                    <h2 className="text-luxury-title text-3xl md:text-4xl mb-4 animate-fade">
                         {showAll ? 'All Collections' : 'Featured Collections'}
                     </h2>
-                    <p className="text-gray-600 max-w-2xl mx-auto animate-fade delay-1">
+                    <p className="text-luxury-body text-gray-600 max-w-2xl mx-auto animate-fade delay-1">
                         Explore our curated fragrance families for every occasion.
                     </p>
                 </div>
@@ -90,15 +90,15 @@ function CollectionsSection({ showAll = false }) {
                             </div>
 
                             <div className="absolute inset-0 flex flex-col justify-end p-6">
-                                <h3 className="text-xl font-bold text-white mb-2 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                                <h3 className="text-collection-title text-xl text-white mb-2 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                                     {collection.name}
                                 </h3>
-                                <p className="text-gray-200 mb-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 delay-75">
+                                <p className="text-luxury-body text-gray-200 mb-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 delay-75">
                                     {collection.description}
                                 </p>
                                 <button
                                     onClick={() => navigate(`/shop?collection=${collection.id}`)}
-                                    className="text-white border border-white px-4 py-2 rounded-md hover:bg-white hover:text-gray-900 transition-all duration-300 inline-block w-max btn-animate transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-150"
+                                    className="text-button text-white border border-white px-4 py-2 rounded-md hover:bg-white hover:text-gray-900 transition-all duration-300 inline-block w-max btn-animate transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-150"
                                 >
                                     View Collection
                                 </button>

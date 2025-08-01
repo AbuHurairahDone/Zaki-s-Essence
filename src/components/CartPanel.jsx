@@ -287,7 +287,7 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
             <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
                 <div className="p-6 border-b border-gray-200">
                     <div className="flex justify-between items-center">
-                        <h2 className="text-xl font-bold">Checkout</h2>
+                        <h2 className="text-luxury-title text-xl">Checkout</h2>
                         <button
                             onClick={onClose}
                             className="text-gray-400 hover:text-gray-600"

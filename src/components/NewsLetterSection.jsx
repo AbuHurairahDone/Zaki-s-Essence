@@ -46,10 +46,10 @@ function NewsletterSection() {
                 >
                     <div className="flex flex-col md:flex-row items-center gap-8">
                         <div className="md:w-1/2 mb-6 md:mb-0 animate-slide-left delay-1">
-                            <h3 className="text-2xl md:text-3xl font-bold mb-3 text-gray-800">
+                            <h3 className="text-luxury-title text-2xl md:text-3xl mb-3 text-gray-800">
                                 Stay Updated
                             </h3>
-                            <p className="text-gray-600 leading-relaxed">
+                            <p className="text-luxury-body text-gray-600 leading-relaxed">
                                 Join our newsletter for exclusive offers, new arrivals, and fragrance tips delivered to your inbox.
                             </p>
                         </div>
