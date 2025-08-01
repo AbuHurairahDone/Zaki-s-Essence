@@ -98,24 +98,10 @@ export class CloudinaryService {
      * @param {Object} transformations - Transformation parameters
      * @returns {string} Transformed image URL
      */
-    static getTransformedUrl(publicId, transformations = {}) {
-        let transformStr = '';
+    static getTransformedUrl(publicId) {
 
-        if (Object.keys(transformations).length > 0) {
-            const params = [];
 
-            if (transformations.width) params.push(`w_${transformations.width}`);
-            if (transformations.height) params.push(`h_${transformations.height}`);
-            if (transformations.crop) params.push(`c_${transformations.crop}`);
-            if (transformations.quality) params.push(`q_${transformations.quality}`);
-            if (transformations.format) params.push(`f_${transformations.format}`);
-            if (transformations.gravity) params.push(`g_${transformations.gravity}`);
-            if (transformations.dpr) params.push(`dpr_${transformations.dpr}`);
-
-            transformStr = params.length > 0 ? `/${params.join(',')}` : '';
-        }
-
-        return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload${transformStr}/${publicId}`;
+        return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${publicId}`;
     }
 
     /**

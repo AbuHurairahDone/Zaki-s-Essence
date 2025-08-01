@@ -129,7 +129,7 @@ function HeroSection() {
 
             {/* Parallax Overlay */}
             <div
-                className="absolute inset-0 bg-black/20 hero-overlay gpu-accelerated"
+                className="absolute inset-0 bg-black/50 hero-overlay gpu-accelerated"
                 style={{ transform: overlayTransform }}
             ></div>
 

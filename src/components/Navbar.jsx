@@ -56,7 +56,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                         <Link
                             key={item.to}
                             to={item.to}
-                            className="text-nav text-gray-800 hover:text-yellow-700 transition-all duration-300 relative group"
+                            className={`text-nav ${scrolled ? 'text-gray-800' : 'text-gray-200'} hover:text-yellow-600 transition-all duration-300 relative group`}
                             style={{ animationDelay: `${index * 0.1}s` }}
                         >
                             {item.label}
@@ -67,11 +67,11 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
 
                 <div className="flex items-center space-x-4 animate-slide-right">
                     <button
-                        className={`relative text-gray-800 hover:text-yellow-700 transition-all duration-300 hover:scale-110 ${cartPulse ? 'cart-pulse' : ''
+                        className={`relative ${scrolled ? 'text-gray-800' : 'text-gray-200'}  hover:text-yellow-700 transition-all duration-300 hover:scale-110 ${cartPulse ? 'cart-pulse' : ''
                             }`}
                         onClick={toggleCart}
                     >
-                        <FontAwesomeIcon icon={faCartShopping} className="text-xl" />
+                        <FontAwesomeIcon icon={faCartShopping} className="text-xl " />
                         {cartCount > 0 && (
                             <span className="absolute -top-2 -right-2 bg-yellow-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-scale font-bold">
                                 {cartCount}
@@ -80,7 +80,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                     </button>
 
                     <button
-                        className="md:hidden text-gray-800 hover:text-yellow-700 transition-all duration-300 hover:scale-110 p-2"
+                        className={`md:hidden ${scrolled ? 'text-gray-800' : 'text-gray-200'} hover:text-yellow-700 transition-all duration-300 hover:scale-110 p-2`}
                         onClick={toggleMobileMenu}
                     >
                         <FontAwesomeIcon icon={faBars} className="text-xl" />
