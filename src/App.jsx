@@ -186,14 +186,14 @@ function AppCode() {
             const scrollTop = window.scrollY || document.documentElement.scrollTop;
             setShowScrollButton(scrollTop >= 200);
         };
-        
+
         // Debounce scroll events for better performance
         let timeoutId;
         const debouncedHandleScroll = () => {
             clearTimeout(timeoutId);
             timeoutId = setTimeout(handleScroll, 10);
         };
-        
+
         window.addEventListener('scroll', debouncedHandleScroll, { passive: true });
         return () => {
             clearTimeout(timeoutId);
