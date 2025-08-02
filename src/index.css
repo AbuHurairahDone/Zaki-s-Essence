@@ -4,6 +4,56 @@
 
 @import "tailwindcss";
 
+/* SEO-friendly base styles */
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    /* Improves accessibility */
+    overflow-x: hidden;
+}
+
+body {
+    line-height: 1.6;
+    /* Better readability */
+    -webkit-text-size-adjust: 100%;
+    /* Prevents zoom issues on mobile */
+    -ms-text-size-adjust: 100%;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Skip link for accessibility and SEO */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #000;
+    color: #fff;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 100;
+    border-radius: 0 0 4px 4px;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Focus styles for accessibility */
+*:focus {
+    outline: 2px solid #b45309;
+    outline-offset: 2px;
+}
+
+button:focus,
+a:focus,
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid #b45309;
+    outline-offset: 2px;
+}
+
 /* Typography System for Luxury Perfume Brand */
 :root {
     /* Font families */
@@ -21,6 +71,49 @@
     --letter-spacing-normal: 0;
     --letter-spacing-wide: 0.025em;
     --letter-spacing-luxury: 0.15em;
+}
+
+/* SEO-friendly heading hierarchy */
+h1 {
+    font-size: 2.25rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 1.875rem;
+    line-height: 1.3;
+    margin-bottom: 0.875rem;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 1.5rem;
+    line-height: 1.4;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+h4 {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    margin-bottom: 0.625rem;
+    font-weight: 500;
+}
+
+h5 {
+    font-size: 1.125rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+h6 {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
 }
 
 /* Brand Typography Classes */
@@ -166,6 +259,25 @@
     .text-brand-name {
         letter-spacing: var(--letter-spacing-wide);
     }
+
+    h1 {
+        font-size: 1.875rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+    }
+}
+
+
+
+/* WebP support detection */
+.webp img[data-webp] {
+    content: attr(data-webp);
 }
 
 /* Smooth rendering optimizations */

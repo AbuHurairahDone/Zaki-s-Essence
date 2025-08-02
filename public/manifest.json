@@ -1,0 +1,46 @@
+{
+    "name": "Zaki's Essence - Premium Luxury Fragrances",
+    "short_name": "Zaki's Essence",
+    "description": "Premium luxury fragrances and perfumes online store offering authentic scents and signature collections.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#1a1a1a",
+    "theme_color": "#b45309",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/logo.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/vite.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        }
+    ],
+    "categories": [
+        "shopping",
+        "lifestyle",
+        "beauty"
+    ],
+    "lang": "en",
+    "dir": "ltr",
+    "scope": "/",
+    "screenshots": [
+        {
+            "src": "/logo.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        }
+    ]
+}

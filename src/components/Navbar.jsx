@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faBars } from '@fortawesome/free-solid-svg-icons';
-import logo from '../assets/logo.PNG';
+import logo from '../assets/logo.png';
 import logoDark from '../assets/logo_dark.PNG';
 
 
@@ -40,7 +40,12 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
             <div className="container mx-auto px-4 flex justify-between items-center">
                 <div className="flex items-center animate-slide-left">
                     <Link to="/" className="border border-yellow-700 p-2 text-gray-800 hover:text-yellow-700 transition-all duration-300 hover:border-yellow-800 hover:shadow-md rounded">
-                        <img src={scrolled ? logoDark : logo} alt="Logo" className="h-8 transition-transform hover:scale-110" />
+                        <img
+                            src={scrolled ? logoDark : logo}
+                            alt="Zaki's Essence Logo"
+                            className="h-8 w-auto max-w-none transition-transform hover:scale-110"
+                            style={{ maxHeight: '32px', width: 'auto' }}
+                        />
                     </Link>
                 </div>
 

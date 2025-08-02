@@ -12,8 +12,10 @@ import { faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Import analytics hooks
+// Import SEO and analytics hooks
 import { usePageTracking, usePerformanceTracking } from './hooks/useAnalytics.js'
+import { useSEO, usePageTracking as useSEOPageTracking, usePerformance } from './hooks/useSEO.js'
+import GTMService from './services/gtmService.js'
 
 import { Navbar, MobileMenu } from './components/Navbar.jsx'
 import HeroSection from './components/HeroSection.jsx'
@@ -28,6 +30,99 @@ import TrackOrder from './components/TrackOrder.jsx'
 import Footer from './components/Footer.jsx'
 import AdminPanel from './components/admin/AdminPanel.jsx'
 import ReviewOrder from './components/ReviewOrder.jsx'
+
+// SEO-aware page components
+function HomePage() {
+    useSEO('home');
+    const { products } = useContext(ProductContext);
+    const { addToCart } = useContext(CartContext);
+
+    useEffect(() => {
+        GTMService.trackPageView('home');
+    }, []);
+
+    return (
+        <>
+            <HeroSection />
+            <ShopSection products={products} addToCart={addToCart} />
+            <CollectionsSection />
+            <NewsLetterSection />
+        </>
+    );
+}
+
+function ShopPage() {
+    useSEO('shop');
+    const { products } = useContext(ProductContext);
+    const { addToCart } = useContext(CartContext);
+
+    useEffect(() => {
+        GTMService.trackPageView('shop');
+        GTMService.trackCollectionView('All Products', products.length);
+    }, [products.length]);
+
+    return (
+        <div className="pt-10">
+            <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 text-luxury-title">
+                    Premium Fragrance Collection
+                </h1>
+                <ShopSection products={products} addToCart={addToCart} />
+            </div>
+        </div>
+    );
+}
+
+function CollectionsPage() {
+    useSEO('collections');
+
+    useEffect(() => {
+        GTMService.trackPageView('collections');
+    }, []);
+
+    return (
+        <div className="pt-10">
+            <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 text-luxury-title">
+                    Curated Fragrance Collections
+                </h1>
+                <CollectionsSection showAll={true} />
+            </div>
+        </div>
+    );
+}
+
+function AboutPage() {
+    useSEO('about');
+
+    useEffect(() => {
+        GTMService.trackPageView('about');
+    }, []);
+
+    return (
+        <div className="pt-10">
+            <div className="container mx-auto px-4 py-8">
+                <AboutSection />
+            </div>
+        </div>
+    );
+}
+
+function ContactPage() {
+    useSEO('contact');
+
+    useEffect(() => {
+        GTMService.trackPageView('contact');
+    }, []);
+
+    return (
+        <div className="pt-10">
+            <div className="container mx-auto px-4 py-8">
+                <ContactSection />
+            </div>
+        </div>
+    );
+}
 
 // Simplified page transition component
 function PageTransition({ children }) {
@@ -68,16 +163,42 @@ function AppCode() {
     const [showScrollButton, setShowScrollButton] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Initialize analytics tracking
+    // Initialize analytics and performance tracking
     usePageTracking();
     usePerformanceTracking();
+    useSEOPageTracking();
+    usePerformance();
+
+    // Initialize GTM on app load
+    useEffect(() => {
+        GTMService.initializeDataLayer();
+    }, []);
+
+    // Track cart view when cart is opened
+    useEffect(() => {
+        if (isCartOpen && cartItems.length > 0) {
+            GTMService.trackViewCart(cartItems, totalAmount);
+        }
+    }, [isCartOpen, cartItems, totalAmount]);
 
     useEffect(() => {
         const handleScroll = () => {
-            setShowScrollButton(window.scrollY >= 200);
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            setShowScrollButton(scrollTop >= 200);
         };
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
+        
+        // Debounce scroll events for better performance
+        let timeoutId;
+        const debouncedHandleScroll = () => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(handleScroll, 10);
+        };
+        
+        window.addEventListener('scroll', debouncedHandleScroll, { passive: true });
+        return () => {
+            clearTimeout(timeoutId);
+            window.removeEventListener('scroll', debouncedHandleScroll);
+        };
     }, []);
 
     // Reduced loading time to prevent jitter
@@ -105,7 +226,7 @@ function AppCode() {
             <div className="fixed inset-0 bg-white flex items-center justify-center z-50">
                 <div className="text-center">
                     <div className="animate-spin w-8 h-8 border-2 border-yellow-700 border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <h2 className="text-lg font-medium text-gray-800">Loading...</h2>
+                    <h2 className="text-lg font-medium text-gray-800">Loading Zaki's Essence...</h2>
                 </div>
             </div>
         );
@@ -141,38 +262,13 @@ function AppCode() {
                             totalAmount={totalAmount}
                         />
 
-                        <main className="overflow-hidden">
+                        <main className="relative">
                             <PageTransition>
                                 <Routes>
-                                    <Route path="/" element={
-                                        <>
-                                            <HeroSection />
-                                            <ShopSection products={products} addToCart={addToCart} />
-                                            <CollectionsSection />
-                                            <NewsLetterSection />
-                                        </>
-                                    } />
-                                    <Route path="/shop" element={
-                                        <div className="pt-10">
-                                            <div className="container mx-auto px-4 py-8">
-                                                <ShopSection products={products} addToCart={addToCart} />
-                                            </div>
-                                        </div>
-                                    } />
-                                    <Route path="/collections" element={
-                                        <div className="pt-10">
-                                            <div className="container mx-auto px-4 py-8">
-                                                <CollectionsSection showAll={true} />
-                                            </div>
-                                        </div>
-                                    } />
-                                    <Route path="/about" element={
-                                        <div className="pt-10">
-                                            <div className="container mx-auto px-4 py-8">
-                                                <AboutSection />
-                                            </div>
-                                        </div>
-                                    } />
+                                    <Route path="/" element={<HomePage />} />
+                                    <Route path="/shop" element={<ShopPage />} />
+                                    <Route path="/collections" element={<CollectionsPage />} />
+                                    <Route path="/about" element={<AboutPage />} />
                                     <Route path="/our-story" element={
                                         <div className="pt-10">
                                             <div className="container mx-auto px-4 py-8">
@@ -180,13 +276,7 @@ function AppCode() {
                                             </div>
                                         </div>
                                     } />
-                                    <Route path="/contact" element={
-                                        <div className="pt-10">
-                                            <div className="container mx-auto px-4 py-8">
-                                                <ContactSection />
-                                            </div>
-                                        </div>
-                                    } />
+                                    <Route path="/contact" element={<ContactPage />} />
                                     <Route path="/track-order" element={
                                         <div className="pt-10">
                                             <div className="container mx-auto px-4 py-8">

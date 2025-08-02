@@ -82,7 +82,7 @@ function CollectionsSection({ showAll = false }) {
                             <div className="relative overflow-hidden rounded-lg">
                                 <img
                                     src={collection.image}
-                                    alt={collection.name}
+                                    alt={`${collection.name} fragrance collection - ${collection.description}`}
                                     className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>

@@ -1,0 +1,41 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://zakisessence.pk/sitemap.xml
+
+# Crawl-delay for better server performance
+Crawl-delay: 1
+
+# Allow crawling of important pages
+Allow: /shop
+Allow: /collections
+Allow: /about
+Allow: /contact
+Allow: /products/*
+
+# Disallow admin and private areas
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/
+Disallow: /private/
+Disallow: /*?
+Disallow: /search?*
+Disallow: /cart
+Disallow: /checkout
+
+# Allow CSS and JS for better rendering
+Allow: /*.css
+Allow: /*.js
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.gif
+Allow: /*.svg
+Allow: /*.webp
+
+# Block common bot paths
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /wp-content/
+Disallow: /xmlrpc.php
