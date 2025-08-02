@@ -39,7 +39,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
             }`}>
             <div className="container mx-auto px-4 flex justify-between items-center">
                 <div className="flex items-center animate-slide-left">
-                    <Link to="/" className="border border-yellow-700 p-2 text-gray-800 hover:text-yellow-700 transition-all duration-300 hover:border-yellow-800 hover:shadow-md rounded">
+                    <Link to="/" className="p-2 text-gray-800 hover:text-yellow-700 transition-all duration-300 hover:border-yellow-800 hover:shadow-md rounded">
                         <img
                             src={scrolled ? logoDark : logo}
                             alt="Zaki's Essence Logo"

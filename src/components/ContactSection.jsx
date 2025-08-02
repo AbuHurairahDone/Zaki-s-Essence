@@ -137,14 +137,14 @@ function ContactSection() {
                     </div>
                 </div>
 
-                {/* Floating WhatsApp Button */}
+                {/* Floating WhatsApp Button
                 <button
                     onClick={openWhatsApp}
-                    className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-700 text-white p-4 rounded-l-4xl shadow-lg transition transform hover:scale-110 animate-bounce"
+                    className="fixed  top-1/2 right-0 z-50 bg-green-500 hover:bg-green-700 text-white p-4 rounded-l-4xl shadow-lg transition transform hover:scale-110 animate-bounce"
                     title="Chat with us on WhatsApp"
                 >
-                    <FontAwesomeIcon icon={faWhatsapp} className='' />
-                </button>
+                    <FontAwesomeIcon size="2xl" icon={faWhatsapp} className='' />
+                </button> */}
             </section>
         </>
     );

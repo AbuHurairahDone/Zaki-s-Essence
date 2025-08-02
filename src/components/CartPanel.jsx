@@ -584,7 +584,7 @@ function CartPanel({ isOpen, cartItems, toggleCart, updateQuantity, removeItem, 
                             </div>
                             <button
                                 onClick={handleCheckout}
-                                className="w-full bg-yellow-700 hover:bg-yellow-800 text-white py-4 rounded-md transition-all duration-300 font-medium text-lg btn-animate hover-lift shadow-lg hover:shadow-xl"
+                                className="w-full  bg-yellow-700 hover:bg-yellow-800 text-white py-4 rounded-full transition-all duration-300 font-medium text-lg btn-animate hover-lift shadow-lg hover:shadow-xl"
                             >
                                 Proceed to Checkout
                             </button>

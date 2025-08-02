@@ -8,6 +8,7 @@ import { ProductProvider } from './contexts/Product.jsx'
 import { AuthProvider } from './contexts/AuthContext.jsx'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faWhatsapp, } from '@fortawesome/free-brands-svg-icons';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -72,6 +73,12 @@ function ShopPage() {
         </div>
     );
 }
+
+const openWhatsApp = () => {
+       const number = "+923156684779"; // Replace with your business number
+       const text = encodeURIComponent("Hi! I'm interested in your fragrances.");
+       window.open(`https://wa.me/${number}?text=${text}`, '_blank');
+   };
 
 function CollectionsPage() {
     useSEO('collections');
@@ -303,6 +310,13 @@ function AppCode() {
                 } />
             </Routes>
 
+            <button
+                    onClick={openWhatsApp}
+                    className="fixed  top-4/5 left-0 z-50 bg-green-500 hover:bg-green-700 text-white p-2 rounded-r-4xl shadow-lg transition transform hover:scale-110 animate-bounce"
+                    title="Chat with us on WhatsApp"
+                >
+                <FontAwesomeIcon size="2x" icon={faWhatsapp} className='' />
+            </button>
             <ToastContainer
                 position="bottom-right"
                 autoClose={2000}
@@ -325,7 +339,7 @@ function App() {
             <AuthProvider>
                 <CartProvider>
                     <ProductProvider>
-                        <AppCode />
+                            <AppCode />
                     </ProductProvider>
                 </CartProvider>
             </AuthProvider>
