@@ -71,22 +71,30 @@ function ShopSection({ products, addToCart }) {
 
                 {/* Categories */}
                 <div className="mb-8 flex justify-center">
-                    <div className="flex overflow-x-auto scrollbar-hide pb-4 px-4">
-                        {categories.map(category => (
-                            <button
-                                key={category}
-                                onClick={() => handleCategoryChange(category)}
-                                aria-pressed={selectedCategory === category}
-                                className={`flex-shrink-0 rounded-full font-medium text-sm sm:text-base smooth-transition hover-lift px-4 py-2 sm:px-5 sm:py-2.5
-                                    ${selectedCategory === category
-                                        ? 'bg-yellow-700 text-white shadow-lg scale-105'
-                                        : 'bg-white text-gray-800 border border-gray-200 hover:border-yellow-700 hover:text-yellow-700 hover:shadow-md'}`}
-                            >
-                                {category}
-                            </button>
-                        ))}
-                    </div>
+                    <nav
+                        className="flex overflow-x-auto scrollbar-hide pb-4 px-4 gap-3 sm:gap-4"
+                        aria-label="Product categories"
+                    >
+                        {categories.map((category) => {
+                            const isActive = selectedCategory === category;
+                            return (
+                                <button
+                                    key={category}
+                                    onClick={() => handleCategoryChange(category)}
+                                    aria-pressed={isActive}
+                                    className={`flex-shrink-0 rounded-full font-medium text-sm sm:text-base smooth-transition hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 px-4 py-2 sm:px-5 sm:py-2.5
+                        ${isActive
+                                            ? 'bg-yellow-700 text-white shadow-lg scale-105'
+                                            : 'bg-white text-gray-800 border border-gray-200 hover:border-yellow-700 hover:text-yellow-700 hover:shadow-md'
+                                        }`}
+                                >
+                                    {category}
+                                </button>
+                            );
+                        })}
+                    </nav>
                 </div>
+
                 <div className={`smooth-transition ${isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
                     {/* Mobile View: Horizontal scroll per collection */}
                     <div className="block md:hidden space-y-8">
