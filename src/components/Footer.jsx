@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faInstagram, faWhatsapp, } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faInstagram, faWhatsapp, faTiktok } from '@fortawesome/free-brands-svg-icons';
 import { useIntersectionObserver } from '../hooks/useAnimations.js';
 
 function Footer() {
@@ -37,7 +37,8 @@ function Footer() {
     const socialIcons = [
         { icon: faFacebook, href: "https://www.facebook.com/profile.php?id=61577027240104", label: "Facebook" },
         { icon: faInstagram, href: "https://www.instagram.com/zakisessence/", label: "Instagram" },
-        { icon: faWhatsapp, href: "https://api.whatsapp.com/send/?phone=923156684779", label: "WhatsApp" }
+        { icon: faWhatsapp, href: "https://api.whatsapp.com/send/?phone=923156684779", label: "WhatsApp" },
+        { icon: faTiktok, href: "https://www.tiktok.com/@zakis.essence", label: "TikTok" }
     ];
 
     return (
