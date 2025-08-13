@@ -92,6 +92,21 @@ export class ProductService {
     // Add new product (Admin only)
     static async addProduct(productData) {
         try {
+            // Validate weekly sale constraints
+            if (productData.isWeeklySale) {
+                if (!productData.discountPercentage || productData.discountPercentage <= 0) {
+                    throw new Error('Weekly sale products must have a valid discount percentage');
+                }
+                if (productData.isNewArrival) {
+                    throw new Error('A product cannot be both a weekly sale and new arrival');
+                }
+            }
+
+            // Validate new arrival constraints
+            if (productData.isNewArrival && productData.isWeeklySale) {
+                throw new Error('A product cannot be both a weekly sale and new arrival');
+            }
+
             const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), {
                 ...productData,
                 createdAt: serverTimestamp(),
@@ -107,6 +122,21 @@ export class ProductService {
     // Update product (Admin only)
     static async updateProduct(productId, productData) {
         try {
+            // Validate weekly sale constraints
+            if (productData.isWeeklySale) {
+                if (!productData.discountPercentage || productData.discountPercentage <= 0) {
+                    throw new Error('Weekly sale products must have a valid discount percentage');
+                }
+                if (productData.isNewArrival) {
+                    throw new Error('A product cannot be both a weekly sale and new arrival');
+                }
+            }
+
+            // Validate new arrival constraints
+            if (productData.isNewArrival && productData.isWeeklySale) {
+                throw new Error('A product cannot be both a weekly sale and new arrival');
+            }
+
             const docRef = doc(db, PRODUCTS_COLLECTION, productId);
             await updateDoc(docRef, {
                 ...productData,
@@ -408,6 +438,45 @@ export class ProductService {
             });
         } catch (error) {
             console.error('Error updating product rating:', error);
+            throw error;
+        }
+    }
+
+    // Get new arrivals
+    static async getNewArrivals() {
+        try {
+            const q = query(
+                collection(db, PRODUCTS_COLLECTION),
+                where('isNewArrival', '==', true),
+                orderBy('createdAt', 'desc')
+            );
+            const querySnapshot = await getDocs(q);
+            return querySnapshot.docs.map(doc => {
+                const data = { id: doc.id, ...doc.data() };
+                return this.normalizeProductData(data);
+            });
+        } catch (error) {
+            console.error('Error fetching new arrivals:', error);
+            throw error;
+        }
+    }
+
+    // Get weekly sales
+    static async getWeeklySaleProducts() {
+        try {
+            const q = query(
+                collection(db, PRODUCTS_COLLECTION),
+                where('isWeeklySale', '==', true),
+                where('discountPercentage', '>', 0),
+                orderBy('discountPercentage', 'desc')
+            );
+            const querySnapshot = await getDocs(q);
+            return querySnapshot.docs.map(doc => {
+                const data = { id: doc.id, ...doc.data() };
+                return this.normalizeProductData(data);
+            });
+        } catch (error) {
+            console.error('Error fetching weekly sale products:', error);
             throw error;
         }
     }

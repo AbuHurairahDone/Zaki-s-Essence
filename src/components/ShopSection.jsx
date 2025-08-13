@@ -9,12 +9,30 @@ function ShopSection({ products, addToCart }) {
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [categories, setCategories] = useState(["All"]);
     const [collections, setCollections] = useState([]);
+    const [newArrivals, setNewArrivals] = useState([]);
+    const [weeklySales, setWeeklySales] = useState([]);
     const [sectionRef, isSectionVisible] = useIntersectionObserver();
     const isReady = usePreventAnimationFlash();
     const location = useLocation();
 
     const params = new URLSearchParams(location.search);
     const collectionParam = params.get('collection');
+
+    useEffect(() => {
+        const loadSpecialProducts = async () => {
+            try {
+                const [newArrivalsData, weeklySalesData] = await Promise.all([
+                    ProductService.getNewArrivals(),
+                    ProductService.getWeeklySaleProducts()
+                ]);
+                setNewArrivals(newArrivalsData);
+                setWeeklySales(weeklySalesData);
+            } catch (error) {
+                console.error('Error loading special products:', error);
+            }
+        };
+        loadSpecialProducts();
+    }, []);
 
     useEffect(() => {
         const loadCollections = async () => {
@@ -69,6 +87,60 @@ function ShopSection({ products, addToCart }) {
                     </p>
                 </div>
 
+                {/* New Arrivals Section */}
+                {newArrivals.length > 0 && (
+                    <div className="mb-16">
+                        <div className="flex items-center justify-center mb-6">
+                            <h3 className="text-2xl font-bold text-gray-900">New Arrivals</h3>
+                        </div>
+
+                        {/* Mobile View: Horizontal scroll */}
+                        <div className="block md:hidden">
+                            <div className="flex overflow-x-auto space-x-4 px-2 pb-2 scrollbar-hide">
+                                {newArrivals.map((product) => (
+                                    <div key={product.id} className="flex-shrink-0 w-64">
+                                        <ProductCard product={product} addToCart={addToCart} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Desktop View: Grid */}
+                        <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {newArrivals.map((product) => (
+                                <ProductCard key={product.id} product={product} addToCart={addToCart} />
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Weekly Sale Section */}
+                {weeklySales.length > 0 && (
+                    <div className="mb-16">
+                        <div className="flex items-center justify-center mb-6">
+                            <h3 className="text-2xl font-bold text-gray-900">Weekly Sale</h3>
+
+                        </div>
+
+                        {/* Mobile View: Horizontal scroll */}
+                        <div className="block md:hidden">
+                            <div className="flex overflow-x-auto space-x-4 px-2 pb-2 scrollbar-hide">
+                                {weeklySales.map((product) => (
+                                    <div key={product.id} className="flex-shrink-0 w-64">
+                                        <ProductCard product={product} addToCart={addToCart} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Desktop View: Grid */}
+                        <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {weeklySales.map((product) => (
+                                <ProductCard key={product.id} product={product} addToCart={addToCart} />
+                            ))}
+                        </div>
+                    </div>
+                )}
                 {/* Categories */}
                 <div className="mb-8 flex justify-center">
                     <nav
@@ -95,6 +167,7 @@ function ShopSection({ products, addToCart }) {
                     </nav>
                 </div>
 
+                {/* Regular Products */}
                 <div className={`smooth-transition ${isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
                     {/* Mobile View: Horizontal scroll per collection */}
                     <div className="block md:hidden space-y-8">
@@ -128,7 +201,7 @@ function ShopSection({ products, addToCart }) {
                 </div>
 
                 {/* Empty State */}
-                {filteredProducts.length === 0 && (
+                {filteredProducts.length === 0 && !newArrivals.length && !weeklySales.length && (
                     <div className="text-center py-12 animate-fade">
                         <div className="text-gray-400 text-6xl mb-4">
                             <i className="fas fa-search"></i>

@@ -259,10 +259,18 @@ function ProductCard({ product, onEdit, onDelete, formatCurrency, formatDate, ge
                     <FontAwesomeIcon icon={faLayerGroup} className="mr-1" />
                     {getCollectionName(product.collectionRef)}
                 </div>
-                {product.discountPercentage && (
+                {/* Weekly Sale Badge */}
+                {product.isWeeklySale && (
                     <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded flex items-center">
                         <FontAwesomeIcon icon={faPercentage} className="mr-1" />
-                        {product.discountPercentage}% OFF
+                        Weekly Sale {product.discountPercentage}% OFF
+                    </div>
+                )}
+                {/* New Arrival Badge */}
+                {product.isNewArrival && (
+                    <div className="absolute bottom-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded flex items-center">
+                        <FontAwesomeIcon icon={faStar} className="mr-1" />
+                        New Arrival
                     </div>
                 )}
             </div>
@@ -339,9 +347,10 @@ function ProductModal({ product, collections, onClose, onSave }) {
         stock: product?.stock || { '50ml': 0, '100ml': 0 },
         sold: product?.sold || { '50ml': 0, '100ml': 0 },
         discountPercentage: product?.discountPercentage || '',
-        publicId: product?.publicId || '', // For Cloudinary
+        isNewArrival: product?.isNewArrival || false,
+        isWeeklySale: product?.isWeeklySale || false,
+        publicId: product?.publicId || '',
         cloudinaryData: product?.cloudinaryData || null,
-        // New: per-variant images map, default null per variant
         variantImages: (() => {
             const base = product?.variantImages || {};
             const map = {};
@@ -816,6 +825,69 @@ function ProductModal({ product, collections, onClose, onSave }) {
                             </div>
                         </div>
                     )}
+
+                    {/* Product Flags */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Product Flags</h3>
+                        <div className="flex flex-col gap-4">
+                            <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                                <div>
+                                    <h4 className="font-medium text-gray-900">New Arrival</h4>
+                                    <p className="text-sm text-gray-600">Mark this product as a new arrival</p>
+                                </div>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        name="isNewArrival"
+                                        className="sr-only peer"
+                                        checked={formData.isNewArrival}
+                                        onChange={(e) => {
+                                            if (e.target.checked && formData.isWeeklySale) {
+                                                toast.warning('A product cannot be both a New Arrival and Weekly Sale');
+                                                return;
+                                            }
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                isNewArrival: e.target.checked
+                                            }));
+                                        }}
+                                    />
+                                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-700"></div>
+                                </label>
+                            </div>
+
+                            <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg">
+                                <div>
+                                    <h4 className="font-medium text-gray-900">Weekly Sale</h4>
+                                    <p className="text-sm text-gray-600">Mark this product for weekly sale (requires discount)</p>
+                                </div>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        name="isWeeklySale"
+                                        className="sr-only peer"
+                                        checked={formData.isWeeklySale}
+                                        disabled={!formData.discountPercentage}
+                                        onChange={(e) => {
+                                            if (e.target.checked && formData.isNewArrival) {
+                                                toast.warning('A product cannot be both a New Arrival and Weekly Sale');
+                                                return;
+                                            }
+                                            if (e.target.checked && !formData.discountPercentage) {
+                                                toast.error('Please set a discount percentage first');
+                                                return;
+                                            }
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                isWeeklySale: e.target.checked
+                                            }));
+                                        }}
+                                    />
+                                    <div className={`w-11 h-6 bg-gray-200 rounded-full peer after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${!formData.discountPercentage ? 'opacity-50 cursor-not-allowed' : 'peer-checked:after:translate-x-full peer-checked:after:border-white peer-checked:bg-yellow-700'}`}></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
 
                     {/* Variants & Stock */}
                     <div className="space-y-4">

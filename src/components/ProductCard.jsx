@@ -150,7 +150,7 @@ function ProductCard({ product, addToCart }) {
                     {product.category}
                 </div>
                 {product.discountPercentage && (
-                    <div className="absolute top-0 left-0 bg-black text-white text-xl font-bold px-2 py-1 rounded">
+                    <div className="absolute top-0 left-0 bg-black text-white text-xl font-medium px-2 py-1 rounded">
                         Sale
                     </div>
                 )}
