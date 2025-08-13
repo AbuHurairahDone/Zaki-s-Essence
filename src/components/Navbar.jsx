@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faBars, faXmark } from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/logo.png';
-import logoDark from '../assets/logo_dark.PNG';
 
 export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
     const [scrolled, setScrolled] = useState(false);
@@ -34,16 +33,14 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
 
     return (
         <header
-            className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled
-                ? 'bg-white/70 backdrop-blur-md shadow-lg py-2'
-                : 'bg-black py-3'
+            className={`fixed top-0 w-full z-50 transition-all duration-500 bg-black py-3
                 }`}
         >
             <div className="container mx-auto px-4 flex justify-between items-center">
                 {/* Logo */}
                 <Link to="/" className="flex items-center gap-2">
                     <img
-                        src={scrolled ? logoDark : logo}
+                        src={logo}
                         alt="Logo"
                         className="h-9 transition-transform duration-300 hover:scale-105"
                     />
@@ -55,7 +52,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                         <Link
                             key={item.to}
                             to={item.to}
-                            className={`relative font-medium tracking-wide transition-all duration-300 group ${scrolled ? 'text-gray-800' : 'text-white'
+                            className={`relative font-medium tracking-wide transition-all duration-300 group text-white
                                 }`}
                             style={{ animationDelay: `${idx * 50}ms` }}
                         >
@@ -70,7 +67,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                     {/* Cart */}
                     <button
                         onClick={toggleCart}
-                        className={`relative transition-transform duration-300 hover:scale-110 ${scrolled ? 'text-gray-800' : 'text-white'
+                        className={`relative transition-transform duration-300 hover:scale-110 text-white
                             } ${cartPulse ? 'animate-bounce' : ''}`}
                     >
                         <FontAwesomeIcon icon={faCartShopping} className="text-xl" />
@@ -84,7 +81,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={toggleMobileMenu}
-                        className={`md:hidden transition-transform duration-300 hover:scale-110 ${scrolled ? 'text-gray-800' : 'text-white'
+                        className={`md:hidden transition-transform duration-300 hover:scale-110 text-white
                             }`}
                     >
                         <FontAwesomeIcon icon={faBars} className="text-xl" />
