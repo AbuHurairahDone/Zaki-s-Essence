@@ -65,9 +65,9 @@ function ShopPage() {
     return (
         <div className="pt-10">
             <div className="container mx-auto px-4 py-8">
-                <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 text-luxury-title">
+                {/* <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 text-luxury-title">
                     Premium Fragrance Collection
-                </h1>
+                </h1> */}
                 <ShopSection products={products} addToCart={addToCart} />
             </div>
         </div>
@@ -75,10 +75,10 @@ function ShopPage() {
 }
 
 const openWhatsApp = () => {
-       const number = "+923156684779"; // Replace with your business number
-       const text = encodeURIComponent("Hi! I'm interested in your fragrances.");
-       window.open(`https://wa.me/${number}?text=${text}`, '_blank');
-   };
+    const number = "+923156684779"; // Replace with your business number
+    const text = encodeURIComponent("Hi! I'm interested in your fragrances.");
+    window.open(`https://wa.me/${number}?text=${text}`, '_blank');
+};
 
 function CollectionsPage() {
     useSEO('collections');
@@ -90,9 +90,9 @@ function CollectionsPage() {
     return (
         <div className="pt-10">
             <div className="container mx-auto px-4 py-8">
-                <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 text-luxury-title">
+                {/* <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 text-luxury-title">
                     Curated Fragrance Collections
-                </h1>
+                </h1> */}
                 <CollectionsSection showAll={true} />
             </div>
         </div>
@@ -311,10 +311,10 @@ function AppCode() {
             </Routes>
 
             <button
-                    onClick={openWhatsApp}
-                    className="fixed  top-4/5 left-0 z-50 bg-green-500 hover:bg-green-700 text-white p-2 rounded-r-4xl shadow-lg transition transform hover:scale-110 animate-bounce"
-                    title="Chat with us on WhatsApp"
-                >
+                onClick={openWhatsApp}
+                className="fixed  top-4/5 left-0 z-50 bg-green-500 hover:bg-green-700 text-white p-2 rounded-r-4xl shadow-lg transition transform hover:scale-110 animate-bounce"
+                title="Chat with us on WhatsApp"
+            >
                 <FontAwesomeIcon size="2x" icon={faWhatsapp} className='' />
             </button>
             <ToastContainer
@@ -339,7 +339,7 @@ function App() {
             <AuthProvider>
                 <CartProvider>
                     <ProductProvider>
-                            <AppCode />
+                        <AppCode />
                     </ProductProvider>
                 </CartProvider>
             </AuthProvider>

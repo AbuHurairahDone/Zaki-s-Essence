@@ -133,8 +133,8 @@ function ShopSection({ products, addToCart }) {
                         <div className="text-gray-400 text-6xl mb-4">
                             <i className="fas fa-search"></i>
                         </div>
-                        <h3 className="text-xl font-semibold text-gray-600 mb-2">No products found</h3>
-                        <p className="text-gray-500">Try selecting a different category</p>
+                        <h3 className="text-xl font-semibold text-gray-600 mb-2">Coming Soon!</h3>
+                        <p className="text-gray-500">Stay tuned for updates!</p>
                     </div>
                 )}
             </div>
