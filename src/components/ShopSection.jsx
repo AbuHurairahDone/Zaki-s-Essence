@@ -85,22 +85,23 @@ function ShopSection({ products, addToCart }) {
     return (
         <section id="shop" className="py-20 ">
             <div className="container mx-auto px-4">
-
-                {/* Section heading */}
-                <div
-                    ref={sectionRef}
-                    className={`text-center mb-16 transition-all duration-700 ${isSectionVisible && isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                >
-                    <h2 className="text-4xl md:text-5xl font-serif tracking-wide mb-4 text-gray-900">
-                        Our Fragrance Collection
-                    </h2>
-                    <p className="text-lg text-gray-500 italic max-w-2xl mx-auto">
-                        Discover our exquisite selection of perfumes crafted with the finest ingredients.
-                    </p>
-                </div>
-
                 {/* New Arrivals */}
-                {newArrivals.length > 0 && (
+                {!collectionParam && collections.length > 0 && (
+
+                    < div
+                        ref={sectionRef}
+                        className={`text-center mb-16 transition-all duration-700 ${isSectionVisible && isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                    >
+                        <h2 className="text-4xl md:text-5xl font-serif tracking-wide mb-4 text-gray-900">
+                            Our Fragrance Collection
+                        </h2>
+                        <p className="text-lg text-gray-500 italic max-w-2xl mx-auto">
+                            Discover our exquisite selection of perfumes crafted with the finest ingredients.
+                        </p>
+                    </div>
+                )}
+                {/* New Arrivals */}
+                {!collectionParam && collections.length > 0 && newArrivals.length > 0 && (
                     <div className="mb-20">
                         <SectionTitle>New Arrivals</SectionTitle>
 
@@ -135,7 +136,7 @@ function ShopSection({ products, addToCart }) {
                 )}
 
                 {/* Weekly Sale */}
-                {weeklySales.length > 0 && (
+                {!collectionParam && collections.length > 0 && weeklySales.length > 0 && (
                     <div className="mb-20">
                         <div className=" rounded-xl p-6">
                             <SectionTitle>Weekly Sale</SectionTitle>
@@ -172,8 +173,9 @@ function ShopSection({ products, addToCart }) {
                     </div>
                 )}
 
+
                 {/* Complete Collection */}
-                <SectionTitle>Complete Collection</SectionTitle>
+                <SectionTitle>{!collectionParam && collections.length > 0 ? "Complete Collection" : `${selectedCategory} Collection`}</SectionTitle>
                 <div className={`transition-all duration-500 ${isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
                     {/* Mobile: per collection */}
                     <div className="block md:hidden space-y-10">
@@ -236,7 +238,7 @@ function ShopSection({ products, addToCart }) {
                     </div>
                 )}
             </div>
-        </section>
+        </section >
     );
 }
 
