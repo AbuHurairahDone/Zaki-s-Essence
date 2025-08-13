@@ -21,7 +21,6 @@ function ShopSection({ products, addToCart }) {
             try {
                 const collectionsData = await ProductService.getAllCollections();
                 setCollections(collectionsData);
-
                 const collectionNames = collectionsData.map(c => c.name);
                 setCategories(["All", ...collectionNames]);
             } catch (error) {
@@ -30,7 +29,6 @@ function ShopSection({ products, addToCart }) {
                 setCategories(["All", ...fallbackCategories.sort()]);
             }
         };
-
         loadCollections();
     }, [products]);
 
@@ -48,15 +46,6 @@ function ShopSection({ products, addToCart }) {
         return products.filter(p => p.category === selectedCategory);
     }, [products, selectedCategory, collections]);
 
-    const groupedByCollection = useMemo(() => {
-        return collections.reduce((acc, col) => {
-            const colProducts = filteredProducts.filter(p => p.collectionRef === col.id);
-            if (colProducts.length > 0) {
-                acc.push({ name: col.name, products: colProducts });
-            }
-            return acc;
-        }, []);
-    }, [filteredProducts, collections]);
 
     const handleCategoryChange = async (category) => {
         if (category === selectedCategory) return;
@@ -98,31 +87,39 @@ function ShopSection({ products, addToCart }) {
                         ))}
                     </div>
                 </div>
+                <div className={`smooth-transition ${isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
+                    {/* Mobile View: Horizontal scroll per collection */}
+                    <div className="block md:hidden space-y-8">
+                        {collections.map((collection) => {
+                            const collectionProducts = filteredProducts.filter(
+                                (product) => product.collectionRef === collection.id
+                            );
+                            if (collectionProducts.length === 0) return null;
 
-                {/* Mobile: Horizontal scroll by collection */}
-                <div className={`block md:hidden space-y-10 smooth-transition ${isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
-                    {groupedByCollection.map(group => (
-                        <div key={group.name}>
-                            <h3 className="text-lg font-semibold mb-3">{group.name}</h3>
-                            <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide">
-                                {group.products.map(product => (
-                                    <div key={product.id} className="min-w-[250px] flex-shrink-0">
-                                        <ProductCard product={product} addToCart={addToCart} />
+                            return (
+                                <div key={collection.id}>
+                                    <h3 className="text-lg font-semibold mb-3 px-2">{collection.name}</h3>
+                                    <div className="flex overflow-x-auto space-x-4 px-2 pb-2 scrollbar-hide">
+                                        {collectionProducts.map((product) => (
+                                            <div key={product.id} className="flex-shrink-0 w-64">
+                                                <ProductCard product={product} addToCart={addToCart} />
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Desktop View: Keep existing grid */}
+                    <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {filteredProducts.map((product) => (
+                            <ProductCard key={product.id} product={product} addToCart={addToCart} />
+                        ))}
+                    </div>
                 </div>
 
-                {/* Desktop: Grid */}
-                <div className={`hidden md:grid grid-cols-2 lg:grid-cols-3 gap-8 smooth-transition ${isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
-                    {filteredProducts.map(product => (
-                        <ProductCard key={product.id} product={product} addToCart={addToCart} />
-                    ))}
-                </div>
-
-                {/* Empty state */}
+                {/* Empty State */}
                 {filteredProducts.length === 0 && (
                     <div className="text-center py-12 animate-fade">
                         <div className="text-gray-400 text-6xl mb-4">
