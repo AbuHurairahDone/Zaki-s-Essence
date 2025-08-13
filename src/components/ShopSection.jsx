@@ -64,7 +64,6 @@ function ShopSection({ products, addToCart }) {
         return products.filter(p => p.category === selectedCategory);
     }, [products, selectedCategory, collections]);
 
-
     const handleCategoryChange = async (category) => {
         if (category === selectedCategory) return;
         setIsTransitioning(true);
@@ -73,104 +72,111 @@ function ShopSection({ products, addToCart }) {
         setIsTransitioning(false);
     };
 
+    const SectionTitle = ({ children }) => (
+        <div className="flex items-center justify-center gap-6 mb-8">
+            <span className="flex-1 h-[1px] bg-gray-300"></span>
+            <h3 className="text-3xl md:text-4xl font-serif tracking-wide text-gray-900">
+                {children}
+            </h3>
+            <span className="flex-1 h-[1px] bg-gray-300"></span>
+        </div>
+    );
+
     return (
-        <section id="shop" className="py-16 bg-gray-50">
+        <section id="shop" className="py-20 ">
             <div className="container mx-auto px-4">
+
                 {/* Section heading */}
                 <div
                     ref={sectionRef}
-                    className={`text-center mb-12 gpu-accelerated ${isSectionVisible && isReady ? 'animate-slide' : 'opacity-0'}`}
+                    className={`text-center mb-16 transition-all duration-700 ${isSectionVisible && isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Fragrance Collection</h2>
-                    <p className="text-gray-600 max-w-2xl mx-auto">
+                    <h2 className="text-4xl md:text-5xl font-serif tracking-wide mb-4 text-gray-900">
+                        Our Fragrance Collection
+                    </h2>
+                    <p className="text-lg text-gray-500 italic max-w-2xl mx-auto">
                         Discover our exquisite selection of perfumes crafted with the finest ingredients.
                     </p>
                 </div>
 
-                {/* New Arrivals Section */}
+                {/* New Arrivals */}
                 {newArrivals.length > 0 && (
-                    <div className="mb-16">
-                        <div className="flex items-center justify-center mb-6">
-                            <h3 className="text-2xl font-bold text-gray-900">New Arrivals</h3>
-                        </div>
+                    <div className="mb-20">
+                        <SectionTitle>New Arrivals</SectionTitle>
 
-                        {/* Mobile View: Horizontal scroll */}
+                        {/* Mobile: Horizontal scroll */}
                         <div className="block md:hidden">
                             <div className="flex overflow-x-auto space-x-4 px-2 pb-2 scrollbar-hide">
-                                {newArrivals.map((product) => (
-                                    <div key={product.id} className="flex-shrink-0 w-64">
+                                {newArrivals.map((product, idx) => (
+                                    <div
+                                        key={product.id}
+                                        className="flex-shrink-0 w-64 transform transition duration-500 hover:scale-[1.02] hover:shadow-xl"
+                                        style={{ transitionDelay: `${idx * 100}ms` }}
+                                    >
                                         <ProductCard product={product} addToCart={addToCart} />
                                     </div>
                                 ))}
                             </div>
                         </div>
 
-                        {/* Desktop View: Grid */}
-                        <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {newArrivals.map((product) => (
-                                <ProductCard key={product.id} product={product} addToCart={addToCart} />
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* Weekly Sale Section */}
-                {weeklySales.length > 0 && (
-                    <div className="mb-16">
-                        <div className="flex items-center justify-center mb-6">
-                            <h3 className="text-2xl font-bold text-gray-900">Weekly Sale</h3>
-
-                        </div>
-
-                        {/* Mobile View: Horizontal scroll */}
-                        <div className="block md:hidden">
-                            <div className="flex overflow-x-auto space-x-4 px-2 pb-2 scrollbar-hide">
-                                {weeklySales.map((product) => (
-                                    <div key={product.id} className="flex-shrink-0 w-64">
-                                        <ProductCard product={product} addToCart={addToCart} />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Desktop View: Grid */}
-                        <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {weeklySales.map((product) => (
-                                <ProductCard key={product.id} product={product} addToCart={addToCart} />
-                            ))}
-                        </div>
-                    </div>
-                )}
-                {/* Categories */}
-                <div className="mb-8 flex justify-center">
-                    <nav
-                        className="flex overflow-x-auto scrollbar-hide pb-4 px-4 gap-3 sm:gap-4"
-                        aria-label="Product categories"
-                    >
-                        {categories.map((category) => {
-                            const isActive = selectedCategory === category;
-                            return (
-                                <button
-                                    key={category}
-                                    onClick={() => handleCategoryChange(category)}
-                                    aria-pressed={isActive}
-                                    className={`flex-shrink-0 rounded-full font-medium text-sm sm:text-base smooth-transition hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 px-4 py-2 sm:px-5 sm:py-2.5
-                        ${isActive
-                                            ? 'bg-yellow-700 text-white shadow-lg scale-105'
-                                            : 'bg-white text-gray-800 border border-gray-200 hover:border-yellow-700 hover:text-yellow-700 hover:shadow-md'
-                                        }`}
+                        {/* Desktop Grid */}
+                        <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                            {newArrivals.map((product, idx) => (
+                                <div
+                                    key={product.id}
+                                    className="transform transition duration-500 hover:scale-[1.02] hover:shadow-xl"
+                                    style={{ transitionDelay: `${idx * 100}ms` }}
                                 >
-                                    {category}
-                                </button>
-                            );
-                        })}
-                    </nav>
-                </div>
+                                    <ProductCard product={product} addToCart={addToCart} />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
-                {/* Regular Products */}
-                <div className={`smooth-transition ${isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
-                    {/* Mobile View: Horizontal scroll per collection */}
-                    <div className="block md:hidden space-y-8">
+                {/* Weekly Sale */}
+                {weeklySales.length > 0 && (
+                    <div className="mb-20">
+                        <div className=" rounded-xl p-6">
+                            <SectionTitle>Weekly Sale</SectionTitle>
+                            <p className="text-center text-gray-700 italic mb-8">Special offers crafted for our connoisseurs</p>
+
+                            {/* Mobile */}
+                            <div className="block md:hidden">
+                                <div className="flex overflow-x-auto space-x-4 px-2 pb-2 scrollbar-hide">
+                                    {weeklySales.map((product, idx) => (
+                                        <div
+                                            key={product.id}
+                                            className="flex-shrink-0 w-64 transform transition duration-500 hover:scale-[1.02] hover:shadow-xl"
+                                            style={{ transitionDelay: `${idx * 100}ms` }}
+                                        >
+                                            <ProductCard product={product} addToCart={addToCart} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Desktop */}
+                            <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                                {weeklySales.map((product, idx) => (
+                                    <div
+                                        key={product.id}
+                                        className="transform transition duration-500 hover:scale-[1.02] hover:shadow-xl"
+                                        style={{ transitionDelay: `${idx * 100}ms` }}
+                                    >
+                                        <ProductCard product={product} addToCart={addToCart} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Complete Collection */}
+                <SectionTitle>Complete Collection</SectionTitle>
+                <div className={`transition-all duration-500 ${isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
+                    {/* Mobile: per collection */}
+                    <div className="block md:hidden space-y-10">
                         {collections.map((collection) => {
                             const collectionProducts = filteredProducts.filter(
                                 (product) => product.collectionRef === collection.id
@@ -179,10 +185,14 @@ function ShopSection({ products, addToCart }) {
 
                             return (
                                 <div key={collection.id}>
-                                    <h3 className="text-lg font-semibold mb-3 px-2">{collection.name}</h3>
+                                    <h3 className="text-lg font-serif font-semibold mb-3 px-2 text-gray-800">{collection.name}</h3>
                                     <div className="flex overflow-x-auto space-x-4 px-2 pb-2 scrollbar-hide">
-                                        {collectionProducts.map((product) => (
-                                            <div key={product.id} className="flex-shrink-0 w-64">
+                                        {collectionProducts.map((product, idx) => (
+                                            <div
+                                                key={product.id}
+                                                className="flex-shrink-0 w-64 transform transition duration-500 hover:scale-[1.02] hover:shadow-xl"
+                                                style={{ transitionDelay: `${idx * 100}ms` }}
+                                            >
                                                 <ProductCard product={product} addToCart={addToCart} />
                                             </div>
                                         ))}
@@ -192,22 +202,37 @@ function ShopSection({ products, addToCart }) {
                         })}
                     </div>
 
-                    {/* Desktop View: Keep existing grid */}
-                    <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {filteredProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} addToCart={addToCart} />
+                    {/* Desktop Grid */}
+                    <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                        {filteredProducts.map((product, idx) => (
+                            <div
+                                key={product.id}
+                                className="transform transition duration-500 hover:scale-[1.02] hover:shadow-xl"
+                                style={{ transitionDelay: `${idx * 100}ms` }}
+                            >
+                                <ProductCard product={product} addToCart={addToCart} />
+                            </div>
                         ))}
                     </div>
                 </div>
 
                 {/* Empty State */}
                 {filteredProducts.length === 0 && !newArrivals.length && !weeklySales.length && (
-                    <div className="text-center py-12 animate-fade">
-                        <div className="text-gray-400 text-6xl mb-4">
-                            <i className="fas fa-search"></i>
-                        </div>
-                        <h3 className="text-xl font-semibold text-gray-600 mb-2">Coming Soon!</h3>
-                        <p className="text-gray-500">Stay tuned for updates!</p>
+                    <div className="text-center py-16 animate-fade">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="mx-auto mb-4 text-gray-400"
+                            width="64"
+                            height="64"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                        <h3 className="text-xl font-serif text-gray-700 mb-2">Our next masterpiece is on its way</h3>
+                        <p className="text-gray-500 italic">Stay inspired.</p>
                     </div>
                 )}
             </div>
