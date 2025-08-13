@@ -361,7 +361,7 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
                                     Phone Number *
                                 </label>
                                 <PhoneInput
-                                    country={'us'}
+                                    country={'pk'}
                                     value={formData.phone}
                                     onChange={handlePhoneChange}
                                     inputProps={{

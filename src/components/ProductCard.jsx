@@ -6,6 +6,7 @@ import SEOService from '../services/seoService.js';
 import GTMService from '../services/gtmService.js';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { selectVariantImage, buildCartProduct } from '../utils/productImages.js';
 
 function ProductCard({ product, addToCart }) {
     const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
@@ -14,17 +15,34 @@ function ProductCard({ product, addToCart }) {
     const [cardRef, isCardVisible] = useIntersectionObserver();
     const isReady = usePreventAnimationFlash();
 
+    // Helper: get selected image (variant -> fallback -> product)
+    const getSelectedImageUrl = () => selectVariantImage(product, selectedVariant);
+
     useEffect(() => {
         if (isCardVisible && product) {
             AnalyticsService.trackProductView(product);
             GTMService.trackProductView(product);
 
-            // Add product structured data for this product
+            // Compute schema data inline to keep dependencies minimal
+            const variantPrice = (product.variantPricing && product.variantPricing[selectedVariant])
+                ? product.variantPricing[selectedVariant]
+                : (product.price || 0);
+            const discountedPrice = (product.discountPercentage && product.discountPercentage > 0)
+                ? (variantPrice - (variantPrice * product.discountPercentage / 100))
+                : variantPrice;
+            const selectedImage = selectVariantImage(product, selectedVariant);
+            const optimizedImage = selectedImage && selectedImage.includes('cloudinary.com')
+                ? CloudinaryService.getProductQualityUrl(selectedImage, { width: 400, height: 500 })
+                : selectedImage;
+            const inStockVal = (product.stock && product.stock[selectedVariant] !== undefined)
+                ? product.stock[selectedVariant] > 0
+                : true;
+
             const productSchema = SEOService.generateProductSchema({
                 ...product,
-                price: getDiscountedPrice(getVariantPrice(selectedVariant)),
-                inStock: getVariantStock(selectedVariant) > 0,
-                images: [getOptimizedImageUrl() || product.image]
+                price: discountedPrice,
+                inStock: inStockVal,
+                images: [optimizedImage || selectedImage]
             });
 
             // Add to page without duplicating
@@ -43,13 +61,13 @@ function ProductCard({ product, addToCart }) {
         setIsLoading(true);
         await new Promise(resolve => setTimeout(resolve, 200));
 
-        const finalPrice = getDiscountedPrice(getVariantPrice(selectedVariant));
-        const productWithFinalPrice = { ...product, price: finalPrice };
+        // Build a cart-ready product with variant price and image
+        const cartProduct = buildCartProduct(product, selectedVariant);
 
-        // Track add to cart event in GTM
-        GTMService.trackAddToCart(productWithFinalPrice, selectedVariant, 1);
+        // Track add to cart event in GTM with final price
+        GTMService.trackAddToCart(cartProduct, selectedVariant, 1);
 
-        addToCart(productWithFinalPrice, selectedVariant);
+        addToCart(cartProduct, selectedVariant);
 
         setIsLoading(false);
     };
@@ -112,11 +130,12 @@ function ProductCard({ product, addToCart }) {
     };
 
     const getOptimizedImageUrl = () => {
-        if (!product.image) return null;
-        if (product.image.includes('cloudinary.com')) {
-            return CloudinaryService.getProductQualityUrl(product.image, { width: 400, height: 500 });
+        const baseUrl = getSelectedImageUrl();
+        if (!baseUrl) return null;
+        if (baseUrl.includes('cloudinary.com')) {
+            return CloudinaryService.getProductQualityUrl(baseUrl, { width: 400, height: 500 });
         }
-        return product.image;
+        return baseUrl;
     };
 
     // Returns the stock for a given variant
@@ -139,10 +158,10 @@ function ProductCard({ product, addToCart }) {
             itemScope
             itemType="https://schema.org/Product"
         >
-            <div className="product-image relative overflow-hidden">
+            <div className="product-image relative overflow-hidden aspect-[4/5]">
                 {!imageError ? (
                     <img
-                        src={getOptimizedImageUrl() || product.image}
+                        src={getOptimizedImageUrl() || getSelectedImageUrl()}
                         alt={`${product.name} - Premium fragrance by Zaki's Essence`}
                         className="w-full aspect-[4/5] object-cover smooth-transition group-hover:scale-105"
                         onError={handleImageError}
@@ -231,7 +250,7 @@ function ProductCard({ product, addToCart }) {
                         )}
                         <span className="text-xs text-gray-500">{selectedVariant}</span>
                         <meta itemProp="priceCurrency" content="PKR" />
-                        <meta itemProp="availability" content={selectedVariantStock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"} />
+                        <meta itemProp="availability" content={(selectedVariantStock === null || selectedVariantStock === undefined) ? "https://schema.org/InStock" : (selectedVariantStock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock")} />
                         <meta itemProp="url" content={`https://zakisessence.pk/products/${product.id}`} />
                     </div>
                     <button

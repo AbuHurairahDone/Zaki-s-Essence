@@ -19,16 +19,33 @@ const PRODUCTS_COLLECTION = 'products';
 const COLLECTIONS_COLLECTION = 'collections';
 
 export class ProductService {
+    static normalizeProductData(raw) {
+        // Ensure variantImages map includes keys for each variant, defaulting to null
+        const variants = raw.variants || [];
+        const incomingMap = raw.variantImages || {};
+        const variantImages = variants.reduce((acc, v) => {
+            acc[v] = incomingMap && Object.prototype.hasOwnProperty.call(incomingMap, v)
+                ? (incomingMap[v] || null)
+                : null;
+            return acc;
+        }, {});
+
+        return {
+            ...raw,
+            variantImages
+        };
+    }
+
     // Get all products
     static async getAllProducts() {
         try {
             const querySnapshot = await getDocs(
                 query(collection(db, PRODUCTS_COLLECTION), orderBy('createdAt', 'desc'))
             );
-            return querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+            return querySnapshot.docs.map(doc => {
+                const data = { id: doc.id, ...doc.data() };
+                return this.normalizeProductData(data);
+            });
         } catch (error) {
             console.error('Error fetching products:', error);
             throw error;
@@ -44,10 +61,10 @@ export class ProductService {
                 orderBy('createdAt', 'desc')
             );
             const querySnapshot = await getDocs(q);
-            return querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+            return querySnapshot.docs.map(doc => {
+                const data = { id: doc.id, ...doc.data() };
+                return this.normalizeProductData(data);
+            });
         } catch (error) {
             console.error('Error fetching products by category:', error);
             throw error;
@@ -61,10 +78,8 @@ export class ProductService {
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                return {
-                    id: docSnap.id,
-                    ...docSnap.data()
-                };
+                const data = { id: docSnap.id, ...docSnap.data() };
+                return this.normalizeProductData(data);
             } else {
                 throw new Error('Product not found');
             }

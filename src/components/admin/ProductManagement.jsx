@@ -12,9 +12,9 @@ import {
     faBox,
     faPercentage,
     faTimes,
-    faLayerGroup,
     faUpload,
-    faImage
+    faImage,
+    faLayerGroup
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 
@@ -340,13 +340,22 @@ function ProductModal({ product, collections, onClose, onSave }) {
         sold: product?.sold || { '50ml': 0, '100ml': 0 },
         discountPercentage: product?.discountPercentage || '',
         publicId: product?.publicId || '', // For Cloudinary
-        cloudinaryData: product?.cloudinaryData || null
+        cloudinaryData: product?.cloudinaryData || null,
+        // New: per-variant images map, default null per variant
+        variantImages: (() => {
+            const base = product?.variantImages || {};
+            const map = {};
+            const allVariants = (product?.variants || ['50ml', '100ml']);
+            allVariants.forEach(v => { map[v] = base[v] || null; });
+            return map;
+        })()
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [newVariant, setNewVariant] = useState('');
     const [imageFile, setImageFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(formData.image);
     const [uploadingImage, setUploadingImage] = useState(false);
+    // Per-variant upload states
+    const [variantUploadState, setVariantUploadState] = useState({}); // { [variant]: { uploading: boolean } }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -374,7 +383,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
 
             // Create preview
             const reader = new FileReader();
-            reader.onload = (e) => setImagePreview(e.target.result);
+            reader.onload = (e2) => setImagePreview(e2.target.result);
             reader.readAsDataURL(file);
         }
     };
@@ -412,6 +421,53 @@ function ProductModal({ product, collections, onClose, onSave }) {
         }
     };
 
+    // New: select and upload a per-variant image
+    const handleVariantImageSelect = (variant, file) => {
+        if (!file) return;
+        const validation = CloudinaryService.validateFile(file, {
+            maxSize: 10 * 1024 * 1024,
+            allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+        });
+        if (!validation.isValid) {
+            toast.error(validation.errors.join(', '));
+            return;
+        }
+        uploadVariantImage(variant, file);
+    };
+
+    const uploadVariantImage = async (variant, file) => {
+        setVariantUploadState(prev => ({ ...prev, [variant]: { uploading: true } }));
+        try {
+            const uploadResult = await CloudinaryService.uploadProductImage(file, {
+                productName: `${formData.name || 'product'}-${variant}`,
+                collection: collections.find(c => c.id === formData.collectionRef)?.name || 'general'
+            });
+            setFormData(prev => ({
+                ...prev,
+                variantImages: {
+                    ...prev.variantImages,
+                    [variant]: uploadResult.url
+                }
+            }));
+            toast.success(`Image set for ${variant}`);
+        } catch (error) {
+            console.error('Error uploading variant image:', error);
+            toast.error(`Failed to upload image for ${variant}`);
+        } finally {
+            setVariantUploadState(prev => ({ ...prev, [variant]: { uploading: false } }));
+        }
+    };
+
+    const clearVariantImage = (variant) => {
+        setFormData(prev => ({
+            ...prev,
+            variantImages: {
+                ...prev.variantImages,
+                [variant]: null
+            }
+        }));
+    };
+
     const addVariant = () => {
         if (newVariant.trim() && !formData.variants.includes(newVariant.trim())) {
             const variant = newVariant.trim();
@@ -429,6 +485,10 @@ function ProductModal({ product, collections, onClose, onSave }) {
                 sold: {
                     ...prev.sold,
                     [variant]: 0
+                },
+                variantImages: {
+                    ...prev.variantImages,
+                    [variant]: null
                 }
             }));
             setNewVariant('');
@@ -441,16 +501,19 @@ function ProductModal({ product, collections, onClose, onSave }) {
                 const newVariantPricing = { ...prev.variantPricing };
                 const newStock = { ...prev.stock };
                 const newSold = { ...prev.sold };
+                const newVariantImages = { ...prev.variantImages };
                 delete newVariantPricing[variantToRemove];
                 delete newStock[variantToRemove];
                 delete newSold[variantToRemove];
+                delete newVariantImages[variantToRemove];
 
                 return {
                     ...prev,
                     variants: prev.variants.filter(v => v !== variantToRemove),
                     variantPricing: newVariantPricing,
                     stock: newStock,
-                    sold: newSold
+                    sold: newSold,
+                    variantImages: newVariantImages
                 };
             });
         }
@@ -476,6 +539,8 @@ function ProductModal({ product, collections, onClose, onSave }) {
         }));
     };
 
+    const [imagePreview, setImagePreview] = useState(formData.image);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -484,8 +549,10 @@ function ProductModal({ product, collections, onClose, onSave }) {
             return;
         }
 
-        if (!formData.image) {
-            toast.error('Please upload a product image');
+        // Allow either product-level image or at least one variant image
+        const hasAnyVariantImage = Object.values(formData.variantImages || {}).some(Boolean);
+        if (!formData.image && !hasAnyVariantImage) {
+            toast.error('Please upload a product image or add at least one variant image');
             return;
         }
 
@@ -524,7 +591,6 @@ function ProductModal({ product, collections, onClose, onSave }) {
             const productData = {
                 ...formData,
                 rating: !product ? 0 : product.rating,
-
                 sold: soldData,
                 discountPercentage: formData.discountPercentage ? parseFloat(formData.discountPercentage) : null
             };
@@ -805,10 +871,9 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                             </div>
 
                                             <div className="space-y-3">
+                                                {/* Price */}
                                                 <div>
-                                                    <label className="block text-xs font-medium text-gray-600 mb-2">
-                                                        Price ($) *
-                                                    </label>
+                                                    <label className="block text-xs font-medium text-gray-600 mb-2">Price ($) *</label>
                                                     <input
                                                         type="number"
                                                         step="0.01"
@@ -821,10 +886,9 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                                     />
                                                 </div>
 
+                                                {/* Stock */}
                                                 <div>
-                                                    <label className="block text-xs font-medium text-gray-600 mb-2">
-                                                        Stock Quantity
-                                                    </label>
+                                                    <label className="block text-xs font-medium text-gray-600 mb-2">Stock Quantity</label>
                                                     <input
                                                         type="number"
                                                         min="0"
@@ -834,12 +898,49 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                                     />
                                                 </div>
 
-                                                {/* Show sold count for existing products (read-only) */}
+                                                {/* Variant Image */}
+                                                <div>
+                                                    <label className="block text-xs font-medium text-gray-600 mb-2">Variant Image (optional)</label>
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-16 h-16 bg-gray-100 rounded overflow-hidden flex items-center justify-center border">
+                                                            {formData.variantImages?.[variant] ? (
+                                                                <img src={formData.variantImages[variant]} alt={`${variant} image`} className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <div className="text-gray-400 text-center">
+                                                                    <FontAwesomeIcon icon={faImage} />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1 flex gap-2 items-center">
+                                                            <label className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer text-sm">
+                                                                <input
+                                                                    type="file"
+                                                                    accept="image/*"
+                                                                    className="hidden"
+                                                                    onChange={(e) => handleVariantImageSelect(variant, e.target.files?.[0])}
+                                                                />
+                                                                <span className="flex items-center">
+                                                                    <FontAwesomeIcon icon={faUpload} className="mr-2" />
+                                                                    {variantUploadState[variant]?.uploading ? 'Uploading...' : 'Upload'}
+                                                                </span>
+                                                            </label>
+                                                            {formData.variantImages?.[variant] && (
+                                                                <button
+                                                                    type="button"
+                                                                    className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"
+                                                                    onClick={() => clearVariantImage(variant)}
+                                                                >
+                                                                    Remove
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Sold count for existing products */}
                                                 {product && formData.sold && formData.sold[variant] !== undefined && (
                                                     <div>
-                                                        <label className="block text-xs font-medium text-gray-600 mb-1">
-                                                            Units Sold
-                                                        </label>
+                                                        <label className="block text-xs font-medium text-gray-600 mb-1">Units Sold</label>
                                                         <div className="px-3 py-2 bg-gray-100 rounded-lg text-sm text-gray-700">
                                                             {formData.sold[variant] || 0} sold
                                                         </div>
