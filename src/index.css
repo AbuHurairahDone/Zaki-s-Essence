@@ -20,7 +20,17 @@ body {
     -ms-text-size-adjust: 100%;
     overflow-x: hidden;
     position: relative;
+}
 
+/* Smooth transition classes */
+.transition-device {
+    transition: all 0.3s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .transition-device {
+        transition: none;
+    }
 }
 
 /* Skip link for accessibility and SEO */
