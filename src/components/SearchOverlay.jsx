@@ -75,11 +75,11 @@ function SearchOverlay({ isOpen, toggleSearch }) {
             ...prev,
             [productId]: variant
         }));
-        
+
         // Force a re-render to update the image
         setSearchResults(prev => ({ ...prev }));
     };
-    
+
     // Helper function to get variant price
     const getVariantPrice = (product, variant) => {
         // Support both new variantPricing structure and legacy price structure
@@ -89,7 +89,7 @@ function SearchOverlay({ isOpen, toggleSearch }) {
         // Fallback to legacy single price
         return product.price || 0;
     };
-    
+
     // Calculate discounted price if applicable
     const getDiscountedPrice = (price, discountPercentage) => {
         if (discountPercentage && discountPercentage > 0) {
@@ -173,130 +173,135 @@ function SearchOverlay({ isOpen, toggleSearch }) {
                                     <div className="flex justify-center items-center h-32">
                                         <div className="animate-spin w-8 h-8 border-2 border-yellow-700 border-t-transparent rounded-full"></div>
                                     </div>
-                                ) : searchTerm.trim().length < 2 ? (
+                                ) : searchTerm.trim().length < 1 ? (
                                     <div className="text-center text-gray-500 py-12">
-                                        <p>Type at least 2 characters to search</p>
+                                        <p>Start typing to search for products and collections</p>
                                     </div>
-                                ) : (
-                                    <div className={`space-y-8 transition-opacity duration-500 ${showResults ? 'opacity-100' : 'opacity-0'}`}>
-                                        {/* Products */}
-                                        {searchResults.products.length > 0 && (
-                                            <div>
-                                                <h3 className="text-xl font-bold mb-4 border-b pb-2">Products</h3>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                    {searchResults.products.map(product => (
-                                                        <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                                                            <div className="relative">
-                                                                <img
-                                                                    src={selectVariantImage(product, selectedVariants[product.id] || product.variants?.[0])}
-                                                                    alt={product.name}
-                                                                    className="w-full h-48 object-cover"
-                                                                />
-                                                                {product.discountPercentage > 0 && (
-                                                                    <div className="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
-                                                                        {product.discountPercentage}% OFF
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                            <div className="p-4">
-                                                                <h4 className="font-bold text-lg mb-2">{product.name}</h4>
-                                                                <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
+                                ) :
+                                    searchTerm.trim().length < 2 ? (
+                                        <div className="text-center text-gray-500 py-12">
+                                            <p>Type at least 2 characters to search</p>
+                                        </div>
+                                    ) : (
+                                        <div className={`space-y-8 transition-opacity duration-500 ${showResults ? 'opacity-100' : 'opacity-0'}`}>
+                                            {/* Products */}
+                                            {searchResults.products.length > 0 && (
+                                                <div>
+                                                    <h3 className="text-xl font-bold mb-4 border-b pb-2">Products</h3>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                        {searchResults.products.map(product => (
+                                                            <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                                                                <div className="relative">
+                                                                    <img
+                                                                        src={selectVariantImage(product, selectedVariants[product.id] || product.variants?.[0])}
+                                                                        alt={product.name}
+                                                                        className="w-full h-48 object-cover"
+                                                                    />
+                                                                    {product.discountPercentage > 0 && (
+                                                                        <div className="absolute top-2 right-2 bg-black text-white text-xs px-2 py-1 rounded">
+                                                                            {product.discountPercentage}% OFF
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                                <div className="p-4">
+                                                                    <h4 className="font-bold text-lg mb-2">{product.name}</h4>
+                                                                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
 
-                                                                {product.variants?.length > 0 && (
-                                                                    <div className="mb-3">
-                                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Variant:</label>
-                                                                        <select
-                                                                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-yellow-600"
-                                                                            value={selectedVariants[product.id] || ''}
-                                                                            onChange={(e) => handleVariantChange(product.id, e.target.value)}
+                                                                    {product.variants?.length > 0 && (
+                                                                        <div className="mb-3">
+                                                                            <label className="block text-sm font-medium text-gray-700 mb-1">Variant:</label>
+                                                                            <select
+                                                                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-yellow-600"
+                                                                                value={selectedVariants[product.id] || ''}
+                                                                                onChange={(e) => handleVariantChange(product.id, e.target.value)}
+                                                                            >
+                                                                                {product.variants.map(variant => (
+                                                                                    <option key={variant} value={variant}>{variant}</option>
+                                                                                ))}
+                                                                            </select>
+                                                                        </div>
+                                                                    )}
+
+                                                                    <div className="flex justify-between items-center">
+                                                                        <div className="text-yellow-700 font-bold">
+                                                                            {product.variants?.length > 0 && selectedVariants[product.id] ? (
+                                                                                <>
+                                                                                    {(() => {
+                                                                                        const variant = selectedVariants[product.id];
+                                                                                        const originalPrice = getVariantPrice(product, variant);
+                                                                                        const discountedPrice = getDiscountedPrice(originalPrice, product.discountPercentage);
+
+                                                                                        return (
+                                                                                            <div className="flex flex-col">
+                                                                                                <span>Rs. {discountedPrice.toFixed(0)}</span>
+                                                                                                {discountedPrice !== originalPrice && (
+                                                                                                    <span className="text-xs line-through text-gray-500">Rs. {originalPrice.toFixed(0)}</span>
+                                                                                                )}
+                                                                                            </div>
+                                                                                        );
+                                                                                    })()
+                                                                                    }
+                                                                                </>
+                                                                            ) : (
+                                                                                <>Rs. {product.price}</>
+                                                                            )}
+                                                                        </div>
+                                                                        <button
+                                                                            onClick={() => handleAddToCart(product)}
+                                                                            className="bg-yellow-700 hover:bg-yellow-800 text-white px-3 py-1 rounded-md flex items-center transition-colors"
                                                                         >
-                                                                            {product.variants.map(variant => (
-                                                                                <option key={variant} value={variant}>{variant}</option>
-                                                                            ))}
-                                                                        </select>
+                                                                            <FontAwesomeIcon icon={faCartPlus} className="mr-1" />
+                                                                            Add to Cart
+                                                                        </button>
                                                                     </div>
-                                                                )}
-
-                                                                <div className="flex justify-between items-center">
-                                                                    <div className="text-yellow-700 font-bold">
-                                                                        {product.variants?.length > 0 && selectedVariants[product.id] ? (
-                                                                            <>
-                                                                                {(() => {
-                                                                                    const variant = selectedVariants[product.id];
-                                                                                    const originalPrice = getVariantPrice(product, variant);
-                                                                                    const discountedPrice = getDiscountedPrice(originalPrice, product.discountPercentage);
-                                                                                    
-                                                                                    return (
-                                                                                        <div className="flex flex-col">
-                                                                                            <span>Rs. {discountedPrice.toFixed(0)}</span>
-                                                                                            {discountedPrice !== originalPrice && (
-                                                                                                <span className="text-xs line-through text-gray-500">Rs. {originalPrice.toFixed(0)}</span>
-                                                                                            )}
-                                                                                        </div>
-                                                                                    );
-                                                                                })()
-                                                                                }
-                                                                            </>
-                                                                        ) : (
-                                                                            <>Rs. {product.price}</>  
-                                                                        )}
-                                                                    </div>
-                                                                    <button
-                                                                        onClick={() => handleAddToCart(product)}
-                                                                        className="bg-yellow-700 hover:bg-yellow-800 text-white px-3 py-1 rounded-md flex items-center transition-colors"
-                                                                    >
-                                                                        <FontAwesomeIcon icon={faCartPlus} className="mr-1" />
-                                                                        Add to Cart
-                                                                    </button>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    ))}
+                                                        ))}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
+                                            )}
 
-                                        {/* Collections */}
-                                        {searchResults.collections.length > 0 && (
-                                            <div>
-                                                <h3 className="text-xl font-bold mb-4 border-b pb-2">Collections</h3>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                    {searchResults.collections.map(collection => (
-                                                        <div key={collection.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                                                            <div className="relative">
-                                                                <img
-                                                                    src={collection.image}
-                                                                    alt={collection.name}
-                                                                    className="w-full h-48 object-cover"
-                                                                />
-                                                            </div>
-                                                            <div className="p-4">
-                                                                <h4 className="font-bold text-lg mb-2">{collection.name}</h4>
-                                                                <p className="text-gray-600 text-sm mb-3 line-clamp-2">{collection.description}</p>
+                                            {/* Collections */}
+                                            {searchResults.collections.length > 0 && (
+                                                <div>
+                                                    <h3 className="text-xl font-bold mb-4 border-b pb-2">Collections</h3>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                        {searchResults.collections.map(collection => (
+                                                            <div key={collection.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                                                                <div className="relative">
+                                                                    <img
+                                                                        src={collection.image}
+                                                                        alt={collection.name}
+                                                                        className="w-full h-48 object-cover"
+                                                                    />
+                                                                </div>
+                                                                <div className="p-4">
+                                                                    <h4 className="font-bold text-lg mb-2">{collection.name}</h4>
+                                                                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{collection.description}</p>
 
-                                                                <div className="flex justify-end">
-                                                                    <button
-                                                                        onClick={() => handleViewCollection(collection.id)}
-                                                                        className="bg-yellow-700 hover:bg-yellow-800 text-white px-3 py-1 rounded-md flex items-center transition-colors"
-                                                                    >
-                                                                        <FontAwesomeIcon icon={faEye} className="mr-1" />
-                                                                        View Collection
-                                                                    </button>
+                                                                    <div className="flex justify-end">
+                                                                        <button
+                                                                            onClick={() => handleViewCollection(collection.id)}
+                                                                            className="bg-yellow-700 hover:bg-yellow-800 text-white px-3 py-1 rounded-md flex items-center transition-colors"
+                                                                        >
+                                                                            <FontAwesomeIcon icon={faEye} className="mr-1" />
+                                                                            View Collection
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    ))}
+                                                        ))}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
+                                            )}
 
-                                        {searchResults.products.length === 0 && searchResults.collections.length === 0 && (
-                                            <div className="text-center py-12">
-                                                <p className="text-gray-500">No results found for "{searchTerm}"</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
+                                            {searchResults.products.length === 0 && searchResults.collections.length === 0 && (
+                                                <div className="text-center py-12">
+                                                    <p className="text-gray-500">No results found for "{searchTerm}"</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
                             </div>
                         </div>
                     </motion.div>

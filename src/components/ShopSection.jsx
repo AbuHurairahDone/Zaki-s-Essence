@@ -139,7 +139,7 @@ function ShopSection({ products, addToCart }) {
                 {!collectionParam && collections.length > 0 && weeklySales.length > 0 && (
                     <div className="mb-20">
                         <div className=" rounded-xl p-6">
-                            <SectionTitle>Weekly Sale</SectionTitle>
+                            <SectionTitle>Weekly Specials</SectionTitle>
                             <p className="text-center text-gray-700 italic mb-8">Special offers crafted for our connoisseurs</p>
 
                             {/* Mobile */}
@@ -173,6 +173,25 @@ function ShopSection({ products, addToCart }) {
                     </div>
                 )}
 
+
+                {/* Category Filter */}
+                {/* {!collectionParam && categories.length > 1 && (
+                    <div className="flex flex-wrap justify-center gap-4 mb-12">
+                        {categories.map((category) => (
+                            <button
+                                key={category}
+                                onClick={() => handleCategoryChange(category)}
+                                className={`px-6 py-2 rounded-full text-lg font-medium transition-all duration-300
+                                    ${selectedCategory === category
+                                        ? 'bg-gray-900 text-white shadow-lg'
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}
+                                `}
+                            >
+                                {category}
+                            </button>
+                        ))}
+                    </div>
+                )} */}
 
                 {/* Complete Collection */}
                 <SectionTitle>{!collectionParam && collections.length > 0 ? "Complete Collection" : `${selectedCategory} Collection`}</SectionTitle>
@@ -219,7 +238,18 @@ function ShopSection({ products, addToCart }) {
                 </div>
 
                 {/* Empty State */}
-                {filteredProducts.length === 0 && !newArrivals.length && !weeklySales.length && (
+                {filteredProducts.length === 0 && (
+                    <div className="text-center py-16 animate-fade min-h-[50vh] flex flex-col">
+
+                        <h3 className="text-xl font-serif text-gray-700 mb-2 ">
+                            {collectionParam ? `The ${selectedCategory} collection awaits its next signature piece.`
+                                : "A new chapter in our legacy is arriving soon."}
+                        </h3>
+                        <p className="text-gray-500 italic">Stay inspired.</p>
+                    </div>
+                )}
+
+                {!collectionParam && filteredProducts.length === 0 && newArrivals.length === 0 && weeklySales.length === 0 && (
                     <div className="text-center py-16 animate-fade">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

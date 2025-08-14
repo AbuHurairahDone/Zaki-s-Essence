@@ -52,8 +52,7 @@ body {
 
 /* Focus styles for accessibility */
 *:focus {
-    outline: 2px solid #b45309;
-    outline-offset: 2px;
+    outline: none;
 }
 
 button:focus,
@@ -61,8 +60,7 @@ a:focus,
 input:focus,
 textarea:focus,
 select:focus {
-    outline: 2px solid #b45309;
-    outline-offset: 2px;
+    outline: none;
 }
 
 /* Typography System for Luxury Perfume Brand */
