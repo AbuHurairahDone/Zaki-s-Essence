@@ -4,10 +4,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faBars, faXmark, faSearch } from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/logo.png';
 import nav from '../assets/nav.png';
+import SearchOverlay from './SearchOverlay';
 
 export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
     const [scrolled, setScrolled] = useState(false);
     const [cartPulse, setCartPulse] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    
+    const toggleSearch = () => {
+        setIsSearchOpen(!isSearchOpen);
+    };
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 50);
@@ -41,11 +47,19 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                 <div className="hidden md:grid grid-cols-3 items-center">
                     {/* Search */}
                     <div className="flex justify-start">
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            className="px-3 py-1 rounded-full bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-600 w-56"
-                        />
+                        <div className="relative">
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                className="px-3 py-1 pl-8 rounded-full bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-600 w-56 cursor-pointer"
+                                onClick={toggleSearch}
+                                readOnly
+                            />
+                            <FontAwesomeIcon
+                                icon={faSearch}
+                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                            />
+                        </div>
                     </div>
 
                     {/* Logo */}
@@ -83,7 +97,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
 
                 {/* Bottom Row: Navigation */}
                 <nav className="hidden md:flex justify-center space-x-10 mt-3">
-                    {navLinks.map((item, index) => (
+                    {navLinks.map((item) => (
                         <Link
                             key={item.to}
                             to={item.to}
@@ -146,7 +160,9 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                         <input
                             type="text"
                             placeholder="Search..."
-                            className="w-full px-3 py-1 pl-8 rounded-full bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-600 transition-all duration-300 ease-in-out"
+                            className="w-full px-3 py-1 pl-8 rounded-full bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-600 transition-all duration-300 ease-in-out cursor-pointer"
+                            onClick={toggleSearch}
+                            readOnly
                         />
                         <FontAwesomeIcon
                             icon={faSearch}
@@ -156,6 +172,8 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                 </div>
             </div>
 
+            {/* Search Overlay */}
+            <SearchOverlay isOpen={isSearchOpen} toggleSearch={toggleSearch} />
         </header>
 
     );

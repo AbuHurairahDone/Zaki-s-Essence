@@ -165,7 +165,6 @@ function PageTransition({ children }) {
 
 function AppCode() {
     const { isMobileMenuOpen, setIsMobileMenuOpen, isCartOpen, setIsCartOpen, toggleCart, cartItems, totalItems, totalAmount, addToCart, updateQuantity, removeItem } = useContext(CartContext);
-    const { products } = useContext(ProductContext);
 
     const [showScrollButton, setShowScrollButton] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -180,6 +179,20 @@ function AppCode() {
     useEffect(() => {
         GTMService.initializeDataLayer();
     }, []);
+    
+    // Listen for add-to-cart events from SearchOverlay
+    useEffect(() => {
+        const handleAddToCartEvent = (event) => {
+            const { product, variant } = event.detail;
+            addToCart(product, variant);
+        };
+        
+        window.addEventListener('add-to-cart', handleAddToCartEvent);
+        
+        return () => {
+            window.removeEventListener('add-to-cart', handleAddToCartEvent);
+        };
+    }, [addToCart]);
 
     // Track cart view when cart is opened
     useEffect(() => {
