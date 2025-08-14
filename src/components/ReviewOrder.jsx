@@ -5,8 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faSpinner, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import logo from '../assets/logo_dark.PNG';
+import useSEO from '../hooks/useSEO';
 
 function ReviewOrder() {
+    useSEO('review-order');
     const { orderId } = useParams();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -32,8 +34,8 @@ function ReviewOrder() {
                 if (existingReviews && existingReviews.length > 0) {
                     setAlreadyReviewed(true);
                 }
-            } catch (err) {
-                console.error(err);
+            } catch (error) {
+                console.error(error);
                 toast.error('Order not found or unable to load.');
             } finally {
                 setLoading(false);
@@ -65,7 +67,7 @@ function ReviewOrder() {
             }
             setSubmitted(true);
             toast.success('Thank you for your feedback!');
-        } catch (err) {
+        } catch (error) {
             toast.error('Failed to submit reviews. Please try again.');
         } finally {
             setSubmitting(false);

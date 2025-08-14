@@ -16,12 +16,12 @@ const SitemapGenerator = () => {
             const collections = []; // await CollectionService.getAllCollections();
 
             const sitemapData = SEOService.generateSitemapData(products, collections);
-            const xml = generateXMLSitemap(sitemapData);
+            const xml = SEOService.generateXMLSitemap(sitemapData);
             setSitemapXML(xml);
 
             // Create a downloadable sitemap
             const blob = new Blob([xml], { type: 'application/xml' });
-            const url = URL.createObjectURL(blob);
+
 
             // You could automatically upload this to your public folder
             console.log('Generated sitemap:', xml);
@@ -30,21 +30,7 @@ const SitemapGenerator = () => {
         }
     };
 
-    const generateXMLSitemap = (urls) => {
-        const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>\n';
-        const urlsetOpen = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-        const urlsetClose = '</urlset>';
 
-        const urlEntries = urls.map(url => `
-    <url>
-        <loc>${url.url}</loc>
-        <lastmod>${url.lastmod}</lastmod>
-        <changefreq>${url.changefreq}</changefreq>
-        <priority>${url.priority}</priority>
-    </url>`).join('');
-
-        return xmlHeader + urlsetOpen + urlEntries + '\n' + urlsetClose;
-    };
 
     return (
         <div className="max-w-4xl mx-auto p-6">

@@ -14,8 +14,10 @@ import {
     faBullseye
 } from '@fortawesome/free-solid-svg-icons';
 import logo_bg from '../assets/logo_bg.JPG';
+import { useSEO } from '../hooks/useSEO.js';
 
 function OurStory() {
+    useSEO('our-story');
     const [heroRef, isHeroVisible] = useIntersectionObserver();
     const [storyRef, isStoryVisible] = useIntersectionObserver();
     const [craftsmanshipRef, isCraftsmanshipVisible] = useIntersectionObserver();

@@ -43,13 +43,7 @@ function ProductCard({ product, addToCart }) {
                 images: [optimizedImage || selectedImage]
             });
 
-            if (!document.querySelector(`script[data-product-id="${product.id}"]`)) {
-                const script = document.createElement('script');
-                script.type = 'application/ld+json';
-                script.setAttribute('data-product-id', product.id);
-                script.textContent = JSON.stringify(productSchema);
-                document.head.appendChild(script);
-            }
+            SEOService.addStructuredData(productSchema);
         }
     }, [isCardVisible, product, selectedVariant]);
 

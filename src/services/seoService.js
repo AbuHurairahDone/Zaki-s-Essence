@@ -149,7 +149,7 @@ class SEOService {
         };
     }
 
-    // Generate breadcrumb structured data
+
     static generateBreadcrumbSchema(breadcrumbs) {
         return {
             "@context": "https://schema.org",
@@ -251,6 +251,27 @@ class SEOService {
                 description: "Get in touch with Zaki's Essence for customer support, product inquiries, or fragrance consultations. We're here to help you find your perfect scent.",
                 keywords: "contact Zaki's Essence, customer service, fragrance consultation, perfume support",
                 canonicalUrl: `${baseUrl}/contact`,
+                ogImage: `${baseUrl}/logo.PNG`
+            },
+            'our-story': {
+                title: "Our Story - Zaki's Essence",
+                description: "Discover the story behind Zaki's Essence, our passion for fragrances, and our commitment to quality.",
+                keywords: "Zaki's Essence story, brand history, fragrance passion, quality commitment",
+                canonicalUrl: `${baseUrl}/our-story`,
+                ogImage: `${baseUrl}/logo.PNG`
+            },
+            'review-order': {
+                title: "Review Your Order - Zaki's Essence",
+                description: "Provide feedback and review your recent order from Zaki's Essence.",
+                keywords: "review order, order feedback, Zaki's Essence review, product review",
+                canonicalUrl: `${baseUrl}/review-order`,
+                ogImage: `${baseUrl}/logo.PNG`
+            },
+            'track-order': {
+                title: "Track Your Order - Zaki's Essence",
+                description: "Easily track the status of your recent orders with Zaki's Essence.",
+                keywords: "track order, order status, Zaki's Essence order, shipping tracking",
+                canonicalUrl: `${baseUrl}/track-order`,
                 ogImage: `${baseUrl}/logo.PNG`
             }
         };

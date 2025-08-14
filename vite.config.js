@@ -109,8 +109,8 @@ export default defineConfig({
                 chunkFileNames: 'assets/js/[name]-[hash].js',
                 entryFileNames: 'assets/js/[name]-[hash].js',
                 assetFileNames: (assetInfo) => {
-                    const info = assetInfo.name.split('.')
-                    const ext = info[info.length - 1]
+                    // const info = assetInfo.name.split('.') // 'info' is assigned a value but never used.
+                    // const ext = info[info.length - 1] // 'ext' is assigned a value but never used.
                     if (/\.(css)$/.test(assetInfo.name)) {
                         return `assets/css/[name]-[hash][extname]`
                     }
