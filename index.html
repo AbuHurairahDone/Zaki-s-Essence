@@ -4,15 +4,7 @@
 <head>
     <meta charset="UTF-8" />
 
-    <!-- Critical CSS and performance hints -->
-    <link rel="preload" href="/src/index.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript>
-        <link rel="stylesheet" href="/src/index.css" />
-    </noscript>
-
-    <!-- Preload critical resources -->
-    <link rel="preload" href="/src/main.jsx" as="script" />
-    <link rel="modulepreload" href="/src/main.jsx" />
+    <!-- Vite handles CSS/JS injection in build, don’t preload /src directly -->
 
     <!-- DNS prefetch and preconnect for external resources -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com" />
@@ -32,14 +24,9 @@
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-
-        // Load GTM asynchronously after page load
         window.addEventListener('load', function () {
             (function (w, d, s, l, i) {
-                w[l] = w[l] || []; w[l].push({
-                    'gtm.start': new Date().getTime(),
-                    event: 'gtm.js'
-                });
+                w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
                 var f = d.getElementsByTagName(s)[0],
                     j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
                 j.async = true;
@@ -84,7 +71,7 @@
     <meta property="twitter:image" content="https://zakisessence.pk/logo.png" />
     <meta property="twitter:creator" content="@ZakisEssence" />
 
-    <!-- Favicons and Icons with cache optimization -->
+    <!-- Favicons and Icons -->
     <link rel="icon" type="image/png" sizes="32x32" href="/logo.png?v=1" />
     <link rel="icon" type="image/png" sizes="16x16" href="/logo.png?v=1" />
     <link rel="apple-touch-icon" sizes="180x180" href="/logo.png?v=1" />
@@ -96,185 +83,185 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://zakisessence.pk/" />
 
+
     <!-- Structured Data - Organization -->
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Zaki's Essence",
-        "url": "https://zakisessence.pk",
-        "logo": "https://zakisessence.pk/logo.png",
-        "description": "Premium luxury fragrances and perfumes online store offering authentic scents and signature collections.",
-        "contactPoint": {
-            "@type": "ContactPoint",
-            "telephone": "+92-XXX-XXX-XXXX",
-            "contactType": "customer service",
-            "availableLanguage": "English"
-        },
-        "sameAs": [
-            "https://www.facebook.com/profile.php?id=61577027240104",
-            "https://www.instagram.com/zakisessence",
-            "https://twitter.com/zakisessence"
-        ],
-        "address": {
-            "@type": "PostalAddress",
-            "addressCountry": "PK"
-        }
-    }
-    </script>
+            {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "name": "Zaki's Essence",
+                "url": "https://zakisessence.pk",
+                "logo": "https://zakisessence.pk/logo.png",
+                "description": "Premium luxury fragrances and perfumes online store offering authentic scents and signature collections.",
+                "contactPoint": {
+                    "@type": "ContactPoint",
+                    "telephone": "+92-315-668-4779",
+                    "contactType": "customer service",
+                    "availableLanguage": "English"
+                },
+                "sameAs": [
+                    "https://www.facebook.com/profile.php?id=61577027240104",
+                    "https://www.instagram.com/zakisessence",
+                    "https://twitter.com/zakisessence"
+                ],
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressCountry": "PK"
+                }
+            }
+            </script>
 
     <!-- Structured Data - Website -->
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Zaki's Essence",
-        "url": "https://zakisessence.pk",
-        "description": "Premium luxury fragrances and perfumes online store",
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://zakisessence.pk/search?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-        }
-    }
-    </script>
+            {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "Zaki's Essence",
+                "url": "https://zakisessence.pk",
+                "description": "Premium luxury fragrances and perfumes online store",
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": "https://zakisessence.pk/search?q={search_term_string}",
+                    "query-input": "required name=search_term_string"
+                }
+            }
+            </script>
 
     <!-- Structured Data - OnlineStore with Complete Business Information -->
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "OnlineStore",
-        "name": "Zaki's Essence",
-        "url": "https://zakisessence.pk",
-        "logo": "https://zakisessence.pk/logo.png",
-        "description": "Premium luxury fragrances and perfumes online store offering authentic scents and signature collections with worldwide shipping.",
-        "telephone": "+92-300-1234567",
-        "email": "info@zakisessence.pk",
-        "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Main Boulevard, Gulberg III",
-            "addressLocality": "Lahore",
-            "addressRegion": "Punjab",
-            "postalCode": "54000",
-            "addressCountry": "PK"
-        },
-        "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": "31.5204",
-            "longitude": "74.3587"
-        },
-        "contactPoint": [
             {
-                "@type": "ContactPoint",
-                "telephone": "+92-300-1234567",
-                "contactType": "customer service",
-                "availableLanguage": ["English", "Urdu"],
-                "hoursAvailable": {
-                    "@type": "OpeningHoursSpecification",
-                    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                    "opens": "09:00",
-                    "closes": "21:00"
+                "@context": "https://schema.org",
+                "@type": "OnlineStore",
+                "name": "Zaki's Essence",
+                "url": "https://zakisessence.pk",
+                "logo": "https://zakisessence.pk/logo.png",
+                "description": "Premium luxury fragrances and perfumes online store offering authentic scents and signature collections with worldwide shipping.",
+                "telephone": "+92-315-668-4779",
+                "email": "info@zakisessence.pk",
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "Main Boulevard, Gulberg III",
+                    "addressLocality": "Lahore",
+                    "addressRegion": "Punjab",
+                    "postalCode": "54000",
+                    "addressCountry": "PK"
+                },
+                "geo": {
+                    "@type": "GeoCoordinates",
+                    "latitude": "31.5204",
+                    "longitude": "74.3587"
+                },
+                "contactPoint": [
+                    {
+                        "@type": "ContactPoint",
+                        "telephone": "+92-315-668-4779",
+                        "contactType": "customer service",
+                        "availableLanguage": ["English", "Urdu"],
+                        "hoursAvailable": {
+                            "@type": "OpeningHoursSpecification",
+                            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                            "opens": "09:00",
+                            "closes": "21:00"
+                        }
+                    },
+                    {
+                        "@type": "ContactPoint",
+                        "contactType": "sales",
+                        "telephone": "+92-315-668-4779",
+                        "availableLanguage": ["English", "Urdu"]
+                    }
+                ],
+                "sameAs": [
+                    "https://www.facebook.com/profile.php?id=61577027240104",
+                    "https://www.instagram.com/zakisessence",
+                    "https://twitter.com/zakisessence"
+                ],
+                "openingHours": "Mo-Su 09:00-21:00",
+                "paymentAccepted": ["Credit Card", "Debit Card", "PayPal", "Bank Transfer", "Cash on Delivery"],
+                "priceRange": "PKR 2000-15000",
+                "currenciesAccepted": "PKR",
+                "hasOfferCatalog": {
+                    "@type": "OfferCatalog",
+                    "name": "Zaki's Essence Fragrance Collection",
+                    "itemListElement": [
+                        {
+                            "@type": "OfferCatalog",
+                            "name": "Men's Fragrances",
+                            "numberOfItems": "50+"
+                        },
+                        {
+                            "@type": "OfferCatalog",
+                            "name": "Women's Fragrances",
+                            "numberOfItems": "40+"
+                        },
+                        {
+                            "@type": "OfferCatalog",
+                            "name": "Unisex Fragrances",
+                            "numberOfItems": "20+"
+                        }
+                    ]
+                },
+                "hasMerchantReturnPolicy": {
+                    "@type": "MerchantReturnPolicy",
+                    "applicableCountry": "PK",
+                    "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                    "merchantReturnDays": 7,
+                    "returnMethod": "https://schema.org/ReturnByMail",
+                    "returnFees": "https://schema.org/FreeReturn",
+                    "restockingFee": {
+                        "@type": "MonetaryAmount",
+                        "value": 0,
+                        "currency": "PKR"
+                    },
+                    "returnPolicySeasonalOverride": [
+                        {
+                            "@type": "MerchantReturnPolicySeasonalOverride",
+                            "startDate": "2024-11-01",
+                            "endDate": "2025-01-31",
+                            "merchantReturnDays": 30
+                        }
+                    ]
+                },
+                "shippingDetails": {
+                    "@type": "OfferShippingDetails",
+                    "shippingRate": {
+                        "@type": "MonetaryAmount",
+                        "value": 0,
+                        "currency": "PKR"
+                    },
+                    "shippingDestination": {
+                        "@type": "DefinedRegion",
+                        "addressCountry": "PK"
+                    },
+                    "deliveryTime": {
+                        "@type": "ShippingDeliveryTime",
+                        "handlingTime": {
+                            "@type": "QuantitativeValue",
+                            "minValue": 1,
+                            "maxValue": 2,
+                            "unitCode": "DAY"
+                        },
+                        "transitTime": {
+                            "@type": "QuantitativeValue",
+                            "minValue": 2,
+                            "maxValue": 5,
+                            "unitCode": "DAY"
+                        }
+                    }
                 }
-            },
-            {
-                "@type": "ContactPoint",
-                "contactType": "sales",
-                "telephone": "+92-300-1234567",
-                "availableLanguage": ["English", "Urdu"]
             }
-        ],
-        "sameAs": [
-            "https://www.facebook.com/profile.php?id=61577027240104",
-            "https://www.instagram.com/zakisessence",
-            "https://twitter.com/zakisessence"
-        ],
-        "openingHours": "Mo-Su 09:00-21:00",
-        "paymentAccepted": ["Credit Card", "Debit Card", "PayPal", "Bank Transfer", "Cash on Delivery"],
-        "priceRange": "PKR 2000-15000",
-        "currenciesAccepted": "PKR",
-        "hasOfferCatalog": {
-            "@type": "OfferCatalog",
-            "name": "Zaki's Essence Fragrance Collection",
-            "itemListElement": [
-                {
-                    "@type": "OfferCatalog",
-                    "name": "Men's Fragrances",
-                    "numberOfItems": "50+"
-                },
-                {
-                    "@type": "OfferCatalog",
-                    "name": "Women's Fragrances",
-                    "numberOfItems": "40+"
-                },
-                {
-                    "@type": "OfferCatalog",
-                    "name": "Unisex Fragrances",
-                    "numberOfItems": "20+"
-                }
-            ]
-        },
-        "hasMerchantReturnPolicy": {
-            "@type": "MerchantReturnPolicy",
-            "applicableCountry": "PK",
-            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-            "merchantReturnDays": 7,
-            "returnMethod": "https://schema.org/ReturnByMail",
-            "returnFees": "https://schema.org/FreeReturn",
-            "restockingFee": {
-                "@type": "MonetaryAmount",
-                "value": 0,
-                "currency": "PKR"
-            },
-            "returnPolicySeasonalOverride": [
-                {
-                    "@type": "MerchantReturnPolicySeasonalOverride",
-                    "startDate": "2024-11-01",
-                    "endDate": "2025-01-31",
-                    "merchantReturnDays": 30
-                }
-            ]
-        },
-        "shippingDetails": {
-            "@type": "OfferShippingDetails",
-            "shippingRate": {
-                "@type": "MonetaryAmount",
-                "value": 0,
-                "currency": "PKR"
-            },
-            "shippingDestination": {
-                "@type": "DefinedRegion",
-                "addressCountry": "PK"
-            },
-            "deliveryTime": {
-                "@type": "ShippingDeliveryTime",
-                "handlingTime": {
-                    "@type": "QuantitativeValue",
-                    "minValue": 1,
-                    "maxValue": 2,
-                    "unitCode": "DAY"
-                },
-                "transitTime": {
-                    "@type": "QuantitativeValue",
-                    "minValue": 2,
-                    "maxValue": 5,
-                    "unitCode": "DAY"
-                }
-            }
-        }
-    }
-    </script>
+            </script>
 
     <!-- Security and Performance Headers -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
 
-    <!-- Cache Control for better performance -->
+    <!-- Cache Control -->
     <meta http-equiv="Cache-Control" content="public, max-age=31536000, immutable" />
 
-    <!-- Critical CSS inlined for faster rendering -->
+    <!-- Critical CSS inline -->
     <style>
-        /* Critical above-the-fold CSS */
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
@@ -315,34 +302,23 @@
                 transform: rotate(360deg);
             }
         }
-
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
-            }
-
-            100% {
-                background-position: 200% 0;
-            }
-        }
     </style>
 </head>
 
 <body>
-    <!-- Google Tag Manager (noscript) - Non-blocking -->
+    <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5KSNP3PX" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
 
-    <!-- Loading screen for better perceived performance -->
+    <!-- Loading screen -->
     <div id="loading-screen" class="loading-screen">
         <div class="loading-spinner"></div>
     </div>
 
     <div id="root"></div>
 
-    <!-- Non-blocking script loading -->
+    <!-- Remove loading screen after load -->
     <script>
-        // Remove loading screen once app loads
         window.addEventListener('load', function () {
             const loadingScreen = document.getElementById('loading-screen');
             if (loadingScreen) {
@@ -352,6 +328,7 @@
         });
     </script>
 
+    <!-- Vite entrypoint -->
     <script type="module" src="/src/main.jsx"></script>
 </body>
 
