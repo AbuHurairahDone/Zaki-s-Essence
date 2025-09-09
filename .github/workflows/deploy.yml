@@ -30,10 +30,10 @@ jobs:
         id: skipcheck
         run: |
           msg="${{ github.event.head_commit.message }}"
-            if echo "$msg" | grep -qi "\[skip deploy\]"; then
-              echo "skip=true" >> $GITHUB_OUTPUT
-              echo "Skipping deploy due to [skip deploy] flag in commit message"
-            fi
+          if echo "$msg" | grep -qi "\[skip deploy\]"; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "Skipping deploy due to [skip deploy] flag in commit message"
+          fi
 
       - name: Setup Node.js
         if: steps.skipcheck.outputs.skip != 'true'
@@ -56,25 +56,19 @@ jobs:
           test -d dist || (echo 'dist folder missing after build' && exit 1)
           ls -1 dist | head -20
 
-      - name: Install Firebase CLI
-        if: steps.skipcheck.outputs.skip != 'true'
-        run: npm i -g firebase-tools
-
+      # Removed firebase-tools + token auth. Using official deploy action with service account.
       - name: Deploy to Firebase Hosting
         if: steps.skipcheck.outputs.skip != 'true'
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: |
-          if [ -z "$FIREBASE_TOKEN" ]; then
-            echo "FIREBASE_TOKEN secret not set" >&2
-            exit 1
-          fi
-          firebase deploy --only hosting --project zakis-essence --non-interactive --no-color
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ZAKIS_ESSENCE }}
+          projectId: zakis-essence
 
       - name: Summary
         if: steps.skipcheck.outputs.skip != 'true'
         run: |
-          echo "Deployment completed for commit $GITHUB_SHA on ref $GITHUB_REF" >> $GITHUB_STEP_SUMMARY
+          echo "Deployment (service account) completed for commit $GITHUB_SHA on ref $GITHUB_REF" >> $GITHUB_STEP_SUMMARY
 
       - name: Skipped Summary
         if: steps.skipcheck.outputs.skip == 'true'
