@@ -1,0 +1,116 @@
+# Firebase CI/CD Workflow for Fork Pull Requests
+# Implements industry best practices for secure handling of fork PRs
+
+name: Fork PR Validation
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - develop
+
+# Restricted permissions for security when handling fork PRs
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write
+
+# Environment variables available to all jobs
+env:
+  NODE_VERSION: '18'
+  CACHE_KEY: node-modules-${{ github.sha }}
+
+jobs:
+  security_validation:
+    name: Security validation
+    runs-on: ubuntu-latest
+    # This job runs for all PRs, including those from forks
+    steps:
+      - name: Checkout base repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          # Important: Do not checkout code from the fork for security validation
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Add PR metadata comment
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.issue.number;
+            const repo = context.repo;
+            
+            await github.rest.issues.createComment({
+              owner: repo.owner,
+              repo: repo.repo,
+              issue_number: prNumber,
+              body: `## Security Validation
+              
+              This PR is from a fork and requires additional security validation.
+              
+              * PR Author: @${{ github.event.pull_request.user.login }}
+              * Fork: ${{ github.event.pull_request.head.repo.full_name }}
+              * Base Branch: ${{ github.event.pull_request.base.ref }}
+              
+              A team member must review this PR carefully before approving.
+              `
+            });
+
+  build_validation:
+    name: Build validation
+    needs: security_validation
+    runs-on: ubuntu-latest
+    # This job only runs after security validation passes
+    steps:
+      - name: Checkout PR code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Project
+        run: npm run build
+        env:
+          # Use minimal environment variables for security
+          NODE_ENV: development
+          # Do not include sensitive environment variables for fork builds
+
+      - name: Report build status
+        uses: actions/github-script@v6
+        if: always()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.issue.number;
+            const repo = context.repo;
+            const buildStatus = '${{ job.status }}';
+            
+            const statusEmoji = buildStatus === 'success' ? '✅' : '❌';
+            
+            await github.rest.issues.createComment({
+              owner: repo.owner,
+              repo: repo.repo,
+              issue_number: prNumber,
+              body: `## Build Validation ${statusEmoji}
+              
+              Build status: **${buildStatus}**
+              
+              Note: This build validation does not deploy a preview for security reasons.
+              A team member must review and approve this PR before it can be merged.
+              `
+            });

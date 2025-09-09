@@ -1,0 +1,50 @@
+# Environment Configuration for Firebase CI/CD
+# This file defines environment-specific settings for deployments
+
+name: Environment Configuration
+
+# This is a reusable workflow that can be called from other workflows
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment to configure'
+        required: true
+        type: string
+    outputs:
+      firebase_target:
+        description: 'Firebase hosting target for the environment'
+        value: ${{ jobs.configure.outputs.firebase_target }}
+      node_env:
+        description: 'NODE_ENV value for the environment'
+        value: ${{ jobs.configure.outputs.node_env }}
+
+jobs:
+  configure:
+    name: Configure environment
+    runs-on: ubuntu-latest
+    outputs:
+      firebase_target: ${{ steps.set-env-vars.outputs.firebase_target }}
+      node_env: ${{ steps.set-env-vars.outputs.node_env }}
+    steps:
+      - name: Set environment variables
+        id: set-env-vars
+        run: |
+          case "${{ inputs.environment }}" in
+            production)
+              echo "firebase_target=production" >> $GITHUB_OUTPUT
+              echo "node_env=production" >> $GITHUB_OUTPUT
+              ;;
+            staging)
+              echo "firebase_target=staging" >> $GITHUB_OUTPUT
+              echo "node_env=production" >> $GITHUB_OUTPUT
+              ;;
+            preview)
+              echo "firebase_target=preview" >> $GITHUB_OUTPUT
+              echo "node_env=development" >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "firebase_target=production" >> $GITHUB_OUTPUT
+              echo "node_env=production" >> $GITHUB_OUTPUT
+              ;;
+          esac

@@ -174,32 +174,49 @@ function ProductCard({ product, addToCart }) {
 
             {/* Content */}
             <div className="p-4 flex flex-col flex-grow">
-                <header className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg group-hover:text-yellow-700">{product.name}</h3>
+                <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
+                    {/* Product Name */}
+                    <h3 className="text-base sm:text-lg md:text-xl font-semibold group-hover:text-yellow-700 leading-tight break-words">
+                        {product.name}
+                    </h3>
 
                     {/* Rating */}
-                    {product.rating && (
-                        <div className="mb-6 rounded-lg">
-                            <div className="flex items-center mb-2">
-                                <div className="flex">
-                                    {[...Array(5)].map((_, i) => (
-                                        <FontAwesomeIcon
-                                            key={i}
-                                            icon={faStar}
-                                            className={`text-xl transition-transform duration-150 ${i < Math.floor(product.rating) ? 'text-yellow-500' : 'text-gray-300'}`}
-                                        />
-                                    ))}
-                                </div>
-                                <div className="ml-3 flex items-center">
-                                    <span className="text-lg font-semibold text-gray-800">{product.rating}</span>
-                                    <span className="mx-1 text-gray-400">/</span>
-                                    <span className="text-gray-600">5</span>
-                                </div>
+                    {product.rating ? (
+                        <div className="flex items-center">
+                            {/* Stars */}
+                            <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                    <FontAwesomeIcon
+                                        key={i}
+                                        icon={faStar}
+                                        className={`transition-colors ${i < Math.floor(product.rating)
+                                            ? "text-yellow-500"
+                                            : "text-gray-300"
+                                            } text-sm sm:text-base md:text-lg`}
+                                    />
+                                ))}
                             </div>
 
+                            {/* Score */}
+                            <span className="ml-2 text-xs sm:text-sm md:text-base font-medium text-gray-700">
+                                {product.rating}/5
+                            </span>
                         </div>
+                    ) : (
+
+                        <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                                <FontAwesomeIcon
+                                    key={i}
+                                    icon={faStar}
+                                    className={`text-gray-300 text-sm sm:text-base md:text-lg`}
+                                />
+                            ))}
+                        </div>
+
                     )}
                 </header>
+
 
                 {/* Description with fixed height */}
                 <p className="text-gray-500 mb-3 text-sm line-clamp-3 min-h-[3.6em]">

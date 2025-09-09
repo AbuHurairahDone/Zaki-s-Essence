@@ -577,7 +577,7 @@ function ProductDetailPage() {
                                             </div>
                                             <h3 className="font-medium text-sm sm:text-base">Easy Returns</h3>
                                         </div>
-                                        <p className="text-sm text-gray-600">30 day return policy</p>
+                                        <p className="text-sm text-gray-600">10 day return policy</p>
                                         <p className="text-xs text-gray-500 mt-2">Hassle-free return process</p>
                                     </div>
 
