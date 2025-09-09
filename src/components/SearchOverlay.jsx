@@ -115,6 +115,12 @@ function SearchOverlay({ isOpen, toggleSearch }) {
         toggleSearch();
     };
 
+    // New: navigate to product detail
+    const handleProductClick = (productId) => {
+        navigate(`/product/${productId}`);
+        toggleSearch();
+    };
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -190,7 +196,11 @@ function SearchOverlay({ isOpen, toggleSearch }) {
                                                     <h3 className="text-xl font-bold mb-4 border-b pb-2">Products</h3>
                                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                                         {searchResults.products.map(product => (
-                                                            <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                                                            <div
+                                                                key={product.id}
+                                                                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                                                                onClick={() => handleProductClick(product.id)}
+                                                            >
                                                                 <div className="relative">
                                                                     <img
                                                                         src={selectVariantImage(product, selectedVariants[product.id] || product.variants?.[0])}
@@ -204,11 +214,11 @@ function SearchOverlay({ isOpen, toggleSearch }) {
                                                                     )}
                                                                 </div>
                                                                 <div className="p-4">
-                                                                    <h4 className="font-bold text-lg mb-2">{product.name}</h4>
+                                                                    <h4 className="font-bold text-lg mb-2 line-clamp-1">{product.name}</h4>
                                                                     <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
 
                                                                     {product.variants?.length > 0 && (
-                                                                        <div className="mb-3">
+                                                                        <div className="mb-3" onClick={(e) => e.stopPropagation()}>
                                                                             <label className="block text-sm font-medium text-gray-700 mb-1">Variant:</label>
                                                                             <select
                                                                                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-yellow-600"
@@ -247,7 +257,7 @@ function SearchOverlay({ isOpen, toggleSearch }) {
                                                                             )}
                                                                         </div>
                                                                         <button
-                                                                            onClick={() => handleAddToCart(product)}
+                                                                            onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
                                                                             className="bg-yellow-700 hover:bg-yellow-800 text-white px-3 py-1 rounded-md flex items-center transition-colors"
                                                                         >
                                                                             <FontAwesomeIcon icon={faCartPlus} className="mr-1" />
