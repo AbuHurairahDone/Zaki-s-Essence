@@ -215,21 +215,21 @@ class SEOService {
                 description: "Discover premium luxury fragrances at Zaki's Essence. Shop authentic perfumes, colognes & scents online. Free shipping, curated collections, and signature scents for every occasion.",
                 keywords: "luxury perfumes, premium fragrances, authentic scents, perfume online, cologne, eau de parfum, designer fragrances, Zaki's Essence, signature scents",
                 canonicalUrl: baseUrl,
-                ogImage: `${baseUrl}/logo.PNG`
+                ogImage: `${baseUrl}/logo.png`
             },
             shop: {
                 title: "Shop Premium Fragrances & Luxury Perfumes | Zaki's Essence Collection",
                 description: "Browse our complete collection of premium fragrances and luxury perfumes. Find your perfect scent from our curated selection of authentic designer fragrances.",
                 keywords: "shop fragrances, buy perfumes online, luxury perfume collection, designer scents, premium cologne",
                 canonicalUrl: `${baseUrl}/shop`,
-                ogImage: `${baseUrl}/logo.PNG`
+                ogImage: `${baseUrl}/logo.png`
             },
             product: {
                 title: `${data.name} - Premium Fragrance | Zaki's Essence`,
                 description: `${data.description || `Discover ${data.name}, a premium fragrance from Zaki's Essence collection. Authentic luxury perfume with free shipping.`}`,
                 keywords: `${data.name}, luxury perfume, premium fragrance, authentic scent, ${data.category || 'perfume'}`,
                 canonicalUrl: `${baseUrl}/products/${data.id}`,
-                ogImage: data.image || `${baseUrl}/logo.PNG`,
+                ogImage: data.image || `${baseUrl}/logo.png`,
                 structuredData: this.generateProductSchema(data)
             },
             collections: {
@@ -237,42 +237,42 @@ class SEOService {
                 description: "Explore our curated fragrance collections featuring the finest luxury perfumes and scents. Find themed collections for every occasion and preference.",
                 keywords: "fragrance collections, perfume sets, luxury scent collections, curated fragrances, themed perfumes",
                 canonicalUrl: `${baseUrl}/collections`,
-                ogImage: `${baseUrl}/logo.PNG`
+                ogImage: `${baseUrl}/logo.png`
             },
             about: {
                 title: "About Zaki's Essence - Premium Luxury Fragrance Brand Story",
                 description: "Learn about Zaki's Essence, our passion for luxury fragrances, and commitment to bringing you the finest authentic perfumes and scents from around the world.",
                 keywords: "about Zaki's Essence, luxury fragrance brand, perfume company story, authentic scents",
                 canonicalUrl: `${baseUrl}/about`,
-                ogImage: `${baseUrl}/logo.PNG`
+                ogImage: `${baseUrl}/logo.png`
             },
             contact: {
                 title: "Contact Zaki's Essence - Customer Service & Support",
                 description: "Get in touch with Zaki's Essence for customer support, product inquiries, or fragrance consultations. We're here to help you find your perfect scent.",
                 keywords: "contact Zaki's Essence, customer service, fragrance consultation, perfume support",
                 canonicalUrl: `${baseUrl}/contact`,
-                ogImage: `${baseUrl}/logo.PNG`
+                ogImage: `${baseUrl}/logo.png`
             },
             'our-story': {
                 title: "Our Story - Zaki's Essence",
                 description: "Discover the story behind Zaki's Essence, our passion for fragrances, and our commitment to quality.",
                 keywords: "Zaki's Essence story, brand history, fragrance passion, quality commitment",
                 canonicalUrl: `${baseUrl}/our-story`,
-                ogImage: `${baseUrl}/logo.PNG`
+                ogImage: `${baseUrl}/logo.png`
             },
             'review-order': {
                 title: "Review Your Order - Zaki's Essence",
                 description: "Provide feedback and review your recent order from Zaki's Essence.",
                 keywords: "review order, order feedback, Zaki's Essence review, product review",
                 canonicalUrl: `${baseUrl}/review-order`,
-                ogImage: `${baseUrl}/logo.PNG`
+                ogImage: `${baseUrl}/logo.png`
             },
             'track-order': {
                 title: "Track Your Order - Zaki's Essence",
                 description: "Easily track the status of your recent orders with Zaki's Essence.",
                 keywords: "track order, order status, Zaki's Essence order, shipping tracking",
                 canonicalUrl: `${baseUrl}/track-order`,
-                ogImage: `${baseUrl}/logo.PNG`
+                ogImage: `${baseUrl}/logo.png`
             }
         };
 
