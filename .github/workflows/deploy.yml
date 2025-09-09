@@ -1,0 +1,81 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'README.md'
+      - 'PERFORMANCE_OPTIMIZATIONS.md'
+      - 'SEO_FIXES_COMPLETED.md'
+      - '**/*.md'
+      - 'public/robots.txt'
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      NODE_ENV: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Respect skip flag
+        id: skipcheck
+        run: |
+          msg="${{ github.event.head_commit.message }}"
+            if echo "$msg" | grep -qi "\[skip deploy\]"; then
+              echo "skip=true" >> $GITHUB_OUTPUT
+              echo "Skipping deploy due to [skip deploy] flag in commit message"
+            fi
+
+      - name: Setup Node.js
+        if: steps.skipcheck.outputs.skip != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: steps.skipcheck.outputs.skip != 'true'
+        run: npm ci
+
+      - name: Build
+        if: steps.skipcheck.outputs.skip != 'true'
+        run: npm run build
+
+      - name: Verify build output
+        if: steps.skipcheck.outputs.skip != 'true'
+        run: |
+          test -d dist || (echo 'dist folder missing after build' && exit 1)
+          ls -1 dist | head -20
+
+      - name: Install Firebase CLI
+        if: steps.skipcheck.outputs.skip != 'true'
+        run: npm i -g firebase-tools
+
+      - name: Deploy to Firebase Hosting
+        if: steps.skipcheck.outputs.skip != 'true'
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          if [ -z "$FIREBASE_TOKEN" ]; then
+            echo "FIREBASE_TOKEN secret not set" >&2
+            exit 1
+          fi
+          firebase deploy --only hosting --project zakis-essence --non-interactive --no-color
+
+      - name: Summary
+        if: steps.skipcheck.outputs.skip != 'true'
+        run: |
+          echo "Deployment completed for commit $GITHUB_SHA on ref $GITHUB_REF" >> $GITHUB_STEP_SUMMARY
+
+      - name: Skipped Summary
+        if: steps.skipcheck.outputs.skip == 'true'
+        run: echo "Deployment skipped via commit message flag" >> $GITHUB_STEP_SUMMARY
