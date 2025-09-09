@@ -37,11 +37,11 @@ jobs:
             echo "Skipping deploy due to [skip deploy] flag in commit message"
           fi
 
-      - name: Setup Node.js
+      - name: Setup Node.js (22 LTS)
         if: steps.skipcheck.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           cache: 'npm'
 
       - name: Cache npm cache directory
@@ -56,6 +56,10 @@ jobs:
       - name: Install dependencies
         if: steps.skipcheck.outputs.skip != 'true'
         run: npm ci
+
+      - name: Verify Node crypto.hash availability
+        if: steps.skipcheck.outputs.skip != 'true'
+        run: node -e "console.log('crypto.hash exists:', typeof crypto.hash)"
 
       - name: Build
         if: steps.skipcheck.outputs.skip != 'true'
