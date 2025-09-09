@@ -4,7 +4,7 @@ import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { useIntersectionObserver, usePreventAnimationFlash, useScrollAnimation } from '../hooks/useAnimations.js';
 import { AppDataService } from '../services/appDataService.js';
 import { CloudinaryService } from '../services/cloudinaryService.js';
-import heroImage from '../assets/hero.jpg';
+import heroImage from '@assets/hero.jpg';
 
 function HeroSection() {
     const heroRef = useRef(null);

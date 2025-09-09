@@ -13,7 +13,7 @@ import {
     faShieldAlt,
     faBullseye
 } from '@fortawesome/free-solid-svg-icons';
-import logo_bg from '../assets/logo_bg.JPG';
+import logo_bg from '@assets/logo_bg.JPG';
 import { useSEO } from '../hooks/useSEO.js';
 
 function OurStory() {

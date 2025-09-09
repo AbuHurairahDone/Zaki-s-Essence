@@ -4,7 +4,7 @@ import { OrderService } from '../services/orderService.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faSpinner, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
-import logo from '../assets/logo_dark.PNG';
+import logo from '@assets/logo_dark.PNG';
 import useSEO from '../hooks/useSEO';
 
 function ReviewOrder() {

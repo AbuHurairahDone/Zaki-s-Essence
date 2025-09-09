@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useIntersectionObserver } from '../hooks/useAnimations.js';
-import logo_bg from '../assets/logo_bg.JPG'
+import logo_bg from '@assets/logo_bg.JPG';
 
 function AboutSection() {
     const [sectionRef, isSectionVisible] = useIntersectionObserver();

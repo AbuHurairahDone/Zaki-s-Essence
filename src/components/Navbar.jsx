@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faBars, faXmark, faSearch } from '@fortawesome/free-solid-svg-icons';
-import logo from '../assets/logo.png';
-import nav from '../assets/nav.png';
+import logo from '@assets/logo.png'; // switched to alias
+import nav from '@assets/nav.png'; // switched to alias
 import SearchOverlay from './SearchOverlay';
 
 export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {

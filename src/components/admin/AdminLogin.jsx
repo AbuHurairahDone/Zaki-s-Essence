@@ -3,7 +3,7 @@ import { useAuth } from '../../hooks/useAuth.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
-import logoDark from '../../assets/logo_dark.PNG';
+import logoDark from '@assets/logo_dark.PNG';
 
 function AdminLogin() {
     const { signIn, loading, error } = useAuth();
