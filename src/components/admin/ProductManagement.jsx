@@ -351,6 +351,11 @@ function ProductModal({ product, collections, onClose, onSave }) {
         isWeeklySale: product?.isWeeklySale || false,
         publicId: product?.publicId || '',
         cloudinaryData: product?.cloudinaryData || null,
+        fragranceNotes: {
+            top: product?.fragranceNotes?.top || '',
+            middle: product?.fragranceNotes?.middle || '',
+            base: product?.fragranceNotes?.base || ''
+        },
         variantImages: (() => {
             const base = product?.variantImages || {};
             const map = {};
@@ -368,10 +373,26 @@ function ProductModal({ product, collections, onClose, onSave }) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+
+        // Handle nested fragrance notes fields
+        if (name.startsWith('fragranceNotes.')) {
+            const noteType = name.split('.')[1];
+            // Sanitize fragrance notes input - remove excessive whitespace and limit length
+            const sanitizedValue = value.trim().slice(0, 500);
+
+            setFormData(prev => ({
+                ...prev,
+                fragranceNotes: {
+                    ...prev.fragranceNotes,
+                    [noteType]: sanitizedValue
+                }
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
     };
 
     const handleImageSelect = (e) => {
@@ -597,8 +618,16 @@ function ProductModal({ product, collections, onClose, onSave }) {
                 });
             }
 
+            // Ensure fragrance notes are properly structured and sanitized
+            const fragranceNotes = {
+                top: (formData.fragranceNotes?.top || '').trim().slice(0, 500),
+                middle: (formData.fragranceNotes?.middle || '').trim().slice(0, 500),
+                base: (formData.fragranceNotes?.base || '').trim().slice(0, 500)
+            };
+
             const productData = {
                 ...formData,
+                fragranceNotes, // Use the sanitized fragrance notes
                 rating: !product ? 0 : product.rating,
                 sold: soldData,
                 discountPercentage: formData.discountPercentage ? parseFloat(formData.discountPercentage) : null
@@ -709,6 +738,89 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                 value={formData.description}
                                 onChange={handleChange}
                             />
+                        </div>
+
+                        {/* Fragrance Notes Section */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Fragrance Notes</h3>
+
+                            {/* Top Notes */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Top Notes
+                                </label>
+                                <input
+                                    type="text"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    value={formData.fragranceNotes.top}
+                                    onChange={(e) => {
+                                        const sanitizedValue = e.target.value.trim().slice(0, 500);
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            fragranceNotes: {
+                                                ...prev.fragranceNotes,
+                                                top: sanitizedValue
+                                            }
+                                        }));
+                                    }}
+                                    placeholder="e.g., Bergamot, Lemon, Orange"
+                                    maxLength={500}
+                                />
+                                <p className="text-xs text-gray-500 mt-1">The initial scents that are perceived immediately upon application</p>
+                                <p className="text-xs text-gray-400">{formData.fragranceNotes.top.length}/500 characters</p>
+                            </div>
+
+                            {/* Middle Notes */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Middle Notes
+                                </label>
+                                <input
+                                    type="text"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    value={formData.fragranceNotes.middle}
+                                    onChange={(e) => {
+                                        const sanitizedValue = e.target.value.trim().slice(0, 500);
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            fragranceNotes: {
+                                                ...prev.fragranceNotes,
+                                                middle: sanitizedValue
+                                            }
+                                        }));
+                                    }}
+                                    placeholder="e.g., Rose, Jasmine, Lavender"
+                                    maxLength={500}
+                                />
+                                <p className="text-xs text-gray-500 mt-1">The heart of the fragrance that emerges after the top notes fade</p>
+                                <p className="text-xs text-gray-400">{formData.fragranceNotes.middle.length}/500 characters</p>
+                            </div>
+
+                            {/* Base Notes */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Base Notes
+                                </label>
+                                <input
+                                    type="text"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    value={formData.fragranceNotes.base}
+                                    onChange={(e) => {
+                                        const sanitizedValue = e.target.value.trim().slice(0, 500);
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            fragranceNotes: {
+                                                ...prev.fragranceNotes,
+                                                base: sanitizedValue
+                                            }
+                                        }))
+                                    }}
+                                    placeholder="e.g., Vanilla, Musk, Sandalwood"
+                                    maxLength={500}
+                                />
+                                <p className="text-xs text-gray-500 mt-1">The foundation notes that last the longest and give the fragrance its depth</p>
+                                <p className="text-xs text-gray-400">{formData.fragranceNotes.base.length}/500 characters</p>
+                            </div>
                         </div>
 
                         {/* Product Image Upload */}

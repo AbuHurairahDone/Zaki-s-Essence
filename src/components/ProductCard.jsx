@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useIntersectionObserver, usePreventAnimationFlash } from '../hooks/useAnimations.js';
 import { CloudinaryService } from '../services/cloudinaryService.js';
 import { AnalyticsService } from '../services/analyticsService.js';
@@ -9,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { selectVariantImage, buildCartProduct } from '../utils/productImages.js';
 
 function ProductCard({ product, addToCart }) {
+    const navigate = useNavigate();
     const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
     const [isLoading, setIsLoading] = useState(false);
     const [imageError, setImageError] = useState(false);
@@ -113,15 +115,34 @@ function ProductCard({ product, addToCart }) {
     const { original, discounted } = getCurrentPrice();
     const selectedVariantStock = getVariantStock(selectedVariant);
 
+    const handleProductClick = (e) => {
+        // Prevent navigation if clicking on variant buttons or add to cart button
+        if (e.target.closest('button')) {
+            return;
+        }
+
+        // Track click event
+        GTMService.trackCustomEvent('product_card_click', {
+            product_id: product.id,
+            product_name: product.name,
+            product_category: product.category,
+            product_price: getVariantPrice(selectedVariant)
+        });
+
+        // Navigate to product detail page
+        navigate(`/product/${product.id}`);
+    };
+
     return (
         <article
             ref={cardRef}
-            className={`product-card bg-white rounded-lg shadow-md overflow-hidden hover-lift smooth-transition group gpu-accelerated h-full flex flex-col ${isCardVisible && isReady ? 'animate-fade' : 'opacity-0'}`}
+            className={`product-card bg-white rounded-lg shadow-md overflow-hidden hover-lift smooth-transition group gpu-accelerated h-full flex flex-col ${isCardVisible && isReady ? 'animate-fade' : 'opacity-0'} cursor-pointer`}
             itemScope
             itemType="https://schema.org/Product"
+            onClick={handleProductClick}
         >
 
-            <div className="product-image relative overflow-hidden aspect-[4/5]">
+            <div className="product-image relative overflow-hidden aspect-[4/5]" role="img" aria-label={`${product.name} image`}>
                 {!imageError ? (
                     <img
                         src={getOptimizedImageUrl() || getSelectedImageUrl()}
@@ -155,10 +176,27 @@ function ProductCard({ product, addToCart }) {
             <div className="p-4 flex flex-col flex-grow">
                 <header className="flex justify-between items-start mb-2">
                     <h3 className="text-lg group-hover:text-yellow-700">{product.name}</h3>
+
+                    {/* Rating */}
                     {product.rating && (
-                        <div className="flex items-center text-yellow-600">
-                            <span className="text-sm font-medium">{product.rating}</span>
-                            <FontAwesomeIcon icon={faStar} className="text-sm ml-1" />
+                        <div className="mb-6 rounded-lg">
+                            <div className="flex items-center mb-2">
+                                <div className="flex">
+                                    {[...Array(5)].map((_, i) => (
+                                        <FontAwesomeIcon
+                                            key={i}
+                                            icon={faStar}
+                                            className={`text-xl transition-transform duration-150 ${i < Math.floor(product.rating) ? 'text-yellow-500' : 'text-gray-300'}`}
+                                        />
+                                    ))}
+                                </div>
+                                <div className="ml-3 flex items-center">
+                                    <span className="text-lg font-semibold text-gray-800">{product.rating}</span>
+                                    <span className="mx-1 text-gray-400">/</span>
+                                    <span className="text-gray-600">5</span>
+                                </div>
+                            </div>
+
                         </div>
                     )}
                 </header>

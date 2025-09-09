@@ -7,6 +7,12 @@ export const useSEO = (page, data = {}) => {
     const location = useLocation();
 
     useEffect(() => {
+        // Only update SEO data if we have valid data for product pages
+        // This prevents 'undefined' from appearing in the title
+        if (page === 'product' && (!data || !data.name)) {
+            return; // Skip updating SEO for product pages without valid data
+        }
+        
         const seoData = SEOService.getPageSEO(page, data);
         SEOService.updatePageMeta(seoData);
 
@@ -26,7 +32,7 @@ export const useSEO = (page, data = {}) => {
             window.scrollTo(0, 0);
             sessionStorage.setItem('lastPathname', location.pathname);
         }
-    }, [page, location.pathname]); // Remove data from dependencies to prevent unnecessary triggers
+    }, [page, location.pathname, data]); // Include data in dependencies to update when product data changes
 };
 
 // Generate breadcrumbs based on current path

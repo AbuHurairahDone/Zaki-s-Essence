@@ -6,6 +6,7 @@ import { ProductContext } from './contexts/contexts.js'
 import { CartProvider } from './contexts/CartContext.jsx'
 import { ProductProvider } from './contexts/Product.jsx'
 import { AuthProvider } from './contexts/AuthContext.jsx'
+import ProductDetailPage from './components/ProductDetailPage.jsx'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWhatsapp, } from '@fortawesome/free-brands-svg-icons';
@@ -305,6 +306,7 @@ function AppCode() {
                                         </div>
                                     } />
                                     <Route path="/review-order/:orderId" element={<ReviewOrder />} />
+                                    <Route path="/product/:productId" element={<ProductDetailPage />} />
                                 </Routes>
                             </PageTransition>
                         </main>

@@ -30,9 +30,17 @@ export class ProductService {
             return acc;
         }, {});
 
+        // Ensure fragrance notes fields exist
+        const fragranceNotes = {
+            top: raw.fragranceNotes?.top || '',
+            middle: raw.fragranceNotes?.middle || '',
+            base: raw.fragranceNotes?.base || ''
+        };
+
         return {
             ...raw,
-            variantImages
+            variantImages,
+            fragranceNotes
         };
     }
 
@@ -107,8 +115,16 @@ export class ProductService {
                 throw new Error('A product cannot be both a weekly sale and new arrival');
             }
 
+            // Ensure fragrance notes are properly structured
+            const fragranceNotes = {
+                top: productData.fragranceNotes?.top || '',
+                middle: productData.fragranceNotes?.middle || '',
+                base: productData.fragranceNotes?.base || ''
+            };
+
             const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), {
                 ...productData,
+                fragranceNotes,
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp()
             });
@@ -137,9 +153,17 @@ export class ProductService {
                 throw new Error('A product cannot be both a weekly sale and new arrival');
             }
 
+            // Ensure fragrance notes are properly structured
+            const fragranceNotes = {
+                top: productData.fragranceNotes?.top || '',
+                middle: productData.fragranceNotes?.middle || '',
+                base: productData.fragranceNotes?.base || ''
+            };
+
             const docRef = doc(db, PRODUCTS_COLLECTION, productId);
             await updateDoc(docRef, {
                 ...productData,
+                fragranceNotes,
                 updatedAt: serverTimestamp()
             });
         } catch (error) {
