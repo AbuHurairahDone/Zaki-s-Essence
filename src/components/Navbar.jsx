@@ -10,7 +10,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
     const [scrolled, setScrolled] = useState(false);
     const [cartPulse, setCartPulse] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
-    
+
     const toggleSearch = () => {
         setIsSearchOpen(!isSearchOpen);
     };
