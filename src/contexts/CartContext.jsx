@@ -75,15 +75,15 @@ export const CartProvider = ({ children }) => {
                 item => item.product.id === product.id && item.variant === variant
             );
 
+            let newItems;
             if (existingItemIndex !== -1) {
-                const updatedItems = [...prevItems];
-                updatedItems[existingItemIndex] = {
-                    ...updatedItems[existingItemIndex],
-                    quantity: updatedItems[existingItemIndex].quantity + 1
+                newItems = [...prevItems];
+                newItems[existingItemIndex] = {
+                    ...newItems[existingItemIndex],
+                    quantity: newItems[existingItemIndex].quantity + 1
                 };
-                return updatedItems;
             } else {
-                return [...prevItems, {
+                newItems = [...prevItems, {
                     product: {
                         ...product,
                         price: variantPrice
@@ -92,14 +92,27 @@ export const CartProvider = ({ children }) => {
                     quantity: 1
                 }];
             }
+
+            // If cart will be opened due to this add, track view cart with updated data
+            if (!isCartOpen) {
+                const newTotalAmount = newItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+                AnalyticsService.trackViewCart(newItems, newTotalAmount);
+            }
+
+            return newItems;
         });
+
+        // Automatically open cart after adding
+        if (!isCartOpen) {
+            setIsCartOpen(true);
+            setIsMobileMenuOpen(false);
+        }
 
         toast.success(`${product.name} (${variant}) added to cart`, {
             position: "bottom-right",
             autoClose: 2000,
         });
     };
-
 
     // Helper function to get variant price
     const getVariantPrice = (product, variant) => {
