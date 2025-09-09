@@ -44,6 +44,15 @@ jobs:
           node-version: 18
           cache: 'npm'
 
+      - name: Cache npm cache directory
+        if: steps.skipcheck.outputs.skip != 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-cache-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            npm-cache-${{ runner.os }}-
+
       - name: Install dependencies
         if: steps.skipcheck.outputs.skip != 'true'
         run: npm ci

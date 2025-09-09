@@ -3,11 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { resolve } from 'path'
 import compression from 'vite-plugin-compression'
-import { VitePWA } from 'vite-plugin-pwa'
 import { visualizer } from 'rollup-plugin-visualizer'
-
-// Control enabling of PWA (to avoid CI build failures while investigating plugin issue)
-const ENABLE_PWA = process.env.ENABLE_PWA !== 'false'
 
 export default defineConfig({
     plugins: [
@@ -28,59 +24,6 @@ export default defineConfig({
             ext: '.br',
             threshold: 1024,
             deleteOriginFile: false
-        }),
-
-        // Conditionally include PWA plugin
-        ENABLE_PWA && VitePWA({
-            registerType: 'autoUpdate',
-            workbox: {
-                globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,webp}'],
-                runtimeCaching: [
-                    {
-                        urlPattern: /^https:\/\/res\.cloudinary\.com\/.*/i,
-                        handler: 'CacheFirst',
-                        options: {
-                            cacheName: 'cloudinary-images',
-                            expiration: {
-                                maxEntries: 100,
-                                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
-                            }
-                        }
-                    },
-                    {
-                        urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-                        handler: 'StaleWhileRevalidate',
-                        options: {
-                            cacheName: 'google-fonts-stylesheets'
-                        }
-                    },
-                    {
-                        urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-                        handler: 'CacheFirst',
-                        options: {
-                            cacheName: 'google-fonts-webfonts',
-                            expiration: {
-                                maxEntries: 30,
-                                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-                            }
-                        }
-                    }
-                ]
-            },
-            includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'logo.png'],
-            manifest: {
-                name: "Zaki's Essence",
-                short_name: 'ZakisEssence',
-                description: 'Premium luxury fragrances and perfumes online store',
-                theme_color: '#b45309',
-                icons: [
-                    {
-                        src: 'logo.png',
-                        sizes: '192x192',
-                        type: 'image/png'
-                    }
-                ]
-            }
         }),
 
         // Bundle analyzer for production builds
