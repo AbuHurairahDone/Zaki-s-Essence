@@ -356,13 +356,9 @@ function ProductModal({ product, collections, onClose, onSave }) {
             middle: product?.fragranceNotes?.middle || '',
             base: product?.fragranceNotes?.base || ''
         },
-        variantImages: (() => {
-            const base = product?.variantImages || {};
-            const map = {};
-            const allVariants = (product?.variants || ['50ml', '100ml']);
-            allVariants.forEach(v => { map[v] = base[v] || null; });
-            return map;
-        })()
+        // New fields
+        scentLasting: product?.scentLasting || '',
+        minOrderFreeShip: (product?.minOrderFreeShip === 0 || product?.minOrderFreeShip) ? product.minOrderFreeShip : ''
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [newVariant, setNewVariant] = useState('');
@@ -630,7 +626,9 @@ function ProductModal({ product, collections, onClose, onSave }) {
                 fragranceNotes, // Use the sanitized fragrance notes
                 rating: !product ? 0 : product.rating,
                 sold: soldData,
-                discountPercentage: formData.discountPercentage ? parseFloat(formData.discountPercentage) : null
+                discountPercentage: formData.discountPercentage ? parseFloat(formData.discountPercentage) : null,
+                scentLasting: (formData.scentLasting || '').trim(),
+                minOrderFreeShip: formData.minOrderFreeShip === '' ? null : parseInt(formData.minOrderFreeShip, 10)
             };
 
             // Remove the old price field if it exists (for migration)
@@ -738,6 +736,40 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                 value={formData.description}
                                 onChange={handleChange}
                             />
+                        </div>
+
+                        {/* New: Scent Lasting & Free Shipping Threshold */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Scent Lasting (optional)
+                                </label>
+                                <input
+                                    type="text"
+                                    name="scentLasting"
+                                    placeholder="e.g., 8-10 hours"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    value={formData.scentLasting}
+                                    onChange={handleChange}
+                                />
+                                <p className="text-xs text-gray-500 mt-1">If provided, product will display a Long-lasting feature.</p>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Free Shipping Min Order (PKR, optional)
+                                </label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    name="minOrderFreeShip"
+                                    placeholder="e.g., 2000"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    value={formData.minOrderFreeShip}
+                                    onChange={handleChange}
+                                />
+                                <p className="text-xs text-gray-500 mt-1">If set, Shipping tab will show Free Shipping threshold.</p>
+                            </div>
                         </div>
 
                         {/* Fragrance Notes Section */}

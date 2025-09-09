@@ -37,10 +37,18 @@ export class ProductService {
             base: raw.fragranceNotes?.base || ''
         };
 
+        // New optional marketing / logistics fields with safe defaults
+        const scentLasting = raw.scentLasting || ''; // e.g. "8-10 hours"
+        const minOrderFreeShip = (raw.minOrderFreeShip === 0 || raw.minOrderFreeShip)
+            ? raw.minOrderFreeShip
+            : null; // number (PKR) or null
+
         return {
             ...raw,
             variantImages,
-            fragranceNotes
+            fragranceNotes,
+            scentLasting,
+            minOrderFreeShip
         };
     }
 

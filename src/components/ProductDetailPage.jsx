@@ -463,15 +463,17 @@ function ProductDetailPage() {
                                 <span className="text-xs sm:text-sm text-gray-600">Crafted with the finest ingredients</span>
                             </div>
                         </li>
-                        <li className="flex items-start transition-all hover:bg-white hover:shadow-md p-2 sm:p-3 rounded-md cursor-pointer hover:translate-y-[-2px]">
-                            <div className="bg-green-100 p-1.5 sm:p-2 rounded-full mr-2 sm:mr-3 flex-shrink-0">
-                                <FontAwesomeIcon icon={faCheck} className="text-green-600 text-sm sm:text-base" />
-                            </div>
-                            <div>
-                                <span className="font-medium block text-sm sm:text-base">Long-lasting</span>
-                                <span className="text-xs sm:text-sm text-gray-600">Scent lasts throughout the day</span>
-                            </div>
-                        </li>
+                        {product.scentLasting && (
+                            <li className="flex items-start transition-all hover:bg-white hover:shadow-md p-2 sm:p-3 rounded-md cursor-pointer hover:translate-y-[-2px]">
+                                <div className="bg-green-100 p-1.5 sm:p-2 rounded-full mr-2 sm:mr-3 flex-shrink-0">
+                                    <FontAwesomeIcon icon={faCheck} className="text-green-600 text-sm sm:text-base" />
+                                </div>
+                                <div>
+                                    <span className="font-medium block text-sm sm:text-base">Long-lasting</span>
+                                    <span className="text-xs sm:text-sm text-gray-600">{product.scentLasting}</span>
+                                </div>
+                            </li>
+                        )}
                         <li className="flex items-start transition-all hover:bg-white hover:shadow-md p-2 sm:p-3 rounded-md cursor-pointer hover:translate-y-[-2px]">
                             <div className="bg-green-100 p-1.5 sm:p-2 rounded-full mr-2 sm:mr-3 flex-shrink-0">
                                 <FontAwesomeIcon icon={faCheck} className="text-green-600 text-sm sm:text-base" />
@@ -529,17 +531,18 @@ function ProductDetailPage() {
                         {activeTab === 'shipping' && (
                             <>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-                                    <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border-l-4 border-blue-500 hover:shadow-md transition-all hover:translate-y-[-2px]">
-                                        <div className="flex items-center mb-2">
-                                            <div className="bg-blue-100 p-1.5 sm:p-2 rounded-full mr-2 flex-shrink-0">
-                                                <FontAwesomeIcon icon={faTruck} className="text-blue-600 text-sm sm:text-base" />
+                                    {product.minOrderFreeShip && (
+                                        <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border-l-4 border-blue-500 hover:shadow-md transition-all hover:translate-y-[-2px]">
+                                            <div className="flex items-center mb-2">
+                                                <div className="bg-blue-100 p-1.5 sm:p-2 rounded-full mr-2 flex-shrink-0">
+                                                    <FontAwesomeIcon icon={faTruck} className="text-blue-600 text-sm sm:text-base" />
+                                                </div>
+                                                <h3 className="font-medium text-sm sm:text-base">Free Shipping</h3>
                                             </div>
-                                            <h3 className="font-medium text-sm sm:text-base">Free Shipping</h3>
+                                            <p className="text-sm text-gray-600">On orders over Rs. {product.minOrderFreeShip}</p>
+                                            <p className="text-xs text-gray-500 mt-2">Delivered within 3-5 business days</p>
                                         </div>
-                                        <p className="text-sm text-gray-600">On orders over Rs. 2000</p>
-                                        <p className="text-xs text-gray-500 mt-2">Delivered within 3-5 business days</p>
-                                    </div>
-
+                                    )}
                                     <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border-l-4 border-green-500 hover:shadow-md transition-all hover:translate-y-[-2px]">
                                         <div className="flex items-center mb-2">
                                             <div className="bg-green-100 p-1.5 sm:p-2 rounded-full mr-2 flex-shrink-0">
@@ -550,7 +553,6 @@ function ProductDetailPage() {
                                         <p className="text-sm text-gray-600">100% secure payment</p>
                                         <p className="text-xs text-gray-500 mt-2">Multiple payment methods accepted</p>
                                     </div>
-
                                     <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border-l-4 border-yellow-500 hover:shadow-md transition-all hover:translate-y-[-2px]">
                                         <div className="flex items-center mb-2">
                                             <div className="bg-yellow-100 p-1.5 sm:p-2 rounded-full mr-2 flex-shrink-0">
@@ -562,10 +564,7 @@ function ProductDetailPage() {
                                         <p className="text-xs text-gray-500 mt-2">Express options available</p>
                                     </div>
                                 </div>
-
-
-                            </>
-                        )}
+                            </>)}
 
                         {activeTab === 'returns' && (
                             <>
