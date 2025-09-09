@@ -23,6 +23,7 @@ jobs:
     env:
       NODE_ENV: production
       NPM_CONFIG_PRODUCTION: false  # Ensure devDependencies are installed for build (vite plugin)
+      ENABLE_PWA: false  # Disable PWA plugin in CI to avoid crypto.hash error
     steps:
       - name: Checkout
         uses: actions/checkout@v4

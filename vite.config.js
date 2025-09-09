@@ -6,6 +6,9 @@ import compression from 'vite-plugin-compression'
 import { VitePWA } from 'vite-plugin-pwa'
 import { visualizer } from 'rollup-plugin-visualizer'
 
+// Control enabling of PWA (to avoid CI build failures while investigating plugin issue)
+const ENABLE_PWA = process.env.ENABLE_PWA !== 'false'
+
 export default defineConfig({
     plugins: [
         react(),
@@ -27,8 +30,8 @@ export default defineConfig({
             deleteOriginFile: false
         }),
 
-        // PWA for better caching and performance
-        VitePWA({
+        // Conditionally include PWA plugin
+        ENABLE_PWA && VitePWA({
             registerType: 'autoUpdate',
             workbox: {
                 globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,webp}'],
@@ -87,7 +90,7 @@ export default defineConfig({
             gzipSize: true,
             brotliSize: true
         })
-    ],
+    ].filter(Boolean),
 
     // Build optimizations
     build: {
@@ -109,8 +112,6 @@ export default defineConfig({
                 chunkFileNames: 'assets/js/[name]-[hash].js',
                 entryFileNames: 'assets/js/[name]-[hash].js',
                 assetFileNames: (assetInfo) => {
-                    // const info = assetInfo.name.split('.') // 'info' is assigned a value but never used.
-                    // const ext = info[info.length - 1] // 'ext' is assigned a value but never used.
                     if (/\.(css)$/.test(assetInfo.name)) {
                         return `assets/css/[name]-[hash][extname]`
                     }
