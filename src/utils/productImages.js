@@ -11,20 +11,31 @@ export function selectVariantImage(product, selectedVariant, placeholder = '/pla
 
     const variantImages = product.variantImages || {};
 
-    // Prefer the selected variant's image if available and non-empty
-    const selectedUrl = variantImages && variantImages[selectedVariant];
-    if (selectedUrl) return selectedUrl;
-
-    // Then any other variant image if present
-    if (variantImages && typeof variantImages === 'object') {
-        const anyUrl = Object.values(variantImages).find((url) => !!url);
-        if (anyUrl) return anyUrl;
+    // New logic for the updated data structure
+    if (selectedVariant && variantImages[selectedVariant]) {
+        const variantData = variantImages[selectedVariant];
+        // 1. Use the primary image for the selected variant
+        if (variantData.primary) {
+            return variantData.primary;
+        }
+        // 2. Fallback to the first image in the variant's gallery
+        if (variantData.images && variantData.images.length > 0) {
+            return variantData.images[0].url;
+        }
     }
 
-    // Then product-level image
-    if (product.image) return product.image;
+    // 3. Fallback to the main product image
+    if (product.image) {
+        return product.image;
+    }
 
-    // Finally placeholder
+    // 4. Fallback to any other variant's primary or first image
+    const anyVariantWithImage = Object.values(variantImages).find(v => v.primary || (v.images && v.images.length > 0));
+    if (anyVariantWithImage) {
+        return anyVariantWithImage.primary || anyVariantWithImage.images[0].url;
+    }
+
+    // 5. Finally, placeholder
     return placeholder;
 }
 

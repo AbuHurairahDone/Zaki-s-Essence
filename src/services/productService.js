@@ -20,13 +20,24 @@ const COLLECTIONS_COLLECTION = 'collections';
 
 export class ProductService {
     static normalizeProductData(raw) {
-        // Ensure variantImages map includes keys for each variant, defaulting to null
         const variants = raw.variants || [];
         const incomingMap = raw.variantImages || {};
+        
         const variantImages = variants.reduce((acc, v) => {
-            acc[v] = incomingMap && Object.prototype.hasOwnProperty.call(incomingMap, v)
-                ? (incomingMap[v] || null)
-                : null;
+            const variantData = incomingMap[v];
+            if (typeof variantData === 'string') {
+                // Handle old format (string URL)
+                acc[v] = {
+                    images: [{ url: variantData, publicId: '' }],
+                    primary: variantData
+                };
+            } else if (variantData && Array.isArray(variantData.images)) {
+                // Handle new format { images: [], primary: ... }
+                acc[v] = variantData;
+            } else {
+                // Default empty state
+                acc[v] = { images: [], primary: null };
+            }
             return acc;
         }, {});
 

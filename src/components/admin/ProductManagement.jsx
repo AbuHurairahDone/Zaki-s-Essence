@@ -337,77 +337,91 @@ function ProductCard({ product, onEdit, onDelete, formatCurrency, formatDate, ge
 
 // Product Modal Component
 function ProductModal({ product, collections, onClose, onSave }) {
-    const [formData, setFormData] = useState({
-        name: product?.name || '',
-        description: product?.description || '',
-        collectionRef: product?.collectionRef || '',
-        image: product?.image || '',
-        variants: product?.variants || ['50ml', '100ml'],
-        variantPricing: product?.variantPricing || { '50ml': 0, '100ml': 0 },
-        stock: product?.stock || { '50ml': 0, '100ml': 0 },
-        sold: product?.sold || { '50ml': 0, '100ml': 0 },
-        discountPercentage: product?.discountPercentage || '',
-        isNewArrival: product?.isNewArrival || false,
-        isWeeklySale: product?.isWeeklySale || false,
-        publicId: product?.publicId || '',
-        cloudinaryData: product?.cloudinaryData || null,
-        fragranceNotes: {
-            top: product?.fragranceNotes?.top || '',
-            middle: product?.fragranceNotes?.middle || '',
-            base: product?.fragranceNotes?.base || ''
-        },
-        // New fields
-        scentLasting: product?.scentLasting || '',
-        minOrderFreeShip: (product?.minOrderFreeShip === 0 || product?.minOrderFreeShip) ? product.minOrderFreeShip : ''
-    });
+    // Initialize form data with backward compatibility for variant images
+    const initializeFormData = () => {
+        const initialData = {
+            name: product?.name || '',
+            description: product?.description || '',
+            collectionRef: product?.collectionRef || '',
+            image: product?.image || '',
+            variants: product?.variants || ['50ml', '100ml'],
+            variantPricing: product?.variantPricing || { '50ml': 0, '100ml': 0 },
+            stock: product?.stock || { '50ml': 0, '100ml': 0 },
+            sold: product?.sold || { '50ml': 0, '100ml': 0 },
+            discountPercentage: product?.discountPercentage || '',
+            isNewArrival: product?.isNewArrival || false,
+            isWeeklySale: product?.isWeeklySale || false,
+            publicId: product?.publicId || '',
+            cloudinaryData: product?.cloudinaryData || null,
+            fragranceNotes: {
+                top: product?.fragranceNotes?.top || '',
+                middle: product?.fragranceNotes?.middle || '',
+                base: product?.fragranceNotes?.base || ''
+            },
+            scentLasting: product?.scentLasting || '',
+            minOrderFreeShip: (product?.minOrderFreeShip === 0 || product?.minOrderFreeShip) ? product.minOrderFreeShip : '',
+            variantImages: {} // New structure
+        };
+
+        // Backward compatibility for variantImages
+        if (product?.variantImages) {
+            initialData.variants.forEach(variant => {
+                const oldImageData = product.variantImages[variant];
+                if (typeof oldImageData === 'string') {
+                    // Old format: "url"
+                    initialData.variantImages[variant] = {
+                        images: [{ url: oldImageData, publicId: '' }], // publicId might be lost
+                        primary: oldImageData
+                    };
+                } else if (oldImageData) {
+                    // New format: { images: [], primary: '' }
+                    initialData.variantImages[variant] = oldImageData;
+                } else {
+                    initialData.variantImages[variant] = { images: [], primary: null };
+                }
+            });
+        } else {
+            initialData.variants.forEach(variant => {
+                initialData.variantImages[variant] = { images: [], primary: null };
+            });
+        }
+
+        return initialData;
+    };
+
+    const [formData, setFormData] = useState(initializeFormData);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [newVariant, setNewVariant] = useState('');
     const [imageFile, setImageFile] = useState(null);
     const [uploadingImage, setUploadingImage] = useState(false);
-    // Per-variant upload states
-    const [variantUploadState, setVariantUploadState] = useState({}); // { [variant]: { uploading: boolean } }
+    const [variantUploadState, setVariantUploadState] = useState({});
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        // Handle nested fragrance notes fields
         if (name.startsWith('fragranceNotes.')) {
             const noteType = name.split('.')[1];
-            // Sanitize fragrance notes input - remove excessive whitespace and limit length
             const sanitizedValue = value.trim().slice(0, 500);
-
             setFormData(prev => ({
                 ...prev,
-                fragranceNotes: {
-                    ...prev.fragranceNotes,
-                    [noteType]: sanitizedValue
-                }
+                fragranceNotes: { ...prev.fragranceNotes, [noteType]: sanitizedValue }
             }));
         } else {
-            setFormData(prev => ({
-                ...prev,
-                [name]: value
-            }));
+            setFormData(prev => ({ ...prev, [name]: value }));
         }
     };
 
     const handleImageSelect = (e) => {
         const file = e.target.files[0];
         if (file) {
-            // Validate file
             const validation = CloudinaryService.validateFile(file, {
-                maxSize: 10 * 1024 * 1024, // 10MB
+                maxSize: 10 * 1024 * 1024,
                 allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
             });
-
             if (!validation.isValid) {
                 toast.error(validation.errors.join(', '));
                 return;
             }
-
             setImageFile(file);
-
-            // Create preview
             const reader = new FileReader();
             reader.onload = (e2) => setImagePreview(e2.target.result);
             reader.readAsDataURL(file);
@@ -416,14 +430,12 @@ function ProductModal({ product, collections, onClose, onSave }) {
 
     const uploadImage = async () => {
         if (!imageFile) return;
-
         setUploadingImage(true);
         try {
             const uploadResult = await CloudinaryService.uploadProductImage(imageFile, {
                 productName: formData.name || 'product',
                 collection: collections.find(c => c.id === formData.collectionRef)?.name || 'general'
             });
-
             setFormData(prev => ({
                 ...prev,
                 image: uploadResult.url,
@@ -436,7 +448,6 @@ function ProductModal({ product, collections, onClose, onSave }) {
                     bytes: uploadResult.bytes
                 }
             }));
-
             setImageFile(null);
             toast.success('Image uploaded successfully');
         } catch (error) {
@@ -447,9 +458,13 @@ function ProductModal({ product, collections, onClose, onSave }) {
         }
     };
 
-    // New: select and upload a per-variant image
     const handleVariantImageSelect = (variant, file) => {
         if (!file) return;
+        const variantImageData = formData.variantImages[variant];
+        if (variantImageData && variantImageData.images.length >= 3) {
+            toast.error('You can upload a maximum of 3 images per variant.');
+            return;
+        }
         const validation = CloudinaryService.validateFile(file, {
             maxSize: 10 * 1024 * 1024,
             allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
@@ -468,14 +483,23 @@ function ProductModal({ product, collections, onClose, onSave }) {
                 productName: `${formData.name || 'product'}-${variant}`,
                 collection: collections.find(c => c.id === formData.collectionRef)?.name || 'general'
             });
-            setFormData(prev => ({
-                ...prev,
-                variantImages: {
-                    ...prev.variantImages,
-                    [variant]: uploadResult.url
-                }
-            }));
-            toast.success(`Image set for ${variant}`);
+
+            setFormData(prev => {
+                const newImages = [...(prev.variantImages[variant]?.images || []), { url: uploadResult.url, publicId: uploadResult.publicId }];
+                const newPrimary = prev.variantImages[variant]?.primary || newImages[0].url; // Set first image as primary if not set
+
+                return {
+                    ...prev,
+                    variantImages: {
+                        ...prev.variantImages,
+                        [variant]: {
+                            images: newImages,
+                            primary: newPrimary
+                        }
+                    }
+                };
+            });
+            toast.success(`Image added to ${variant}`);
         } catch (error) {
             console.error('Error uploading variant image:', error);
             toast.error(`Failed to upload image for ${variant}`);
@@ -484,14 +508,42 @@ function ProductModal({ product, collections, onClose, onSave }) {
         }
     };
 
-    const clearVariantImage = (variant) => {
+    const removeVariantImage = (variant, imageUrl) => {
+        setFormData(prev => {
+            const variantData = prev.variantImages[variant];
+            const newImages = variantData.images.filter(img => img.url !== imageUrl);
+            let newPrimary = variantData.primary;
+
+            // If the primary image was removed, set the new primary to the first image or null
+            if (newPrimary === imageUrl) {
+                newPrimary = newImages.length > 0 ? newImages[0].url : null;
+            }
+
+            return {
+                ...prev,
+                variantImages: {
+                    ...prev.variantImages,
+                    [variant]: {
+                        images: newImages,
+                        primary: newPrimary
+                    }
+                }
+            };
+        });
+    };
+
+    const setPrimaryVariantImage = (variant, imageUrl) => {
         setFormData(prev => ({
             ...prev,
             variantImages: {
                 ...prev.variantImages,
-                [variant]: null
+                [variant]: {
+                    ...prev.variantImages[variant],
+                    primary: imageUrl
+                }
             }
         }));
+        toast.success('Primary image set!');
     };
 
     const addVariant = () => {
@@ -500,21 +552,12 @@ function ProductModal({ product, collections, onClose, onSave }) {
             setFormData(prev => ({
                 ...prev,
                 variants: [...prev.variants, variant],
-                variantPricing: {
-                    ...prev.variantPricing,
-                    [variant]: 0
-                },
-                stock: {
-                    ...prev.stock,
-                    [variant]: 0
-                },
-                sold: {
-                    ...prev.sold,
-                    [variant]: 0
-                },
+                variantPricing: { ...prev.variantPricing, [variant]: 0 },
+                stock: { ...prev.stock, [variant]: 0 },
+                sold: { ...prev.sold, [variant]: 0 },
                 variantImages: {
                     ...prev.variantImages,
-                    [variant]: null
+                    [variant]: { images: [], primary: null }
                 }
             }));
             setNewVariant('');
@@ -524,18 +567,29 @@ function ProductModal({ product, collections, onClose, onSave }) {
     const removeVariant = (variantToRemove) => {
         if (formData.variants.length > 1) {
             setFormData(prev => {
-                const newVariantPricing = { ...prev.variantPricing };
-                const newStock = { ...prev.stock };
-                const newSold = { ...prev.sold };
-                const newVariantImages = { ...prev.variantImages };
+                const {
+                    variants,
+                    variantPricing,
+                    stock,
+                    sold,
+                    variantImages,
+                    ...rest
+                } = prev;
+
+                const newVariants = variants.filter(v => v !== variantToRemove);
+                const newVariantPricing = { ...variantPricing };
+                const newStock = { ...stock };
+                const newSold = { ...sold };
+                const newVariantImages = { ...variantImages };
+
                 delete newVariantPricing[variantToRemove];
                 delete newStock[variantToRemove];
                 delete newSold[variantToRemove];
                 delete newVariantImages[variantToRemove];
 
                 return {
-                    ...prev,
-                    variants: prev.variants.filter(v => v !== variantToRemove),
+                    ...rest,
+                    variants: newVariants,
                     variantPricing: newVariantPricing,
                     stock: newStock,
                     sold: newSold,
@@ -548,20 +602,14 @@ function ProductModal({ product, collections, onClose, onSave }) {
     const handleStockChange = (variant, value) => {
         setFormData(prev => ({
             ...prev,
-            stock: {
-                ...prev.stock,
-                [variant]: parseInt(value) || 0
-            }
+            stock: { ...prev.stock, [variant]: parseInt(value) || 0 }
         }));
     };
 
     const handlePriceChange = (variant, value) => {
         setFormData(prev => ({
             ...prev,
-            variantPricing: {
-                ...prev.variantPricing,
-                [variant]: parseFloat(value) || 0
-            }
+            variantPricing: { ...prev.variantPricing, [variant]: parseFloat(value) || 0 }
         }));
     };
 
@@ -575,38 +623,31 @@ function ProductModal({ product, collections, onClose, onSave }) {
             return;
         }
 
-        // Allow either product-level image or at least one variant image
-        const hasAnyVariantImage = Object.values(formData.variantImages || {}).some(Boolean);
+        const hasAnyVariantImage = Object.values(formData.variantImages || {}).some(v => v.images.length > 0);
         if (!formData.image && !hasAnyVariantImage) {
-            toast.error('Please upload a product image or add at least one variant image');
+            toast.error('Please upload a main product image or at least one variant image.');
             return;
         }
 
         if (formData.variants.length === 0) {
-            toast.error('Please add at least one variant');
+            toast.error('Please add at least one variant.');
             return;
         }
 
-        // Validate that all variants have prices
-        const hasEmptyPrices = formData.variants.some(variant =>
-            !formData.variantPricing[variant] || formData.variantPricing[variant] <= 0
-        );
-
+        const hasEmptyPrices = formData.variants.some(variant => !formData.variantPricing[variant] || formData.variantPricing[variant] <= 0);
         if (hasEmptyPrices) {
-            toast.error('Please set a price for all variants');
+            toast.error('Please set a price for all variants.');
             return;
         }
 
-        // Upload image if there's a new file selected
         if (imageFile) {
             await uploadImage();
-            return; // Let the upload complete, then user can submit again
+            return;
         }
 
         setIsSubmitting(true);
 
         try {
-            // Ensure sold defaults to 0 for all variants (for new products)
             const soldData = { ...formData.sold };
             if (!product) {
                 formData.variants.forEach(variant => {
@@ -614,7 +655,6 @@ function ProductModal({ product, collections, onClose, onSave }) {
                 });
             }
 
-            // Ensure fragrance notes are properly structured and sanitized
             const fragranceNotes = {
                 top: (formData.fragranceNotes?.top || '').trim().slice(0, 500),
                 middle: (formData.fragranceNotes?.middle || '').trim().slice(0, 500),
@@ -623,7 +663,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
 
             const productData = {
                 ...formData,
-                fragranceNotes, // Use the sanitized fragrance notes
+                fragranceNotes,
                 rating: !product ? 0 : product.rating,
                 sold: soldData,
                 discountPercentage: formData.discountPercentage ? parseFloat(formData.discountPercentage) : null,
@@ -631,7 +671,6 @@ function ProductModal({ product, collections, onClose, onSave }) {
                 minOrderFreeShip: formData.minOrderFreeShip === '' ? null : parseInt(formData.minOrderFreeShip, 10)
             };
 
-            // Remove the old price field if it exists (for migration)
             if (productData.price) {
                 delete productData.price;
             }
@@ -1114,44 +1153,50 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                                     />
                                                 </div>
 
-                                                {/* Variant Image */}
+                                                {/* Variant Images */}
                                                 <div>
-                                                    <label className="block text-xs font-medium text-gray-600 mb-2">Variant Image (optional)</label>
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-16 h-16 bg-gray-100 rounded overflow-hidden flex items-center justify-center border">
-                                                            {formData.variantImages?.[variant] ? (
-                                                                <img src={formData.variantImages[variant]} alt={`${variant} image`} className="w-full h-full object-cover" />
-                                                            ) : (
-                                                                <div className="text-gray-400 text-center">
-                                                                    <FontAwesomeIcon icon={faImage} />
+                                                    <label className="block text-xs font-medium text-gray-600 mb-2">
+                                                        Variant Images ({formData.variantImages[variant]?.images?.length || 0}/3)
+                                                    </label>
+                                                    <div className="space-y-2">
+                                                        <div className="grid grid-cols-3 gap-2">
+                                                            {formData.variantImages[variant]?.images.map((image, index) => (
+                                                                <div key={index} className="relative group">
+                                                                    <img src={image.url} alt={`Variant ${index + 1}`} className="w-full h-16 object-cover rounded-md border" />
+                                                                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                        <button type="button" onClick={() => setPrimaryVariantImage(variant, image.url)} className="text-white text-xs p-1 hover:text-yellow-400" title="Set as primary">
+                                                                            <FontAwesomeIcon icon={faStar} />
+                                                                        </button>
+                                                                        <button type="button" onClick={() => removeVariantImage(variant, image.url)} className="text-white text-xs p-1 hover:text-red-500" title="Remove image">
+                                                                            <FontAwesomeIcon icon={faTrash} />
+                                                                        </button>
+                                                                    </div>
+                                                                    {formData.variantImages[variant]?.primary === image.url && (
+                                                                        <div className="absolute top-1 right-1 bg-yellow-500 text-white rounded-full p-1 text-xs" title="Primary Image">
+                                                                            <FontAwesomeIcon icon={faStar} />
+                                                                        </div>
+                                                                    )}
                                                                 </div>
-                                                            )}
+                                                            ))}
                                                         </div>
-                                                        <div className="flex-1 flex gap-2 items-center">
-                                                            <label className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer text-sm">
+                                                        {(!formData.variantImages[variant] || formData.variantImages[variant].images.length < 3) && (
+                                                            <label className="w-full flex items-center justify-center px-3 py-2 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer text-sm">
                                                                 <input
                                                                     type="file"
                                                                     accept="image/*"
                                                                     className="hidden"
                                                                     onChange={(e) => handleVariantImageSelect(variant, e.target.files?.[0])}
+                                                                    disabled={variantUploadState[variant]?.uploading}
                                                                 />
-                                                                <span className="flex items-center">
+                                                                <span className="flex items-center text-gray-500">
                                                                     <FontAwesomeIcon icon={faUpload} className="mr-2" />
-                                                                    {variantUploadState[variant]?.uploading ? 'Uploading...' : 'Upload'}
+                                                                    {variantUploadState[variant]?.uploading ? 'Uploading...' : 'Add Image'}
                                                                 </span>
                                                             </label>
-                                                            {formData.variantImages?.[variant] && (
-                                                                <button
-                                                                    type="button"
-                                                                    className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"
-                                                                    onClick={() => clearVariantImage(variant)}
-                                                                >
-                                                                    Remove
-                                                                </button>
-                                                            )}
-                                                        </div>
+                                                        )}
                                                     </div>
                                                 </div>
+
 
                                                 {/* Sold count for existing products */}
                                                 {product && formData.sold && formData.sold[variant] !== undefined && (

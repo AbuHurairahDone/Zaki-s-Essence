@@ -34,36 +34,40 @@ function ProductDetailPage() {
         const loadProduct = async () => {
             setLoading(true);
             try {
-                // Try to get product from context first
                 const contextProduct = products.find(p => p.id === productId);
+                let productData = contextProduct;
 
-                if (contextProduct) {
-                    setProduct(contextProduct);
-                    setSelectedVariant(contextProduct.variants[0]);
-                    setMainImage(selectVariantImage(contextProduct, contextProduct.variants[0]));
-
-                    // Load related products (same category)
-                    const related = products
-                        .filter(p => p.category === contextProduct.category && p.id !== contextProduct.id)
-                        .slice(0, 4);
-                    setRelatedProducts(related);
-                } else {
-                    // If not in context, try to fetch from service
-                    const fetchedProduct = await ProductService.getProduct(productId);
-                    setProduct(fetchedProduct);
-                    setSelectedVariant(fetchedProduct.variants[0]);
-                    setMainImage(selectVariantImage(fetchedProduct, fetchedProduct.variants[0]));
-
-                    // Load related products
-                    const categoryProducts = await ProductService.getProductsByCategory(fetchedProduct.category);
-                    const related = categoryProducts
-                        .filter(p => p.id !== fetchedProduct.id)
-                        .slice(0, 4);
-                    setRelatedProducts(related);
+                if (!productData) {
+                    productData = await ProductService.getProduct(productId);
                 }
+
+                setProduct(productData);
+
+                // Default variant selection logic
+                let defaultVariant = '';
+                if (productData.variants.includes('50ml')) {
+                    defaultVariant = '50ml';
+                } else if (productData.variants.length > 0) {
+                    // Sort variants by size (e.g., 30ml, 50ml, 100ml)
+                    const sortedVariants = [...productData.variants].sort((a, b) => {
+                        const sizeA = parseInt(a.replace('ml', ''));
+                        const sizeB = parseInt(b.replace('ml', ''));
+                        return sizeA - sizeB;
+                    });
+                    defaultVariant = sortedVariants[0];
+                }
+
+                setSelectedVariant(defaultVariant);
+                setMainImage(selectVariantImage(productData, defaultVariant));
+
+                // Load related products
+                const related = products
+                    .filter(p => p.category === productData.category && p.id !== productData.id)
+                    .slice(0, 4);
+                setRelatedProducts(related);
+
             } catch (error) {
                 console.error('Error loading product:', error);
-                // Navigate back to shop if product not found
                 navigate('/shop');
             } finally {
                 setLoading(false);
@@ -261,29 +265,32 @@ function ProductDetailPage() {
                         />
                     </div>
 
-                    {/* Variant Images */}
-                    {product.variantImages && Object.keys(product.variantImages).length > 0 && (
-                        <div className="flex gap-2 overflow-x-auto pb-2">
-                            {product.variants.map(variant => {
-                                const variantImage = product.variantImages[variant];
-                                if (!variantImage) return null;
-
-                                return (
-                                    <button
-                                        key={variant}
-                                        onClick={() => handleVariantChange(variant)}
-                                        className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 ${selectedVariant === variant ? 'border-yellow-700' : 'border-gray-200'}`}
-                                    >
-                                        <img
-                                            src={getOptimizedImageUrl(variantImage, { width: 100, height: 100 })}
-                                            alt={`${product.name} - ${variant}`}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    )}
+                    {/* Variant Image Gallery */}
+                    <div className="flex gap-2 overflow-x-auto pb-2">
+                        {product.variantImages?.[selectedVariant]?.images.length > 0 ? (
+                            product.variantImages[selectedVariant].images.map((image, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setMainImage(image.url)}
+                                    className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 ${mainImage === image.url ? 'border-yellow-700' : 'border-gray-200'}`}
+                                >
+                                    <img
+                                        src={getOptimizedImageUrl(image.url, { width: 100, height: 100 })}
+                                        alt={`${product.name} - ${selectedVariant} thumbnail ${index + 1}`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </button>
+                            ))
+                        ) : (
+                            <div className="w-20 h-20 rounded-md overflow-hidden border-2 border-yellow-700">
+                                <img
+                                    src={getOptimizedImageUrl(product.image, { width: 100, height: 100 })}
+                                    alt={`${product.name} - main image`}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Product Details Section */}
@@ -296,30 +303,44 @@ function ProductDetailPage() {
                         <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
 
                         {/* Rating */}
-                        {product.rating && (
-                            <div className="mb-6 rounded-lg">
-                                <div className="flex items-center mb-2">
-                                    <div className="flex">
-                                        {[...Array(5)].map((_, i) => (
-                                            <FontAwesomeIcon
-                                                key={i}
-                                                icon={faStar}
-                                                className={`text-xl transition-transform duration-150 ${i < Math.floor(product.rating) ? 'text-yellow-500' : 'text-gray-300'}`}
-                                            />
-                                        ))}
-                                    </div>
-                                    <div className="ml-3 flex items-center">
-                                        <span className="text-lg font-semibold text-gray-800">{product.rating}</span>
-                                        <span className="mx-1 text-gray-400">/</span>
-                                        <span className="text-gray-600">5</span>
-                                    </div>
+                        {/* Rating */}
+                        {product.rating ? (
+                            <div className="flex items-center">
+                                {/* Stars */}
+                                <div className="flex">
+                                    {[...Array(5)].map((_, i) => (
+                                        <FontAwesomeIcon
+                                            key={i}
+                                            icon={faStar}
+                                            className={`transition-colors ${i < Math.floor(product.rating)
+                                                ? "text-yellow-500"
+                                                : "text-gray-300"
+                                                } text-sm sm:text-base md:text-lg`}
+                                        />
+                                    ))}
                                 </div>
 
+                                {/* Score */}
+                                <span className="ml-2 text-xs sm:text-sm md:text-base font-medium text-gray-700">
+                                    {product.rating}/5
+                                </span>
                             </div>
+                        ) : (
+
+                            <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                    <FontAwesomeIcon
+                                        key={i}
+                                        icon={faStar}
+                                        className={`text-gray-300 text-sm sm:text-base md:text-lg`}
+                                    />
+                                ))}
+                            </div>
+
                         )}
 
                         {/* Price */}
-                        <div className="mb-6">
+                        <div className="mb-6 mt-4">
                             <div className="flex items-center">
                                 <span className="text-2xl font-bold text-gray-900">Rs. {discounted.toFixed(0)}</span>
                                 {discounted !== original && (

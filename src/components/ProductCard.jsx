@@ -11,11 +11,41 @@ import { selectVariantImage, buildCartProduct } from '../utils/productImages.js'
 
 function ProductCard({ product, addToCart }) {
     const navigate = useNavigate();
-    const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+
+    // Helper to compute default variant: prefer '50ml', else lowest size
+    const computeDefaultVariant = (p) => {
+        const variants = p?.variants || [];
+        if (!variants.length) return '';
+
+        // Prefer exact 50ml match (case-insensitive)
+        const fifty = variants.find(v => String(v).toLowerCase() === '50ml');
+        if (fifty) return fifty;
+
+        // Parse sizes and pick the smallest ml value
+        const parseSize = (v) => {
+            if (!v) return Number.POSITIVE_INFINITY;
+            const m = String(v).match(/(\d+)\s*ml/i);
+            if (m && m[1]) return parseInt(m[1], 10);
+            const num = parseInt(v, 10);
+            return Number.isFinite(num) ? num : Number.POSITIVE_INFINITY;
+        };
+
+        const withSizes = variants.map(v => ({ v, size: parseSize(v) }));
+        withSizes.sort((a, b) => a.size - b.size);
+        return withSizes[0]?.v || variants[0];
+    };
+
+    const [selectedVariant, setSelectedVariant] = useState(() => computeDefaultVariant(product));
     const [isLoading, setIsLoading] = useState(false);
     const [imageError, setImageError] = useState(false);
     const [cardRef, isCardVisible] = useIntersectionObserver();
     const isReady = usePreventAnimationFlash();
+
+    // If product prop changes, recompute default variant
+    useEffect(() => {
+        setSelectedVariant(computeDefaultVariant(product));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [product?.id]);
 
     const getSelectedImageUrl = () => selectVariantImage(product, selectedVariant);
 
