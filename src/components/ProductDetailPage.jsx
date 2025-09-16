@@ -339,31 +339,10 @@ function ProductDetailPage() {
 
                         )}
 
-                        {/* Price */}
-                        <div className="mb-6 mt-4">
-                            <div className="flex items-center">
-                                <span className="text-2xl font-bold text-gray-900">Rs. {discounted.toFixed(0)}</span>
-                                {discounted !== original && (
-                                    <span className="ml-2 text-sm line-through text-gray-500">Rs. {original.toFixed(0)}</span>
-                                )}
-                                {product.discountPercentage > 0 && (
-                                    <span className="ml-2 bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded">
-                                        {product.discountPercentage}% OFF
-                                    </span>
-                                )}
-                            </div>
-                            <p className="text-sm text-gray-500 mt-1">Inclusive of all taxes</p>
-                        </div>
-
-                        {/* Description */}
-                        <div className="mb-6">
-                            <h2 className="text-lg font-semibold mb-2">Description</h2>
-                            <p className="text-gray-700">{product.description}</p>
-                        </div>
 
 
                         {/* Variants */}
-                        <div className="mb-6">
+                        <div className="mb-6 mt-4">
                             <h2 className="text-lg font-semibold mb-2">Size</h2>
                             <div className="flex flex-wrap gap-2">
                                 {product.variants.map(variant => (
@@ -412,6 +391,33 @@ function ProductDetailPage() {
                                 </button>
                             </div>
                         </div>
+
+                        {/* Price */}
+                        <div className="mb-6 mt-4">
+                            <div className="flex items-center">
+                                <span className="text-2xl font-bold text-gray-900">Rs. {discounted.toFixed(0)}</span>
+                                {discounted !== original && (
+                                    <span className="ml-2 text-sm line-through text-gray-500">Rs. {original.toFixed(0)}</span>
+                                )}
+                                {product.discountPercentage > 0 && (
+                                    <span className="ml-2 bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded">
+                                        {product.discountPercentage}% OFF
+                                    </span>
+                                )}
+                            </div>
+                            <p className="text-sm text-gray-500 mt-1">Inclusive of all taxes</p>
+                        </div>
+
+                        {/* Description */}
+                        <div className="mb-6">
+                            <h2 className="text-lg font-semibold mb-2">Description</h2>
+                            <p className="text-gray-700">{product.description}</p>
+                        </div>
+
+
+
+
+
 
                         {/* Add to Cart Button */}
                         <button

@@ -80,6 +80,14 @@ select:focus {
     --letter-spacing-normal: 0;
     --letter-spacing-wide: 0.025em;
     --letter-spacing-luxury: 0.15em;
+
+
+
+
+    --color-primary: oklch(48.9% 0.082 58.8);
+    /* oklch */
+
+
 }
 
 /* SEO-friendly heading hierarchy */
