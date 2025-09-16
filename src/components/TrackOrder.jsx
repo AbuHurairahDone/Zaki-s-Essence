@@ -35,7 +35,7 @@ const getStatusIcon = (status) => {
 // Status color mapping
 const getStatusColor = (status) => {
     const colorMap = {
-        'pending': 'text-yellow-600 bg-yellow-50 border-yellow-200',
+        'pending': 'text-brown-600 bg-amber-100 border-brown-200',
         'confirmed': 'text-blue-600 bg-blue-50 border-blue-200',
         'processing': 'text-purple-600 bg-purple-50 border-purple-200',
         'shipped': 'text-indigo-600 bg-indigo-50 border-indigo-200',
@@ -69,8 +69,8 @@ const SearchForm = ({ searchTerm, setSearchTerm, searchBy, setSearchBy, onSearch
     return (
         <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 border border-gray-100">
             <div className="text-center mb-6">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-100 rounded-full mb-4">
-                    <FontAwesomeIcon icon={faSearch} className="text-2xl text-yellow-700" />
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-100 rounded-full mb-4">
+                    <FontAwesomeIcon icon={faSearch} className="text-2xl text-amber-950" />
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Track Your Order</h2>
                 <p className="text-gray-600">Enter your order details to track your package</p>
@@ -81,7 +81,7 @@ const SearchForm = ({ searchTerm, setSearchTerm, searchBy, setSearchBy, onSearch
                 <label className="block text-sm font-medium text-gray-700 mb-3">Search by:</label>
                 <div className="grid grid-cols-2 gap-3">
                     <label className={`flex items-center p-3 rounded-lg border cursor-pointer transition-all ${searchBy === 'orderId'
-                        ? 'border-yellow-500 bg-yellow-50 text-yellow-700'
+                        ? 'border-amber-600 bg-amber-100 text-amber-950'
                         : 'border-gray-200 hover:border-gray-300'
                         }`}>
                         <input
@@ -96,7 +96,7 @@ const SearchForm = ({ searchTerm, setSearchTerm, searchBy, setSearchBy, onSearch
                         <span className="font-medium">Order ID</span>
                     </label>
                     <label className={`flex items-center p-3 rounded-lg border cursor-pointer transition-all ${searchBy === 'phoneNumber'
-                        ? 'border-yellow-500 bg-yellow-50 text-yellow-700'
+                        ? 'border-amber-600 bg-amber-100 text-amber-950'
                         : 'border-gray-200 hover:border-gray-300'
                         }`}>
                         <input
@@ -150,10 +150,10 @@ const SearchForm = ({ searchTerm, setSearchTerm, searchBy, setSearchBy, onSearch
                                 inputProps={{
                                     name: 'phone',
                                     required: true,
-                                    className: "w-full pl-12 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    className: "w-full pl-12 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-950"
                                 }}
                                 containerClass="w-full"
-                                buttonClass="!border-gray-300 hover:!border-yellow-700"
+                                buttonClass="!border-gray-300 hover:!border-amber-950"
                                 dropdownClass="!z-50"
                                 disabled={loading}
                             />
@@ -173,7 +173,7 @@ const SearchForm = ({ searchTerm, setSearchTerm, searchBy, setSearchBy, onSearch
                             onChange={(e) => setSearchTerm(e.target.value)}
                             onKeyPress={handleKeyPress}
                             placeholder={`Enter ${searchBy === 'orderId' ? 'order ID (e.g., ZE12345678)' : 'phone number'}`}
-                            className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm md:text-base"
+                            className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent text-sm md:text-base"
                             disabled={loading}
                         />
                     </div>
@@ -184,7 +184,7 @@ const SearchForm = ({ searchTerm, setSearchTerm, searchBy, setSearchBy, onSearch
             <button
                 onClick={onSearch}
                 disabled={loading || !searchTerm.trim()}
-                className="w-full bg-yellow-700 hover:bg-yellow-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+                className="w-full bg-primary hover:bg-secondary disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-600 focus:ring-offset-2"
             >
                 {loading ? (
                     <span className="flex items-center justify-center">
@@ -426,7 +426,7 @@ const OrderDetails = ({ order }) => {
                 <div className="mt-6 pt-6 border-t border-gray-200">
                     <div className="flex justify-between items-center">
                         <span className="text-lg font-semibold text-gray-900">Total Amount:</span>
-                        <span className="text-2xl font-bold text-yellow-700">
+                        <span className="text-2xl font-bold text-amber-950">
                             {formatCurrency(order.total || 0)}
                         </span>
                     </div>
@@ -440,10 +440,10 @@ const OrderDetails = ({ order }) => {
                     <div className="space-y-4">
                         {order.statusHistory.map((history, index) => (
                             <div key={index} className="flex items-start">
-                                <div className="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
+                                <div className="flex-shrink-0 w-8 h-8 bg-amber-200 rounded-full flex items-center justify-center mr-4">
                                     <FontAwesomeIcon
                                         icon={getStatusIcon(history.status)}
-                                        className="text-yellow-700 text-sm"
+                                        className="text-amber-950 text-sm"
                                     />
                                 </div>
                                 <div className="flex-1">

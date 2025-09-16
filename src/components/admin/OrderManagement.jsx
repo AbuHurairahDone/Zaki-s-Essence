@@ -19,7 +19,7 @@ import * as XLSX from 'xlsx';
 // Helper functions accessible to all components
 const getStatusColor = (status) => {
     const colors = {
-        pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+        pending: 'bg-brown-100 text-brown-800 border-brown-200',
         confirmed: 'bg-blue-100 text-blue-800 border-blue-200',
         processing: 'bg-purple-100 text-purple-800 border-purple-200',
         shipped: 'bg-green-100 text-green-800 border-green-200',
@@ -236,7 +236,7 @@ function OrderManagement() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin w-8 h-8 border-2 border-yellow-700 border-t-transparent rounded-full"></div>
+                <div className="animate-spin w-8 h-8 border-2 border-amber-950 border-t-transparent rounded-full"></div>
             </div>
         );
     }
@@ -266,7 +266,7 @@ function OrderManagement() {
                             <input
                                 type="text"
                                 placeholder="Search by order number, customer name, or email..."
-                                className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -275,7 +275,7 @@ function OrderManagement() {
                     <div className="flex items-center space-x-2">
                         <FontAwesomeIcon icon={faFilter} className="text-gray-400" />
                         <select
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
                         >
@@ -293,7 +293,7 @@ function OrderManagement() {
             <div className="flex justify-end">
                 <button
                     onClick={exportToExcel}
-                    className="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                    className="inline-flex items-center px-4 py-2 bg-amber-600 hover:bg-primary text-white rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-amber-600"
                 >
                     <FontAwesomeIcon icon={faDownload} className="mr-2" />
                     Export to Excel
@@ -455,7 +455,7 @@ function StatusDropdown({ currentStatus, orderId, onStatusUpdate }) {
                             <button
                                 key={status}
                                 onClick={() => handleStatusChange(status)}
-                                className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${status === currentStatus ? 'bg-yellow-50 text-yellow-700' : 'text-gray-700'
+                                className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${status === currentStatus ? 'bg-amber-100 text-amber-950' : 'text-gray-700'
                                     }`}
                                 disabled={status === currentStatus}
                             >
@@ -476,7 +476,7 @@ function StatusDropdown({ currentStatus, orderId, onStatusUpdate }) {
                                 Add Notes for Status Change
                             </h3>
                             <textarea
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                 rows="4"
                                 placeholder="Add any notes about this status change..."
                                 value={notes}
@@ -495,7 +495,7 @@ function StatusDropdown({ currentStatus, orderId, onStatusUpdate }) {
                                 </button>
                                 <button
                                     onClick={handleNotesSubmit}
-                                    className="px-4 py-2 bg-yellow-700 hover:bg-yellow-800 text-white rounded-lg"
+                                    className="px-4 py-2 bg-primary hover:bg-secondary text-white rounded-lg"
                                 >
                                     Update Status
                                 </button>
@@ -596,7 +596,7 @@ function OrderDetailModal({ order, onClose, onStatusUpdate, onOrderUpdated }) {
                                             setCopied(true);
                                             setTimeout(() => setCopied(false), 2000);
                                         }}
-                                        className="px-4 py-2 bg-yellow-700 hover:bg-yellow-800 text-white rounded-r-lg text-sm font-medium transition-colors"
+                                        className="px-4 py-2 bg-primary hover:bg-secondary text-white rounded-r-lg text-sm font-medium transition-colors"
                                     >
                                         {copied ? 'Copied!' : 'Copy'}
                                     </button>
@@ -728,7 +728,7 @@ function OrderDetailModal({ order, onClose, onStatusUpdate, onOrderUpdated }) {
                                                 <td className="px-4 py-3">
                                                     {review ? (
                                                         <div>
-                                                            <span className="font-semibold text-yellow-700">Rating: {review.rating} / 5</span>
+                                                            <span className="font-semibold text-amber-950">Rating: {review.rating} / 5</span>
                                                             <p className="text-sm text-gray-700 mt-1">{review.review}</p>
                                                         </div>
                                                     ) : (

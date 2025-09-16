@@ -28,9 +28,9 @@ function CartItem({ item, updateQuantity, removeItem }) {
                     />
                 </div>
                 <div className="animate-slide-right delay-1">
-                    <h4 className="font-medium hover:text-yellow-700 transition-colors">{item.product.name}</h4>
+                    <h4 className="font-medium hover:text-amber-950 transition-colors">{item.product.name}</h4>
                     <p className="text-gray-500 text-sm">{item.variant}</p>
-                    <p className="text-yellow-600 font-bold">Rs. {item.product.price}</p>
+                    <p className="text-brown-600 font-bold">Rs. {item.product.price}</p>
                 </div>
             </div>
 
@@ -38,7 +38,7 @@ function CartItem({ item, updateQuantity, removeItem }) {
                 <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
                     <button
                         onClick={() => updateQuantity(item, item.quantity - 1)}
-                        className="px-3 py-2 text-gray-500 hover:bg-gray-100 transition-all duration-200 hover:text-yellow-700"
+                        className="px-3 py-2 text-gray-500 hover:bg-gray-100 transition-all duration-200 hover:text-brown-700"
                         disabled={item.quantity <= 1}
                     >
                         -
@@ -46,7 +46,7 @@ function CartItem({ item, updateQuantity, removeItem }) {
                     <span className="px-3 py-2 bg-gray-50 font-medium min-w-[2rem] text-center">{item.quantity}</span>
                     <button
                         onClick={() => updateQuantity(item, item.quantity + 1)}
-                        className="px-3 py-2 text-gray-500 hover:bg-gray-100 transition-all duration-200 hover:text-yellow-700"
+                        className="px-3 py-2 text-gray-500 hover:bg-gray-100 transition-all duration-200 hover:text-brown-700"
                     >
                         +
                     </button>
@@ -333,7 +333,7 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.name ? 'border-red-500' : 'border-gray-300'
+                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-brown-700 ${errors.name ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     disabled={isCheckingOut}
                                 />
@@ -349,7 +349,7 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.email ? 'border-red-500' : 'border-gray-300'
+                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-brown-700 ${errors.email ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     disabled={isCheckingOut}
                                 />
@@ -367,10 +367,10 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
                                     inputProps={{
                                         name: 'phone',
                                         required: true,
-                                        className: `w-full pl-12 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`
+                                        className: `w-full pl-12 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-brown-700 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`
                                     }}
                                     containerClass="w-full"
-                                    buttonClass="!border-gray-300 hover:!border-yellow-700"
+                                    buttonClass="!border-gray-300 hover:!border-brown-700"
                                     dropdownClass="!z-50"
                                     disabled={isCheckingOut}
                                 />
@@ -392,7 +392,7 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
                                     name="address"
                                     value={formData.address}
                                     onChange={handleChange}
-                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.address ? 'border-red-500' : 'border-gray-300'
+                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-brown-700 ${errors.address ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     disabled={isCheckingOut}
                                     placeholder="Enter your street address"
@@ -463,7 +463,7 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
                                         name="zipCode"
                                         value={formData.zipCode}
                                         onChange={handleChange}
-                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.zipCode ? 'border-red-500' : 'border-gray-300'
+                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-brown-700 ${errors.zipCode ? 'border-red-500' : 'border-gray-300'
                                             }`}
                                         disabled={isCheckingOut}
                                         placeholder="Enter ZIP/Postal code"
@@ -487,7 +487,7 @@ function CheckoutModal({ isOpen, onClose, cartItems, totalAmount }) {
                         <button
                             type="submit"
                             disabled={isCheckingOut}
-                            className="px-6 py-2 bg-yellow-700 hover:bg-yellow-800 text-white rounded-md transition-colors disabled:opacity-50 flex items-center"
+                            className="px-6 py-2 bg-primary hover:bg-secondary text-white rounded-md transition-colors disabled:opacity-50 flex items-center"
                         >
                             {isCheckingOut ? (
                                 <>
@@ -549,7 +549,7 @@ function CartPanel({ isOpen, cartItems, toggleCart, updateQuantity, removeItem, 
                                 <p className="text-gray-500 mb-6 text-center">Discover our amazing fragrances and add them to your cart</p>
                                 <button
                                     onClick={toggleCart}
-                                    className="px-8 py-3 bg-yellow-700 text-white rounded-md hover:bg-yellow-800 transition-all duration-300 font-medium btn-animate hover-lift"
+                                    className="px-8 py-3 bg-primary text-white rounded-md hover:bg-secondary transition-all duration-300 font-medium btn-animate hover-lift"
                                 >
                                     Continue Shopping
                                 </button>
@@ -584,7 +584,7 @@ function CartPanel({ isOpen, cartItems, toggleCart, updateQuantity, removeItem, 
                             </div>
                             <button
                                 onClick={handleCheckout}
-                                className="w-full  bg-yellow-700 hover:bg-yellow-800 text-white py-4 rounded-full transition-all duration-300 font-medium text-lg btn-animate hover-lift shadow-lg hover:shadow-xl"
+                                className="w-full  bg-primary hover:bg-secondary text-white py-4 rounded-full transition-all duration-300 font-medium text-lg btn-animate hover-lift shadow-lg hover:shadow-xl"
                             >
                                 Proceed to Checkout
                             </button>

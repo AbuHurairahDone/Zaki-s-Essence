@@ -96,7 +96,7 @@ function AdminLayout({ children, currentPage, onPageChange }) {
                                     setSidebarOpen(false);
                                 }}
                                 className={`w-full flex items-center px-4 py-2 text-left rounded-lg transition-colors ${currentPage === item.id
-                                    ? 'bg-yellow-700 text-white'
+                                    ? 'bg-primary text-white'
                                     : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                                     }`}
                             >
@@ -109,7 +109,7 @@ function AdminLayout({ children, currentPage, onPageChange }) {
 
                 <div className="absolute bottom-0 w-full p-4">
                     <div className="flex items-center mb-4 px-4">
-                        <div className="w-8 h-8 bg-yellow-700 rounded-full flex items-center justify-center">
+                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                             <span className="text-white text-sm font-medium">
                                 {user?.displayName?.charAt(0) || 'A'}
                             </span>

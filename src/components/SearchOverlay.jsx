@@ -159,14 +159,14 @@ function SearchOverlay({ isOpen, toggleSearch }) {
                                     ref={searchInputRef}
                                     type="text"
                                     placeholder="Search for products and collections..."
-                                    className="w-full pl-12 pr-4 py-3 rounded-full bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-600"
+                                    className="w-full pl-12 pr-4 py-3 rounded-full bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-800"
                                     value={searchTerm}
                                     onChange={handleSearchChange}
                                 />
                             </div>
                             <button
                                 onClick={toggleSearch}
-                                className="ml-4 text-white hover:text-yellow-600 transition-colors"
+                                className="ml-4 text-white hover:text-amber-800 transition-colors"
                             >
                                 <FontAwesomeIcon icon={faXmark} className="text-2xl" />
                             </button>
@@ -177,7 +177,7 @@ function SearchOverlay({ isOpen, toggleSearch }) {
                             <div className="max-w-6xl mx-auto">
                                 {isLoading ? (
                                     <div className="flex justify-center items-center h-32">
-                                        <div className="animate-spin w-8 h-8 border-2 border-yellow-700 border-t-transparent rounded-full"></div>
+                                        <div className="animate-spin w-8 h-8 border-2 border-amber-950 border-t-transparent rounded-full"></div>
                                     </div>
                                 ) : searchTerm.trim().length < 1 ? (
                                     <div className="text-center text-gray-500 py-12">
@@ -221,7 +221,7 @@ function SearchOverlay({ isOpen, toggleSearch }) {
                                                                         <div className="mb-3" onClick={(e) => e.stopPropagation()}>
                                                                             <label className="block text-sm font-medium text-gray-700 mb-1">Variant:</label>
                                                                             <select
-                                                                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-yellow-600"
+                                                                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-amber-800"
                                                                                 value={selectedVariants[product.id] || ''}
                                                                                 onChange={(e) => handleVariantChange(product.id, e.target.value)}
                                                                             >
@@ -233,7 +233,7 @@ function SearchOverlay({ isOpen, toggleSearch }) {
                                                                     )}
 
                                                                     <div className="flex justify-between items-center">
-                                                                        <div className="text-yellow-700 font-bold">
+                                                                        <div className="text-amber-950 font-bold">
                                                                             {product.variants?.length > 0 && selectedVariants[product.id] ? (
                                                                                 <>
                                                                                     {(() => {
@@ -258,7 +258,7 @@ function SearchOverlay({ isOpen, toggleSearch }) {
                                                                         </div>
                                                                         <button
                                                                             onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
-                                                                            className="bg-yellow-700 hover:bg-yellow-800 text-white px-3 py-1 rounded-md flex items-center transition-colors"
+                                                                            className="bg-primary hover:bg-secondary text-white px-3 py-1 rounded-md flex items-center transition-colors"
                                                                         >
                                                                             <FontAwesomeIcon icon={faCartPlus} className="mr-1" />
                                                                             Add to Cart
@@ -292,7 +292,7 @@ function SearchOverlay({ isOpen, toggleSearch }) {
                                                                     <div className="flex justify-end">
                                                                         <button
                                                                             onClick={() => handleViewCollection(collection.id)}
-                                                                            className="bg-yellow-700 hover:bg-yellow-800 text-white px-3 py-1 rounded-md flex items-center transition-colors"
+                                                                            className="bg-primary hover:bg-secondary text-white px-3 py-1 rounded-md flex items-center transition-colors"
                                                                         >
                                                                             <FontAwesomeIcon icon={faEye} className="mr-1" />
                                                                             View Collection

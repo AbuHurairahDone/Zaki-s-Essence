@@ -46,7 +46,7 @@ function CollectionsSection({ showAll = false }) {
             <section id="collections" className="py-16">
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-center h-64">
-                        <div className="animate-spin w-8 h-8 border-2 border-yellow-700 border-t-transparent rounded-full"></div>
+                        <div className="animate-spin w-8 h-8 border-2 border-amber-950 border-t-transparent rounded-full"></div>
                     </div>
                 </div>
             </section>

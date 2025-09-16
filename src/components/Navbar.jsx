@@ -51,7 +51,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                             <input
                                 type="text"
                                 placeholder="Search..."
-                                className="px-3 py-1 pl-8 rounded-full bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-600 w-56 cursor-pointer"
+                                className="px-3 py-1 pl-8 rounded-full bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-800 w-56 cursor-pointer"
                                 onClick={toggleSearch}
                                 readOnly
                             />
@@ -87,7 +87,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                         >
                             <FontAwesomeIcon icon={faCartShopping} className="text-xl" />
                             {cartCount > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-yellow-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                                <span className="absolute -top-2 -right-2 bg-amber-800 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                                     {cartCount}
                                 </span>
                             )}
@@ -104,7 +104,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                             className="relative font-medium tracking-wide transition-all duration-300 group text-white"
                         >
                             {item.label}
-                            <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-yellow-600 transition-all duration-300 group-hover:w-full"></span>
+                            <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-amber-800 transition-all duration-300 group-hover:w-full"></span>
                         </Link>
                     ))}
                 </nav>
@@ -136,7 +136,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                         >
                             <FontAwesomeIcon icon={faCartShopping} className="text-xl" />
                             {cartCount > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-yellow-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                                <span className="absolute -top-2 -right-2 bg-amber-800 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                                     {cartCount}
                                 </span>
                             )}
@@ -160,7 +160,7 @@ export function Navbar({ cartCount, toggleCart, toggleMobileMenu }) {
                         <input
                             type="text"
                             placeholder="Search..."
-                            className="w-full px-3 py-1 pl-8 rounded-full bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-600 transition-all duration-300 ease-in-out cursor-pointer"
+                            className="w-full px-3 py-1 pl-8 rounded-full bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-800 transition-all duration-300 ease-in-out cursor-pointer"
                             onClick={toggleSearch}
                             readOnly
                         />
@@ -204,7 +204,7 @@ export function MobileMenu({ isOpen, toggleMobileMenu }) {
             >
                 <div className="flex justify-end px-5 py-4">
                     <button onClick={toggleMobileMenu}>
-                        <FontAwesomeIcon icon={faXmark} className="text-2xl text-gray-600 hover:text-yellow-600" />
+                        <FontAwesomeIcon icon={faXmark} className="text-2xl text-gray-600 hover:text-amber-800" />
                     </button>
                 </div>
 
@@ -214,7 +214,7 @@ export function MobileMenu({ isOpen, toggleMobileMenu }) {
                             key={item.href}
                             to={item.href}
                             onClick={toggleMobileMenu}
-                            className="text-lg text-gray-800 hover:text-yellow-600 font-medium tracking-wide transition-all duration-300 ease-in-out"
+                            className="text-lg text-gray-800 hover:text-amber-800 font-medium tracking-wide transition-all duration-300 ease-in-out"
                             style={{
                                 transform: isOpen ? 'translateX(0)' : 'translateX(20px)',
                                 opacity: isOpen ? 1 : 0,

@@ -78,7 +78,7 @@ function ReviewOrder() {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
                 <img src={logo} alt="Logo" className="w-16 mb-6" />
-                <FontAwesomeIcon icon={faSpinner} className="animate-spin text-yellow-700 text-3xl mb-2" />
+                <FontAwesomeIcon icon={faSpinner} className="animate-spin text-amber-950 text-3xl mb-2" />
                 <p className="text-gray-500">Loading your order...</p>
             </div>
         );
@@ -128,8 +128,8 @@ function ReviewOrder() {
                     <p className="text-gray-600 text-sm">We value your feedback! Please review each product below.</p>
                 </div>
 
-                <div className="mb-6 bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
-                    <h3 className="font-semibold text-yellow-700 mb-1">Order #{order.orderNumber}</h3>
+                <div className="mb-6 bg-amber-100 border-l-4 border-amber-600 p-4 rounded">
+                    <h3 className="font-semibold text-amber-950 mb-1">Order #{order.orderNumber}</h3>
                     <p className="text-sm text-gray-700">Placed on {new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(order.createdAt)}</p>
                 </div>
 
@@ -151,7 +151,7 @@ function ReviewOrder() {
                                             type="button"
                                             key={star}
                                             onClick={() => handleRating(idx, star)}
-                                            className={`text-xl transition-transform duration-150 hover:scale-110 focus:outline-none ${reviews[idx]?.rating >= star ? 'text-yellow-500' : 'text-gray-300'}`}
+                                            className={`text-xl transition-transform duration-150 hover:scale-110 focus:outline-none ${reviews[idx]?.rating >= star ? 'text-amber-600' : 'text-gray-300'}`}
                                             aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
                                         >
                                             <FontAwesomeIcon icon={faStar} />
@@ -167,7 +167,7 @@ function ReviewOrder() {
                                 </label>
                                 <textarea
                                     id={`review-textarea-${item.product.id}`}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700 text-sm resize-none transition"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950 text-sm resize-none transition"
                                     rows={3}
                                     placeholder="Write your review..."
                                     value={reviews[idx]?.review}
@@ -182,7 +182,7 @@ function ReviewOrder() {
                         <button
                             type="submit"
                             disabled={submitting}
-                            className="w-full py-3 bg-yellow-700 hover:bg-yellow-800 text-white font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                            className="w-full py-3 bg-primary hover:bg-secondary text-white font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-600 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
                         >
                             {submitting ? 'Submitting...' : 'Submit Reviews'}
                         </button>

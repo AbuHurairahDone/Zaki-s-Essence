@@ -84,10 +84,24 @@ select:focus {
 
 
 
-    --color-primary: oklch(48.9% 0.082 58.8);
-    /* oklch */
+    --color-primary: #5e0f21;
+    /* fallback */
+    --color-primary: oklch(31.92% 0.126 20.84);
+
+    --color-secondary: #4d101e;
+    /* fallback */
+    --color-secondary: oklch(26.35% 0.105 22.62);
 
 
+}
+
+.bg-primary {
+    background-color: var(--color-primary);
+}
+
+
+.bg-secondary {
+    background-color: var(--color-secondary);
 }
 
 /* SEO-friendly heading hierarchy */

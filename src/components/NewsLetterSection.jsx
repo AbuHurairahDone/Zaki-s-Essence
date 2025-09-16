@@ -72,7 +72,7 @@ function NewsletterSection() {
                                     <input
                                         type="email"
                                         placeholder="Your email address"
-                                        className="form-field flex-1 px-4 py-3 rounded-md sm:rounded-l-md sm:rounded-r-none border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:border-transparent transition-all duration-300"
+                                        className="form-field flex-1 px-4 py-3 rounded-md sm:rounded-l-md sm:rounded-r-none border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-950 focus:border-transparent transition-all duration-300"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
@@ -81,7 +81,7 @@ function NewsletterSection() {
                                     <button
                                         type="submit"
                                         disabled={isSubmitting || !email}
-                                        className={`bg-yellow-700 hover:bg-yellow-800 text-white px-6 py-3 rounded-md sm:rounded-r-md sm:rounded-l-none font-medium btn-animate hover-lift transition-all duration-300 ${isSubmitting || !email ? 'opacity-75 cursor-not-allowed' : ''
+                                        className={`bg-primary hover:bg-secondary text-white px-6 py-3 rounded-md sm:rounded-r-md sm:rounded-l-none font-medium btn-animate hover-lift transition-all duration-300 ${isSubmitting || !email ? 'opacity-75 cursor-not-allowed' : ''
                                             }`}
                                     >
                                         {isSubmitting ? (

@@ -47,7 +47,7 @@ function AboutSection() {
                         </p>
                         <Link
                             to="/our-story"
-                            className="bg-yellow-700 hover:bg-yellow-800 text-white px-8 py-3 rounded-md font-medium transition-all duration-300 btn-animate hover-lift animate-fade delay-4 shadow-lg hover:shadow-xl inline-block"
+                            className="bg-primary hover:bg-secondary text-white px-8 py-3 rounded-md font-medium transition-all duration-300 btn-animate hover-lift animate-fade delay-4 shadow-lg hover:shadow-xl inline-block"
                         >
                             Read Our Story
                         </Link>

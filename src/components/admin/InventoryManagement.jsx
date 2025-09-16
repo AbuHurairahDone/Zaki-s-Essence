@@ -221,7 +221,7 @@ function InventoryManagement() {
     const getStockStatus = (stock) => {
         if (stock === 0) return { status: 'Out of Stock', color: 'text-red-600 bg-red-100' };
         if (stock <= 5) return { status: 'Critical', color: 'text-red-600 bg-red-100' };
-        if (stock <= stockAlertThreshold) return { status: 'Low Stock', color: 'text-yellow-600 bg-yellow-100' };
+        if (stock <= stockAlertThreshold) return { status: 'Low Stock', color: 'text-brown-600 bg-brown-100' };
         return { status: 'In Stock', color: 'text-green-600 bg-green-100' };
     };
 
@@ -247,7 +247,7 @@ function InventoryManagement() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin w-8 h-8 border-2 border-yellow-700 border-t-transparent rounded-full"></div>
+                <div className="animate-spin w-8 h-8 border-2 border-amber-950 border-t-transparent rounded-full"></div>
             </div>
         );
     }
@@ -269,7 +269,7 @@ function InventoryManagement() {
                             max="50"
                             value={stockAlertThreshold}
                             onChange={(e) => setStockAlertThreshold(parseInt(e.target.value) || 10)}
-                            className="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                            className="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-amber-950"
                         />
                     </div>
                 </div>
@@ -318,8 +318,8 @@ function InventoryManagement() {
 
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <div className="flex items-center">
-                        <div className="p-3 rounded-full bg-yellow-100">
-                            <FontAwesomeIcon icon={faExclamationTriangle} className="text-yellow-600 text-xl" />
+                        <div className="p-3 rounded-full bg-amber-200">
+                            <FontAwesomeIcon icon={faExclamationTriangle} className="text-amber-800 text-xl" />
                         </div>
                         <div className="ml-4">
                             <p className="text-sm font-medium text-gray-600">Stock Alerts</p>
@@ -439,20 +439,20 @@ function InventoryManagement() {
                             {lowStockProducts.slice(0, 6).map((item, index) => (
                                 <div
                                     key={`${item.id}-${item.variant}`}
-                                    className={`p-4 rounded-lg border-l-4 ${item.alertLevel === 'critical' ? 'border-red-500 bg-red-50' : 'border-yellow-500 bg-yellow-50'
+                                    className={`p-4 rounded-lg border-l-4 ${item.alertLevel === 'critical' ? 'border-red-500 bg-red-50' : 'border-amber-600 bg-amber-100'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <h4 className="font-medium text-gray-900">{item.name}</h4>
                                             <p className="text-sm text-gray-600">{item.variant}</p>
-                                            <p className={`text-sm font-medium ${item.alertLevel === 'critical' ? 'text-red-600' : 'text-yellow-600'
+                                            <p className={`text-sm font-medium ${item.alertLevel === 'critical' ? 'text-red-600' : 'text-amber-800'
                                                 }`}>
                                                 {item.stock} units left
                                             </p>
                                         </div>
                                         <div className="text-right">
-                                            <span className={`px-2 py-1 rounded text-xs font-medium ${item.alertLevel === 'critical' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                                            <span className={`px-2 py-1 rounded text-xs font-medium ${item.alertLevel === 'critical' ? 'bg-red-100 text-red-800' : 'bg-amber-200 text-amber-800'
                                                 }`}>
                                                 {item.alertLevel === 'critical' ? 'Critical' : 'Low'}
                                             </span>
@@ -483,13 +483,13 @@ function InventoryManagement() {
                                 <input
                                     type="text"
                                     placeholder="Search products..."
-                                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                 />
                             </div>
                             <select
-                                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                 value={selectedCollection}
                                 onChange={(e) => setSelectedCollection(e.target.value)}
                             >
@@ -540,7 +540,7 @@ function InventoryManagement() {
                                                 <div>
                                                     <div className="text-sm font-medium text-gray-900">{product.name}</div>
                                                     <div className="text-sm text-gray-500">
-                                                        <FontAwesomeIcon icon={faStar} className="text-yellow-400 mr-1" />
+                                                        <FontAwesomeIcon icon={faStar} className="text-amber-400 mr-1" />
                                                         {product.rating || 0}
                                                     </div>
                                                 </div>

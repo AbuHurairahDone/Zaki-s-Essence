@@ -56,7 +56,7 @@ function Footer() {
                         >
                             {section.type === "brand" ? (
                                 <>
-                                    <h4 className="text-brand-name text-xl mb-4 text-yellow-400 animate-pulse">
+                                    <h4 className="text-brand-name text-xl mb-4 text-amber-200 animate-pulse">
                                         {section.title}
                                     </h4>
                                     <p className="text-luxury-body text-gray-400 leading-relaxed">
@@ -93,7 +93,7 @@ function Footer() {
                                                     style={{ animationDelay: `${linkIndex * 0.1}s` }}
                                                 >
                                                     {link.label}
-                                                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-400 transition-all duration-300 group-hover:w-full"></span>
+                                                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-700 transition-all duration-300 group-hover:w-full"></span>
                                                 </a>
                                             </li>
                                         ))}

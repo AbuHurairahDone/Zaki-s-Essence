@@ -69,7 +69,7 @@ function AdminLogin() {
                                 name="email"
                                 type="email"
                                 required
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:border-transparent transition-all duration-200"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-950 focus:border-transparent transition-all duration-200"
                                 placeholder="admin@zakisessence.com"
                                 value={formData.email}
                                 onChange={handleChange}
@@ -86,7 +86,7 @@ function AdminLogin() {
                                     name="password"
                                     type={showPassword ? 'text' : 'password'}
                                     required
-                                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 focus:border-transparent transition-all duration-200"
+                                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-950 focus:border-transparent transition-all duration-200"
                                     placeholder="Enter your password"
                                     value={formData.password}
                                     onChange={handleChange}
@@ -114,7 +114,7 @@ function AdminLogin() {
                     <button
                         type="submit"
                         disabled={isSubmitting || loading}
-                        className="w-full flex justify-center items-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-700 hover:bg-yellow-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                        className="w-full flex justify-center items-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-950 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                     >
                         {isSubmitting ? (
                             <>

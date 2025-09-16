@@ -206,7 +206,7 @@ function ProductCard({ product, addToCart }) {
             <div className="p-4 flex flex-col flex-grow">
                 <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
                     {/* Product Name */}
-                    <h3 className="text-base sm:text-lg md:text-xl font-semibold group-hover:text-yellow-700 leading-tight break-words">
+                    <h3 className="text-base sm:text-lg md:text-xl font-semibold group-hover:text-amber-950 leading-tight break-words">
                         {product.name}
                     </h3>
 
@@ -220,7 +220,7 @@ function ProductCard({ product, addToCart }) {
                                         key={i}
                                         icon={faStar}
                                         className={`transition-colors ${i < Math.floor(product.rating)
-                                            ? "text-yellow-500"
+                                            ? "text-amber-600"
                                             : "text-gray-300"
                                             } text-sm sm:text-base md:text-lg`}
                                     />
@@ -261,8 +261,8 @@ function ProductCard({ product, addToCart }) {
                                 key={variant}
                                 onClick={() => handleVariantChange(variant)}
                                 className={`px-3 py-1 text-xs rounded-full smooth-transition hover-scale ${selectedVariant === variant
-                                    ? 'bg-yellow-700 text-white shadow-md'
-                                    : 'border border-gray-300 hover:border-yellow-700 hover:text-yellow-700'}`}
+                                    ? 'bg-primary text-white shadow-md'
+                                    : 'border border-gray-300 hover:border-amber-950 hover:text-amber-950'}`}
                             >
                                 {variant}
                             </button>
@@ -295,7 +295,7 @@ function ProductCard({ product, addToCart }) {
                         <button
                             onClick={handleAddToCart}
                             disabled={isLoading || selectedVariantStock === 0}
-                            className={`bg-yellow-700 hover:bg-yellow-800 text-white px-4 py-2 rounded-md flex items-center ${isLoading || selectedVariantStock === 0 ? 'opacity-75 cursor-not-allowed' : ''}`}
+                            className={`bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md flex items-center ${isLoading || selectedVariantStock === 0 ? 'opacity-75 cursor-not-allowed' : ''}`}
                         >
                             {isLoading ? 'Adding...' : selectedVariantStock === 0 ? 'Out of Stock' : 'Add'}
                         </button>

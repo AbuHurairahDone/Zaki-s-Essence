@@ -180,16 +180,16 @@ function AppCode() {
     useEffect(() => {
         GTMService.initializeDataLayer();
     }, []);
-    
+
     // Listen for add-to-cart events from SearchOverlay
     useEffect(() => {
         const handleAddToCartEvent = (event) => {
             const { product, variant } = event.detail;
             addToCart(product, variant);
         };
-        
+
         window.addEventListener('add-to-cart', handleAddToCartEvent);
-        
+
         return () => {
             window.removeEventListener('add-to-cart', handleAddToCartEvent);
         };
@@ -315,7 +315,7 @@ function AppCode() {
 
                         <button
                             onClick={scrollToTop}
-                            className={`fixed bottom-6 right-6 bg-yellow-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-yellow-800 smooth-transition z-40 hover-lift gpu-accelerated ${showScrollButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
+                            className={`fixed bottom-6 right-6 bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-secondary smooth-transition z-40 hover-lift gpu-accelerated ${showScrollButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
                                 }`}
                             aria-label="Scroll to top"
                         >

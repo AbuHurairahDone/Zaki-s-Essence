@@ -28,7 +28,7 @@ function ContactMessages() {
                 <h1 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">Customer Messages</h1>
                 {loading ? (
                     <div className="flex justify-center py-12">
-                        <div className="animate-spin w-8 h-8 border-2 border-yellow-700 border-t-transparent rounded-full"></div>
+                        <div className="animate-spin w-8 h-8 border-2 border-amber-950 border-t-transparent rounded-full"></div>
                     </div>
                 ) : messages.length === 0 ? (
                     <div className="text-center py-12 text-gray-500">No messages found.</div>
@@ -38,7 +38,7 @@ function ContactMessages() {
                             <div key={msg.id} className="bg-white rounded-lg shadow-md p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                 <div className="flex-1">
                                     <div className="flex items-center mb-2">
-                                        <FontAwesomeIcon icon={faUser} className="text-yellow-700 mr-2" />
+                                        <FontAwesomeIcon icon={faUser} className="text-amber-950 mr-2" />
                                         <span className="font-semibold text-gray-800">{msg.name}</span>
                                     </div>
                                     <div className="flex items-center mb-2">

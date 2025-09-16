@@ -121,7 +121,7 @@ function CollectionManagement() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin w-8 h-8 border-2 border-yellow-700 border-t-transparent rounded-full"></div>
+                <div className="animate-spin w-8 h-8 border-2 border-amber-950 border-t-transparent rounded-full"></div>
             </div>
         );
     }
@@ -139,7 +139,7 @@ function CollectionManagement() {
                         setEditingCollection(null);
                         setShowCollectionModal(true);
                     }}
-                    className="w-full sm:w-auto bg-yellow-700 hover:bg-yellow-800 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors"
+                    className="w-full sm:w-auto bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors"
                 >
                     <FontAwesomeIcon icon={faPlus} className="mr-2" />
                     Add Collection
@@ -156,7 +156,7 @@ function CollectionManagement() {
                     <input
                         type="text"
                         placeholder="Search collections..."
-                        className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                        className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -263,7 +263,7 @@ function CollectionCard({ collection, productCount, onEdit, onDelete, onToggleFe
                     <button
                         onClick={onToggleFeatured}
                         className={`w-full px-4 py-2 rounded-lg flex items-center justify-center transition-all
-                        ${collection.isFeatured ? 'bg-yellow-600 hover:bg-yellow-700 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'}`}
+                        ${collection.isFeatured ? 'bg-amber-800 hover:bg-primary text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'}`}
                     >
                         <FontAwesomeIcon icon={collection.isFeatured ? faStar : faStarHalfAlt} className="mr-2" />
                         {collection.isFeatured ? 'Featured Collection' : 'Mark as Featured'}
@@ -420,7 +420,7 @@ function CollectionModal({ collection, products, onClose, onSave }) {
                                 type="text"
                                 name="name"
                                 required
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                 value={formData.name}
                                 onChange={handleChange}
                             />
@@ -434,7 +434,7 @@ function CollectionModal({ collection, products, onClose, onSave }) {
                                 name="description"
                                 required
                                 rows="4"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                 value={formData.description}
                                 onChange={handleChange}
                             />
@@ -471,7 +471,7 @@ function CollectionModal({ collection, products, onClose, onSave }) {
                                         type="file"
                                         accept="image/*"
                                         onChange={handleImageSelect}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                     />
                                     <p className="text-xs text-gray-500 mt-1">
                                         Supports JPEG, PNG, WebP. Max size: 10MB
@@ -577,7 +577,7 @@ function CollectionModal({ collection, products, onClose, onSave }) {
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full sm:w-auto px-6 py-2 bg-yellow-700 hover:bg-yellow-800 text-white rounded-lg transition-colors disabled:opacity-50"
+                            className="w-full sm:w-auto px-6 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition-colors disabled:opacity-50"
                         >
                             {isSubmitting ? 'Saving...' : (collection ? 'Update Collection' : 'Add Collection')}
                         </button>

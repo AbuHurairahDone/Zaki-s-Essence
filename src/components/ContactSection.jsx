@@ -77,7 +77,7 @@ function ContactSection() {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-700 focus:outline-none"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-brown-700 focus:outline-none"
                                     placeholder="Your full name"
                                     required
                                 />
@@ -94,7 +94,7 @@ function ContactSection() {
                                     inputProps={{
                                         name: 'phone',
                                         required: true,
-                                        className: `w-full pl-12 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700 ${errors.phone ? 'border-red-500' : ''}`
+                                        className: `w-full pl-12 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brown-700 ${errors.phone ? 'border-red-500' : ''}`
                                     }}
                                     containerClass="w-full"
                                     buttonClass="!border-gray-300"
@@ -113,7 +113,7 @@ function ContactSection() {
                                     rows="5"
                                     value={formData.message}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-700 focus:outline-none resize-none"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-brown-700 focus:outline-none resize-none"
                                     placeholder="Tell us how we can help you..."
                                     required
                                 ></textarea>
@@ -122,7 +122,7 @@ function ContactSection() {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full bg-yellow-700 hover:bg-yellow-800 text-white px-6 py-4 rounded-md font-medium text-lg transition-all duration-300"
+                                className="w-full bg-primary hover:bg-secondary text-white px-6 py-4 rounded-md font-medium text-lg transition-all duration-300"
                             >
                                 {isSubmitting ? (
                                     <div className="flex items-center justify-center">

@@ -230,7 +230,7 @@ function ProductDetailPage() {
                     <p className="mb-6">The product you're looking for doesn't exist or has been removed.</p>
                     <button
                         onClick={() => navigate('/shop')}
-                        className="bg-yellow-700 text-white px-6 py-2 rounded-md hover:bg-yellow-800 transition"
+                        className="bg-primary text-white px-6 py-2 rounded-md hover:bg-secondary transition"
                     >
                         Return to Shop
                     </button>
@@ -351,7 +351,7 @@ function ProductDetailPage() {
                                         onClick={() => handleVariantChange(variant)}
                                         disabled={getVariantStock(variant) === 0}
                                         className={`px-4 py-2 rounded-md transition ${selectedVariant === variant
-                                            ? 'bg-yellow-700 text-white'
+                                            ? 'bg-primary text-white'
                                             : getVariantStock(variant) === 0
                                                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                                                 : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
@@ -424,7 +424,7 @@ function ProductDetailPage() {
                             onClick={handleAddToCart}
                             disabled={isAddingToCart || !isInStock}
                             className={`w-full py-3 rounded-md font-medium transition ${isInStock
-                                ? 'bg-yellow-700 text-white hover:bg-yellow-800'
+                                ? 'bg-primary text-white hover:bg-secondary'
                                 : 'bg-gray-200 text-gray-500 cursor-not-allowed'}`}
                         >
                             {isAddingToCart

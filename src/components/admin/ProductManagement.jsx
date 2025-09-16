@@ -104,7 +104,7 @@ function ProductManagement() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin w-8 h-8 border-2 border-yellow-700 border-t-transparent rounded-full"></div>
+                <div className="animate-spin w-8 h-8 border-2 border-amber-950 border-t-transparent rounded-full"></div>
             </div>
         );
     }
@@ -122,7 +122,7 @@ function ProductManagement() {
                         setEditingProduct(null);
                         setShowProductModal(true);
                     }}
-                    className="w-full sm:w-auto bg-yellow-700 hover:bg-yellow-800 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors"
+                    className="w-full sm:w-auto bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors"
                 >
                     <FontAwesomeIcon icon={faPlus} className="mr-2" />
                     Add Product
@@ -141,7 +141,7 @@ function ProductManagement() {
                             <input
                                 type="text"
                                 placeholder="Search products..."
-                                className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -149,7 +149,7 @@ function ProductManagement() {
                     </div>
                     <div className="w-full sm:w-auto">
                         <select
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                             value={selectedCollection}
                             onChange={(e) => setSelectedCollection(e.target.value)}
                         >
@@ -278,7 +278,7 @@ function ProductCard({ product, onEdit, onDelete, formatCurrency, formatDate, ge
             <div className="p-4">
                 <div className="flex justify-between items-start mb-2">
                     <h3 className="font-bold text-sm sm:text-lg truncate pr-2">{product.name}</h3>
-                    <div className="flex items-center text-yellow-600 flex-shrink-0">
+                    <div className="flex items-center text-amber-600 flex-shrink-0">
                         <FontAwesomeIcon icon={faStar} className="text-xs mr-1" />
                         <span className="text-xs sm:text-sm">{product.rating}</span>
                     </div>
@@ -738,7 +738,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                     type="text"
                                     name="name"
                                     required
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                     value={formData.name}
                                     onChange={handleChange}
                                 />
@@ -751,7 +751,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                 <select
                                     name="collectionRef"
                                     required
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                     value={formData.collectionRef}
                                     onChange={handleChange}
                                 >
@@ -771,7 +771,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                 name="description"
                                 required
                                 rows="3"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                 value={formData.description}
                                 onChange={handleChange}
                             />
@@ -787,7 +787,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                     type="text"
                                     name="scentLasting"
                                     placeholder="e.g., 8-10 hours"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                     value={formData.scentLasting}
                                     onChange={handleChange}
                                 />
@@ -803,7 +803,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                     step="1"
                                     name="minOrderFreeShip"
                                     placeholder="e.g., 2000"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                     value={formData.minOrderFreeShip}
                                     onChange={handleChange}
                                 />
@@ -822,7 +822,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                 </label>
                                 <input
                                     type="text"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                     value={formData.fragranceNotes.top}
                                     onChange={(e) => {
                                         const sanitizedValue = e.target.value.trim().slice(0, 500);
@@ -848,7 +848,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                 </label>
                                 <input
                                     type="text"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                     value={formData.fragranceNotes.middle}
                                     onChange={(e) => {
                                         const sanitizedValue = e.target.value.trim().slice(0, 500);
@@ -874,7 +874,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                 </label>
                                 <input
                                     type="text"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                     value={formData.fragranceNotes.base}
                                     onChange={(e) => {
                                         const sanitizedValue = e.target.value.trim().slice(0, 500);
@@ -925,7 +925,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                         type="file"
                                         accept="image/*"
                                         onChange={handleImageSelect}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                     />
                                     <p className="text-xs text-gray-500 mt-1">
                                         Supports JPEG, PNG, WebP. Max size: 10MB
@@ -1000,7 +1000,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                     step="0.01"
                                     min="0"
                                     max="100"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                     value={formData.discountPercentage}
                                     onChange={handleChange}
                                     placeholder="Optional"
@@ -1035,7 +1035,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                             }));
                                         }}
                                     />
-                                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-700"></div>
+                                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                                 </label>
                             </div>
 
@@ -1066,7 +1066,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                             }));
                                         }}
                                     />
-                                    <div className={`w-11 h-6 bg-gray-200 rounded-full peer after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${!formData.discountPercentage ? 'opacity-50 cursor-not-allowed' : 'peer-checked:after:translate-x-full peer-checked:after:border-white peer-checked:bg-yellow-700'}`}></div>
+                                    <div className={`w-11 h-6 bg-gray-200 rounded-full peer after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${!formData.discountPercentage ? 'opacity-50 cursor-not-allowed' : 'peer-checked:after:translate-x-full peer-checked:after:border-white peer-checked:bg-primary'}`}></div>
                                 </label>
                             </div>
                         </div>
@@ -1085,7 +1085,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                 <input
                                     type="text"
                                     placeholder="e.g., 30ml, 50ml, 100ml"
-                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                     value={newVariant}
                                     onChange={(e) => setNewVariant(e.target.value)}
                                     onKeyPress={handleKeyPress}
@@ -1134,7 +1134,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                                         step="0.01"
                                                         min="0"
                                                         required
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                                         value={formData.variantPricing[variant] || ''}
                                                         onChange={(e) => handlePriceChange(variant, e.target.value)}
                                                         placeholder="0.00"
@@ -1147,7 +1147,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                                     <input
                                                         type="number"
                                                         min="0"
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                                                         value={formData.stock[variant] || 0}
                                                         onChange={(e) => handleStockChange(variant, e.target.value)}
                                                     />
@@ -1164,7 +1164,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                                                 <div key={index} className="relative group">
                                                                     <img src={image.url} alt={`Variant ${index + 1}`} className="w-full h-16 object-cover rounded-md border" />
                                                                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                                        <button type="button" onClick={() => setPrimaryVariantImage(variant, image.url)} className="text-white text-xs p-1 hover:text-yellow-400" title="Set as primary">
+                                                                        <button type="button" onClick={() => setPrimaryVariantImage(variant, image.url)} className="text-white text-xs p-1 hover:text-amber-400" title="Set as primary">
                                                                             <FontAwesomeIcon icon={faStar} />
                                                                         </button>
                                                                         <button type="button" onClick={() => removeVariantImage(variant, image.url)} className="text-white text-xs p-1 hover:text-red-500" title="Remove image">
@@ -1172,7 +1172,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                                                                         </button>
                                                                     </div>
                                                                     {formData.variantImages[variant]?.primary === image.url && (
-                                                                        <div className="absolute top-1 right-1 bg-yellow-500 text-white rounded-full p-1 text-xs" title="Primary Image">
+                                                                        <div className="absolute top-1 right-1 bg-amber-600 text-white rounded-full p-1 text-xs" title="Primary Image">
                                                                             <FontAwesomeIcon icon={faStar} />
                                                                         </div>
                                                                     )}
@@ -1235,7 +1235,7 @@ function ProductModal({ product, collections, onClose, onSave }) {
                         <button
                             type="submit"
                             disabled={isSubmitting || formData.variants.length === 0}
-                            className="w-full sm:w-auto px-6 py-2 bg-yellow-700 hover:bg-yellow-800 text-white rounded-lg transition-colors disabled:opacity-50"
+                            className="w-full sm:w-auto px-6 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition-colors disabled:opacity-50"
                         >
                             {isSubmitting ? 'Saving...' : (product ? 'Update Product' : 'Add Product')}
                         </button>

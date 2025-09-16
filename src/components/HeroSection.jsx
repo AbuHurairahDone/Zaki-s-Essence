@@ -180,7 +180,7 @@ function HeroSection() {
 
             {/* Enhanced scroll indicator */}
             <div className="absolute bottom-8 left-0 right-0 text-center z-10">
-                <a href="#shop" className="animate-float inline-block hover:text-yellow-300 smooth-transition">
+                <a href="#shop" className="animate-float inline-block hover:text-amber-400 smooth-transition">
                     <i className="fas fa-chevron-down text-white text-2xl"></i>
                 </a>
             </div>

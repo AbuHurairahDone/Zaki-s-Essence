@@ -146,7 +146,7 @@ function HeroImageManagement() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin w-8 h-8 border-2 border-yellow-700 border-t-transparent rounded-full"></div>
+                <div className="animate-spin w-8 h-8 border-2 border-amber-950 border-t-transparent rounded-full"></div>
             </div>
         );
     }
@@ -161,7 +161,7 @@ function HeroImageManagement() {
                 </div>
                 <button
                     onClick={() => setShowAddModal(true)}
-                    className="w-full sm:w-auto bg-yellow-700 hover:bg-yellow-800 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors"
+                    className="w-full sm:w-auto bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors"
                 >
                     <FontAwesomeIcon icon={faPlus} className="mr-2" />
                     Add Image
@@ -213,7 +213,7 @@ function HeroImageManagement() {
                         <p className="text-gray-500 mb-4">Add your first hero image to get started</p>
                         <button
                             onClick={() => setShowAddModal(true)}
-                            className="bg-yellow-700 hover:bg-yellow-800 text-white px-4 py-2 rounded-lg"
+                            className="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg"
                         >
                             Add Image
                         </button>
@@ -269,13 +269,13 @@ function HeroImageCard({
             onDragOver={onDragOver}
             onDrop={(e) => onDrop(e, index)}
             className={`relative bg-white border-2 rounded-lg overflow-hidden transition-all cursor-move ${image.isActive
-                    ? 'border-yellow-500 ring-2 ring-yellow-200'
-                    : 'border-gray-200 hover:border-gray-300'
+                ? 'border-amber-600 ring-2 ring-brown-200'
+                : 'border-gray-200 hover:border-gray-300'
                 } ${isDragging ? 'opacity-50' : ''}`}
         >
             {/* Active Badge */}
             {image.isActive && (
-                <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full z-10">
+                <div className="absolute top-2 left-2 bg-amber-600 text-white text-xs px-2 py-1 rounded-full z-10">
                     Active
                 </div>
             )}
@@ -374,7 +374,7 @@ function AddImageModal({ onClose, onUpload, uploading }) {
                             type="file"
                             accept="image/*"
                             onChange={handleFileSelect}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                             required
                         />
                     </div>
@@ -399,7 +399,7 @@ function AddImageModal({ onClose, onUpload, uploading }) {
                             type="text"
                             value={alt}
                             onChange={(e) => setAlt(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-700"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-950"
                             placeholder="Describe the image for accessibility"
                             required
                         />
@@ -417,7 +417,7 @@ function AddImageModal({ onClose, onUpload, uploading }) {
                         <button
                             type="submit"
                             disabled={uploading}
-                            className="flex-1 bg-yellow-700 hover:bg-yellow-800 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+                            className="flex-1 bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
                         >
                             {uploading ? (
                                 <>

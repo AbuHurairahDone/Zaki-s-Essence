@@ -73,7 +73,7 @@ function AdminDashboard({ onPageChange }) {
 
     const getStatusColor = (status) => {
         const colors = {
-            pending: 'bg-yellow-100 text-yellow-800',
+            pending: 'bg-amber-200 text-brown-800',
             confirmed: 'bg-blue-100 text-blue-800',
             processing: 'bg-purple-100 text-purple-800',
             shipped: 'bg-green-100 text-green-800',
@@ -86,7 +86,7 @@ function AdminDashboard({ onPageChange }) {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin w-8 h-8 border-2 border-yellow-700 border-t-transparent rounded-full"></div>
+                <div className="animate-spin w-8 h-8 border-2 border-amber-950 border-t-transparent rounded-full"></div>
             </div>
         );
     }
@@ -143,8 +143,8 @@ function AdminDashboard({ onPageChange }) {
 
                 <div className="bg-white rounded-lg shadow-md p-6 hover-lift">
                     <div className="flex items-center">
-                        <div className="p-3 rounded-full bg-yellow-100">
-                            <FontAwesomeIcon icon={faUsers} className="text-yellow-600 text-xl" />
+                        <div className="p-3 rounded-full bg-amber-200">
+                            <FontAwesomeIcon icon={faUsers} className="text-amber-800 text-xl" />
                         </div>
                         <div className="ml-4">
                             <p className="text-sm font-medium text-gray-600">Customers</p>
@@ -196,7 +196,7 @@ function AdminDashboard({ onPageChange }) {
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <button
-                    className="bg-yellow-700 hover:bg-yellow-800 text-white p-6 rounded-lg shadow-md transition-colors"
+                    className="bg-primary hover:bg-secondary text-white p-6 rounded-lg shadow-md transition-colors"
                     onClick={() => onPageChange && onPageChange('products')}
                 >
                     <FontAwesomeIcon icon={faPlus} className="text-2xl mb-3" />
