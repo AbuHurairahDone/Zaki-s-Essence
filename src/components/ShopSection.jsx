@@ -86,20 +86,20 @@ function ShopSection({ products, addToCart }) {
         <section id="shop" className="py-20 ">
             <div className="container mx-auto px-4">
                 {/* New Arrivals */}
-                {!collectionParam && collections.length > 0 && (
 
-                    < div
-                        ref={sectionRef}
-                        className={`text-center mb-16 transition-all duration-700 ${isSectionVisible && isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                    >
-                        <h2 className="text-4xl md:text-5xl font-serif tracking-wide mb-4 text-gray-900">
-                            Our Fragrance Collection
-                        </h2>
-                        <p className="text-lg text-gray-500 italic max-w-2xl mx-auto">
-                            Discover our exquisite selection of perfumes crafted with the finest ingredients.
-                        </p>
-                    </div>
-                )}
+
+                {/* < div
+                    ref={sectionRef}
+                    className={`text-center mb-16 transition-all duration-700 ${isSectionVisible && isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                >
+                    <h2 className="text-4xl md:text-5xl font-serif tracking-wide mb-4 text-gray-900">
+                        Our Fragrance Collections
+                    </h2>
+                    <p className="text-lg text-gray-500 italic max-w-2xl mx-auto">
+                        Discover our exquisite selection of perfumes crafted with the finest ingredients.
+                    </p>
+                </div> */}
+
                 {/* New Arrivals */}
                 {!collectionParam && collections.length > 0 && newArrivals.length > 0 && (
                     <div className="mb-20">
