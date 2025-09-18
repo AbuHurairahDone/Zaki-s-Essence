@@ -199,7 +199,7 @@ h6 {
 
 .text-luxury-title {
     font-family: var(--font-heading-primary);
-    font-weight: 600;
+    font-weight: 400;
     letter-spacing: var(--letter-spacing-tight);
     line-height: 1.2;
 }
@@ -235,7 +235,7 @@ h6 {
     font-family: var(--font-impact);
     font-weight: 400;
     letter-spacing: var(--letter-spacing-tight);
-    line-height: 1.1;
+    line-height: 1;
 }
 
 .text-brand-name {

@@ -167,11 +167,11 @@ function HeroSection() {
                 className={`container mx-auto px-4 relative z-10 text-white gpu-accelerated ${isReady ? 'animate-fade' : 'opacity-0'}`}
                 style={{ transform: contentTransform }}
             >
-                <div className="max-w-3xl">
-                    <h1 className="text-hero-title text-6xl md:text-8xl text-gold-gradient mb-4 pb-4 text-shadow-luxury ">
+                <div className="max-w-4xl">
+                    <p className="text-hero-title text-4xl md:text-6xl text-gold-gradient  pb-4 text-shadow-luxury ">
                         Discover Your Signature Scent
-                    </h1>
-                    <p className="text-luxury-body text-xl md:text-2xl mb-8 text-white/90 pb-4">
+                    </p>
+                    <p className="text-luxury-body text-lg md:text-2xl mb-8 text-white/90 pb-4">
                         Experience the art of perfumery with our curated collection of luxury fragrances from around the world.
                     </p>
                     <a
