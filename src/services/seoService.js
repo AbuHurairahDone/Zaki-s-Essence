@@ -185,7 +185,7 @@ class SEOService {
             "@context": "https://schema.org",
             "@type": "OnlineStore",
             "name": "Zaki's Essence",
-            "image": "https://zakisessence.pk/logo.png",
+            "image": "https://zakisessence.pk/logo_bg.jpg",
             "description": "Premium luxury fragrances and perfumes online store offering authentic scents and signature collections with worldwide shipping.",
             "url": "https://zakisessence.pk",
             "telephone": "+92-300-1234567",
@@ -215,21 +215,21 @@ class SEOService {
                 description: "Discover premium luxury fragrances at Zaki's Essence. Shop authentic perfumes, colognes & scents online. Free shipping, curated collections, and signature scents for every occasion.",
                 keywords: "luxury perfumes, premium fragrances, authentic scents, perfume online, cologne, eau de parfum, designer fragrances, Zaki's Essence, signature scents",
                 canonicalUrl: baseUrl,
-                ogImage: `${baseUrl}/logo.png`
+                ogImage: `${baseUrl}/logo_bg.jpg`
             },
             shop: {
                 title: "Shop Premium Fragrances & Luxury Perfumes | Zaki's Essence Collection",
                 description: "Browse our complete collection of premium fragrances and luxury perfumes. Find your perfect scent from our curated selection of authentic designer fragrances.",
                 keywords: "shop fragrances, buy perfumes online, luxury perfume collection, designer scents, premium cologne",
                 canonicalUrl: `${baseUrl}/shop`,
-                ogImage: `${baseUrl}/logo.png`
+                ogImage: `${baseUrl}/logo_bg.jpg`
             },
             product: {
                 title: `${data.name} - Premium Fragrance | Zaki's Essence`,
                 description: `${data.description || `Discover ${data.name}, a premium fragrance from Zaki's Essence collection. Authentic luxury perfume with free shipping.`}`,
                 keywords: `${data.name}, luxury perfume, premium fragrance, authentic scent, ${data.category || 'perfume'}`,
                 canonicalUrl: `${baseUrl}/products/${data.id}`,
-                ogImage: data.image || `${baseUrl}/logo.png`,
+                ogImage: data.image || `${baseUrl}/logo_bg.jpg`,
                 structuredData: this.generateProductSchema(data)
             },
             collections: {
@@ -237,42 +237,49 @@ class SEOService {
                 description: "Explore our curated fragrance collections featuring the finest luxury perfumes and scents. Find themed collections for every occasion and preference.",
                 keywords: "fragrance collections, perfume sets, luxury scent collections, curated fragrances, themed perfumes",
                 canonicalUrl: `${baseUrl}/collections`,
-                ogImage: `${baseUrl}/logo.png`
+                ogImage: `${baseUrl}/logo_bg.jpg`
             },
             about: {
                 title: "About Zaki's Essence - Premium Luxury Fragrance Brand Story",
                 description: "Learn about Zaki's Essence, our passion for luxury fragrances, and commitment to bringing you the finest authentic perfumes and scents from around the world.",
                 keywords: "about Zaki's Essence, luxury fragrance brand, perfume company story, authentic scents",
                 canonicalUrl: `${baseUrl}/about`,
-                ogImage: `${baseUrl}/logo.png`
+                ogImage: `${baseUrl}/logo_bg.jpg`
             },
             contact: {
                 title: "Contact Zaki's Essence - Customer Service & Support",
                 description: "Get in touch with Zaki's Essence for customer support, product inquiries, or fragrance consultations. We're here to help you find your perfect scent.",
                 keywords: "contact Zaki's Essence, customer service, fragrance consultation, perfume support",
                 canonicalUrl: `${baseUrl}/contact`,
-                ogImage: `${baseUrl}/logo.png`
+                ogImage: `${baseUrl}/logo_bg.jpg`
             },
             'our-story': {
                 title: "Our Story - Zaki's Essence",
                 description: "Discover the story behind Zaki's Essence, our passion for fragrances, and our commitment to quality.",
                 keywords: "Zaki's Essence story, brand history, fragrance passion, quality commitment",
                 canonicalUrl: `${baseUrl}/our-story`,
-                ogImage: `${baseUrl}/logo.png`
+                ogImage: `${baseUrl}/logo_bg.jpg`
             },
             'review-order': {
                 title: "Review Your Order - Zaki's Essence",
                 description: "Provide feedback and review your recent order from Zaki's Essence.",
                 keywords: "review order, order feedback, Zaki's Essence review, product review",
                 canonicalUrl: `${baseUrl}/review-order`,
-                ogImage: `${baseUrl}/logo.png`
+                ogImage: `${baseUrl}/logo_bg.jpg`
             },
             'track-order': {
                 title: "Track Your Order - Zaki's Essence",
                 description: "Easily track the status of your recent orders with Zaki's Essence.",
                 keywords: "track order, order status, Zaki's Essence order, shipping tracking",
                 canonicalUrl: `${baseUrl}/track-order`,
-                ogImage: `${baseUrl}/logo.png`
+                ogImage: `${baseUrl}/logo_bg.jpg`
+            },
+            'return-policy': {
+                title: "Return & Refund Policy - Zaki's Essence",
+                description: "Read Zaki's Essence return and refund policy. Learn about eligibility, timelines, and how to initiate a return or exchange.",
+                keywords: "return policy, refund policy, exchanges, returns, Zaki's Essence",
+                canonicalUrl: `${baseUrl}/return-policy`,
+                ogImage: `${baseUrl}/logo_bg.jpg`
             }
         };
 
@@ -289,7 +296,8 @@ class SEOService {
             { url: `${baseUrl}/shop`, lastmod: now, changefreq: 'daily', priority: '0.9' },
             { url: `${baseUrl}/collections`, lastmod: now, changefreq: 'weekly', priority: '0.8' },
             { url: `${baseUrl}/about`, lastmod: now, changefreq: 'monthly', priority: '0.6' },
-            { url: `${baseUrl}/contact`, lastmod: now, changefreq: 'monthly', priority: '0.5' }
+            { url: `${baseUrl}/contact`, lastmod: now, changefreq: 'monthly', priority: '0.5' },
+            { url: `${baseUrl}/return-policy`, lastmod: now, changefreq: 'yearly', priority: '0.3' }
         ];
 
         const productPages = products.map(product => ({

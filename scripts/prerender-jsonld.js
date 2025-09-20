@@ -106,7 +106,7 @@ function applyProductHead(html, product) {
     const url = `${BASE_URL}/products/${segment}`;
     const title = `${product.name} - Premium Fragrance | Zaki's Essence`;
     const description = product.description?.slice(0, 300) || `Discover ${product.name} at Zaki's Essence.`;
-    const image = product.image || (Array.isArray(product.images) ? product.images[0] : undefined) || `${BASE_URL}/logo.png`;
+    const image = product.image || (Array.isArray(product.images) ? product.images[0] : undefined) || `${BASE_URL}/logo_bg.jpg`;
 
     let out = html;
     out = replaceTagContent(out, 'title', title);

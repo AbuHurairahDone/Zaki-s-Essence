@@ -25,7 +25,8 @@ function Footer() {
             title: "Help",
             links: [
                 { label: "Contact", href: "/contact" },
-                { label: "Track Order", href: "/track-order" }
+                { label: "Track Order", href: "/track-order" },
+                { label: "Return Policy", href: "/return-policy" }
             ]
         },
         {

@@ -632,7 +632,7 @@ function ProductDetailPage() {
 
                                 <div className="mt-3 sm:mt-4 bg-purple-50 border border-purple-200 rounded-lg p-2 sm:p-3">
                                     <p className="text-xs sm:text-sm text-purple-800">
-                                        <strong>Return Process:</strong> Contact our customer service team within 30 days of receiving your order to initiate a return.
+                                        <strong>Return Process:</strong> Contact our customer service team within 7 days of receiving your order to initiate a return.
                                     </p>
                                 </div>
                             </>

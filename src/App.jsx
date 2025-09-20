@@ -32,6 +32,7 @@ import TrackOrder from './components/TrackOrder.jsx'
 import Footer from './components/Footer.jsx'
 import AdminPanel from './components/admin/AdminPanel.jsx'
 import ReviewOrder from './components/ReviewOrder.jsx'
+import ReturnPolicy from './components/ReturnPolicy.jsx'
 
 // SEO-aware page components
 function HomePage() {
@@ -307,6 +308,7 @@ function AppCode() {
                                     } />
                                     <Route path="/review-order/:orderId" element={<ReviewOrder />} />
                                     <Route path="/product/:productId" element={<ProductDetailPage />} />
+                                    <Route path="/return-policy" element={<ReturnPolicy />} />
                                 </Routes>
                             </PageTransition>
                         </main>
